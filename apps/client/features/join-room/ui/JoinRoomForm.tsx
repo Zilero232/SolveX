@@ -1,43 +1,41 @@
 'use client';
 
-import { Button, Stack, TextInput } from '@mantine/core';
-import { notifications } from '@mantine/notifications';
+import { Loader2 } from 'lucide-react';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 import { useEnterRoom } from '@/entities/room';
-import { useCurrentUser } from '@/entities/user';
+import { Button } from '@/shared/ui/button';
+import { Input } from '@/shared/ui/input';
+import { Label } from '@/shared/ui/label';
+
+import { joinRoomFormStyles as s } from './JoinRoomForm.styles';
 
 export const JoinRoomForm = () => {
   const [room, setRoom] = useState('');
   const enter = useEnterRoom();
-  const { session } = useCurrentUser();
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!session) return;
-    enter.mutate(
-      { room, accessToken: session.access_token },
-      {
-        onError: (err: Error) =>
-          notifications.show({ color: 'red', title: 'Error', message: err.message }),
-      },
-    );
+    enter.mutate({ room }, { onError: (err: Error) => toast.error(err.message) });
   };
 
   return (
-    <form onSubmit={onSubmit}>
-      <Stack gap="sm">
-        <TextInput
-          label="Room name"
+    <form onSubmit={onSubmit} className={s.form}>
+      <div className={s.field}>
+        <Label htmlFor="join-room-name">Room name</Label>
+        <Input
+          id="join-room-name"
           placeholder="my-room"
           autoComplete="off"
           value={room}
           onChange={(e) => setRoom(e.currentTarget.value)}
         />
-        <Button type="submit" loading={enter.isPending} disabled={!room.trim()} fullWidth>
-          Join room
-        </Button>
-      </Stack>
+      </div>
+      <Button type="submit" disabled={enter.isPending || !room.trim()}>
+        {enter.isPending ? <Loader2 className={s.spinner} /> : null}
+        Join room
+      </Button>
     </form>
   );
 };

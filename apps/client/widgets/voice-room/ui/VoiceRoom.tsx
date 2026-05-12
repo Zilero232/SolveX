@@ -1,33 +1,56 @@
 'use client';
 
-import type { LocalUserChoices } from '@livekit/components-core';
-import { LiveKitRoom, RoomAudioRenderer } from '@livekit/components-react';
-import { Group, Text } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
+import {
+  ControlBar,
+  GridLayout,
+  LiveKitRoom,
+  ParticipantTile,
+  RoomAudioRenderer,
+  useTracks,
+} from '@livekit/components-react';
+import { DisconnectReason, Track } from 'livekit-client';
 import { Volume2 } from 'lucide-react';
-import useSound from 'use-sound';
+import { useRef } from 'react';
 
-import { ChatDrawer } from './ChatDrawer';
-import { RoomControls } from './RoomControls';
-import { RoomSounds } from './RoomSounds';
-import { RoomStage } from './RoomStage';
+import { voiceRoomStyles as s } from './VoiceRoom.styles';
+import type { VoiceRoomProps } from './VoiceRoom.types';
 
-type Props = {
-  token: string;
-  serverUrl: string;
-  roomName: string;
-  userChoices: LocalUserChoices;
-  onLeave: () => void;
+const FAILURE_REASONS = new Set<DisconnectReason>([
+  DisconnectReason.JOIN_FAILURE,
+  DisconnectReason.SIGNAL_CLOSE,
+  DisconnectReason.SERVER_SHUTDOWN,
+  DisconnectReason.STATE_MISMATCH,
+]);
+
+const Stage = () => {
+  const tracks = useTracks(
+    [
+      { source: Track.Source.Camera, withPlaceholder: true },
+      { source: Track.Source.ScreenShare, withPlaceholder: false },
+    ],
+    { onlySubscribed: false },
+  );
+
+  return (
+    <GridLayout className={s.stage} tracks={tracks}>
+      <ParticipantTile />
+    </GridLayout>
+  );
 };
 
-export const VoiceRoom = ({ token, serverUrl, roomName, userChoices, onLeave }: Props) => {
-  const [chatOpened, { toggle: toggleChat, close: closeChat }] = useDisclosure(false);
-  const [playJoin] = useSound('/sounds/join.wav', { volume: 0.5 });
-  const [playLeave] = useSound('/sounds/leave.wav', { volume: 0.5 });
+export const VoiceRoom = ({
+  token,
+  serverUrl,
+  roomName,
+  userChoices,
+  onLeave,
+  onConnectFailure,
+}: VoiceRoomProps) => {
+  const hasConnectedRef = useRef(false);
 
   return (
     <LiveKitRoom
-      className="flex h-full flex-col"
+      className={s.root}
       token={token}
       serverUrl={serverUrl}
       connect
@@ -38,28 +61,31 @@ export const VoiceRoom = ({ token, serverUrl, roomName, userChoices, onLeave }: 
         userChoices.videoEnabled ? { deviceId: userChoices.videoDeviceId || undefined } : false
       }
       data-lk-theme="default"
-      onConnected={() => playJoin()}
-      onDisconnected={() => {
-        playLeave();
+      onConnected={() => {
+        hasConnectedRef.current = true;
+      }}
+      onDisconnected={(reason) => {
+        if (!hasConnectedRef.current) {
+          if (reason !== undefined && FAILURE_REASONS.has(reason)) onConnectFailure(reason);
+
+          return;
+        }
+
         onLeave();
       }}
     >
-      <Group
-        px="md"
-        py="xs"
-        gap="xs"
-        style={{ borderBottom: '1px solid var(--mantine-color-dark-6)' }}
-      >
-        <Volume2 size={16} />
-        <Text size="sm" fw={600}>
-          {roomName}
-        </Text>
-      </Group>
-      <RoomStage />
-      <RoomControls onToggleChat={toggleChat} chatOpened={chatOpened} />
+      <div className={s.header}>
+        <Volume2 className={s.headerIcon} />
+        <span className={s.headerTitle}>{roomName}</span>
+      </div>
+
+      <Stage />
+
+      <div className={s.controls} data-lk-theme="default">
+        <ControlBar controls={{ chat: false, settings: false }} variation="minimal" />
+      </div>
+
       <RoomAudioRenderer />
-      <RoomSounds />
-      <ChatDrawer opened={chatOpened} onClose={closeChat} />
     </LiveKitRoom>
   );
 };

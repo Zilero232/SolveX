@@ -11,7 +11,7 @@
       "!**/dist",
       "!**/.next",
       "!**/out",
-      "!apps/desktop",
+      "!apps/tauri",
       "!apps/client/next-env.d.ts",
       "!**/node_modules"
     ]
@@ -73,6 +73,18 @@
       }
     }
   },
+  "overrides": [
+    {
+      "includes": ["apps/client/shared/ui/**"],
+      "linter": {
+        "rules": {
+          "suspicious": { "noDocumentCookie": "off" },
+          "correctness": { "useExhaustiveDependencies": "off" },
+          "style": { "noNonNullAssertion": "off" }
+        }
+      }
+    }
+  ],
   "assist": {
     "enabled": true,
     "actions": {
@@ -83,9 +95,7 @@
             "groups": [
               [":BUN:", ":NODE:"],
               ":BLANK_LINE:",
-              [":PACKAGE:", "!@solvex/**", "!@/**"],
-              ":BLANK_LINE:",
-              ["@solvex/**"],
+              [":PACKAGE:", "!@/**"],
               ":BLANK_LINE:",
               ["@/**"],
               ":BLANK_LINE:",

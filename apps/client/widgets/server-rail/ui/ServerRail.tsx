@@ -1,79 +1,79 @@
 'use client';
 
-import { ActionIcon, Avatar, Box, Stack, Tooltip } from '@mantine/core';
-import { Home, PanelLeftClose, PanelLeftOpen, Settings } from 'lucide-react';
+import { Home, LogOut, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
-type Props = {
-  channelsOpened: boolean;
-  onToggleChannels: () => void;
-  onOpenSettings: () => void;
-};
+import { supabase } from '@/shared/api';
+import { ROUTES } from '@/shared/constants';
+import { Avatar, AvatarFallback } from '@/shared/ui/avatar';
+import { Button } from '@/shared/ui/button';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/shared/ui/tooltip';
 
-export const ServerRail = ({ channelsOpened, onToggleChannels, onOpenSettings }: Props) => {
+import { serverRailStyles as s } from './ServerRail.styles';
+import type { ServerRailProps } from './ServerRail.types';
+
+export const ServerRail = ({ channelsOpened, onToggleChannels }: ServerRailProps) => {
   const router = useRouter();
 
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) toast.error(error.message);
+  };
+
   return (
-    <Stack
-      bg="dark.8"
-      align="center"
-      py="sm"
-      gap="sm"
-      w={72}
-      h="100%"
-      style={{ borderRight: '1px solid var(--mantine-color-dark-6)' }}
-    >
-      <Tooltip label={channelsOpened ? 'Hide channels' : 'Show channels'} position="right">
-        <ActionIcon
-          variant="subtle"
-          color="gray"
-          size="lg"
-          radius="md"
-          onClick={onToggleChannels}
-          aria-label="Toggle channels"
-        >
-          {channelsOpened ? <PanelLeftClose size={18} /> : <PanelLeftOpen size={18} />}
-        </ActionIcon>
+    <div className={s.root}>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onToggleChannels}
+            aria-label="Toggle channels"
+          >
+            {channelsOpened ? <PanelLeftClose /> : <PanelLeftOpen />}
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent side="right">
+          {channelsOpened ? 'Hide channels' : 'Show channels'}
+        </TooltipContent>
       </Tooltip>
 
-      <Tooltip label="Solvex" position="right">
-        <Avatar
-          radius="md"
-          size="md"
-          color="indigo"
-          style={{ cursor: 'pointer' }}
-          onClick={() => router.replace('/lobby')}
-        >
-          S
-        </Avatar>
-      </Tooltip>
-      <Tooltip label="Lobby" position="right">
-        <ActionIcon
-          variant="subtle"
-          color="gray"
-          size="lg"
-          radius="md"
-          onClick={() => router.replace('/lobby')}
-          aria-label="Lobby"
-        >
-          <Home size={18} />
-        </ActionIcon>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <button type="button" onClick={() => router.replace(ROUTES.lobby)} className={s.logo}>
+            <Avatar className={s.logoAvatar}>
+              <AvatarFallback className={s.logoFallback}>S</AvatarFallback>
+            </Avatar>
+          </button>
+        </TooltipTrigger>
+        <TooltipContent side="right">Solvex</TooltipContent>
       </Tooltip>
 
-      <Box style={{ flex: 1 }} />
-
-      <Tooltip label="Settings" position="right">
-        <ActionIcon
-          variant="subtle"
-          color="gray"
-          size="lg"
-          radius="md"
-          onClick={onOpenSettings}
-          aria-label="Settings"
-        >
-          <Settings size={18} />
-        </ActionIcon>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => router.replace(ROUTES.lobby)}
+            aria-label="Lobby"
+          >
+            <Home />
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent side="right">Lobby</TooltipContent>
       </Tooltip>
-    </Stack>
+
+      <div className={s.spacer} />
+
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button variant="ghost" size="icon" onClick={handleLogout} aria-label="Logout">
+            <LogOut />
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent side="right">Logout</TooltipContent>
+      </Tooltip>
+    </div>
   );
 };

@@ -17,6 +17,12 @@ const queryClient = new QueryClient({
   },
 });
 
+const BootSplash = () => (
+  <div className="flex h-full items-center justify-center text-muted-foreground text-sm">
+    Loading...
+  </div>
+);
+
 export const Providers = ({ children }: { children: ReactNode }) => {
   const isLoading = useAuthStore((s) => s.isLoading);
   useMount(() => {
@@ -32,9 +38,3 @@ export const Providers = ({ children }: { children: ReactNode }) => {
     </QueryClientProvider>
   );
 };
-
-const BootSplash = () => (
-  <div className="flex h-full items-center justify-center text-muted-foreground text-sm">
-    Loading...
-  </div>
-);

@@ -3,22 +3,22 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "workspaces": ["apps/*", "packages/*"],
+  "workspaces": ["apps/*"],
   "scripts": {
     "dev": "bun --filter @solvex/client dev",
     "build": "bun --filter @solvex/client build",
     "start": "bun --filter @solvex/client start",
-    "tauri": "bun --filter @solvex/desktop tauri",
-    "desktop": "bun --filter @solvex/desktop dev",
-    "desktop:build": "bun --filter @solvex/desktop build",
-    "server": "bun run --hot --env-file=apps/server/.env apps/server/src/index.ts",
-    "lint": "biome check ./apps ./packages",
-    "lint:fix": "biome check --write ./apps ./packages",
-    "format": "biome format --write ./apps ./packages",
-    "fsd": "bun --filter @solvex/client fsd"
+    "tauri": "bun --filter @solvex/tauri tauri",
+    "tauri:dev": "bun --filter @solvex/tauri dev",
+    "tauri:build": "bun --filter @solvex/tauri build",
+    "lint": "biome check ./apps",
+    "lint:fix": "biome check --write ./apps",
+    "format": "biome format --write ./apps"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.4.15",
-    "@feature-sliced/steiger-plugin": "^0.5.7"
+    "@biomejs/biome": "^2.4.15"
+  },
+  "dependencies": {
+    "babel-plugin-react-compiler": "^1.0.0"
   }
 }

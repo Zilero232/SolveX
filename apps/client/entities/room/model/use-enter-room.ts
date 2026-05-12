@@ -1,30 +1,29 @@
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 
-import { fetchLiveKitToken } from '@/shared/api';
+import { fetchLiveKitToken, getFreshAccessToken } from '@/shared/api';
+import { buildRoomHref } from '@/shared/constants';
+
+import { writeRoomTokenCache } from '../lib/cache';
 
 export type EnterRoomInput = {
   room: string;
-  accessToken: string;
-  asAdmin?: boolean;
 };
 
 export const useEnterRoom = () => {
   const router = useRouter();
 
   return useMutation({
-    mutationFn: async ({ room, accessToken, asAdmin }: EnterRoomInput) => {
+    mutationFn: async ({ room }: EnterRoomInput) => {
       const trimmed = room.trim();
+
       if (!trimmed) throw new Error('Room name required');
-      if (!accessToken) throw new Error('Not authenticated');
 
-      const { token, url } = await fetchLiveKitToken(
-        { room: trimmed, createIfMissing: !!asAdmin },
-        accessToken,
-      );
+      const accessToken = await getFreshAccessToken();
+      const { token, url } = await fetchLiveKitToken({ room: trimmed }, accessToken);
 
-      sessionStorage.setItem(`solvex.room.${trimmed}`, JSON.stringify({ token, url }));
-      router.push(`/room?name=${encodeURIComponent(trimmed)}`);
+      writeRoomTokenCache(trimmed, { token, url });
+      router.push(buildRoomHref(trimmed));
     },
   });
 };

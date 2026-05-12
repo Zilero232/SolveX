@@ -1,14 +1,11 @@
-import '@mantine/core/styles.css';
-import '@mantine/notifications/styles.css';
 import './globals.css';
 import '@livekit/components-styles';
 
-import { ColorSchemeScript, MantineProvider, mantineHtmlProps } from '@mantine/core';
-import { Notifications } from '@mantine/notifications';
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 
-import { theme } from '@/shared/ui/theme';
+import { Toaster } from '@/shared/ui/sonner';
+import { TooltipProvider } from '@/shared/ui/tooltip';
 
 import { Providers } from './providers';
 
@@ -18,15 +15,12 @@ export const metadata: Metadata = {
 };
 
 const RootLayout = ({ children }: { children: ReactNode }) => (
-  <html lang="en" {...mantineHtmlProps}>
-    <head>
-      <ColorSchemeScript defaultColorScheme="dark" />
-    </head>
+  <html lang="en" className="dark" suppressHydrationWarning>
     <body>
-      <MantineProvider theme={theme} defaultColorScheme="dark">
-        <Notifications position="top-right" />
-        <Providers>{children}</Providers>
-      </MantineProvider>
+      <Providers>
+        <TooltipProvider>{children}</TooltipProvider>
+        <Toaster />
+      </Providers>
     </body>
   </html>
 );
