@@ -7,22 +7,19 @@ import { buildRoomHref } from '@/shared/constants';
 import { writeRoomTokenCache } from '../lib/cache';
 
 export interface EnterRoomInput {
-  room: string;
+  password?: string;
+  roomId: string;
 }
 
 export const useEnterRoom = () => {
   const router = useRouter();
 
   return useMutation({
-    mutationFn: async ({ room }: EnterRoomInput) => {
-      const trimmed = room.trim();
+    mutationFn: async ({ roomId, password }: EnterRoomInput) => {
+      const { token, url } = await fetchLiveKitToken({ roomId, password });
 
-      if (!trimmed) throw new Error('Room name required');
-
-      const { token, url } = await fetchLiveKitToken({ room: trimmed });
-
-      writeRoomTokenCache(trimmed, { token, url });
-      router.push(buildRoomHref(trimmed));
+      writeRoomTokenCache(roomId, { token, url });
+      router.push(buildRoomHref(roomId));
     },
   });
 };

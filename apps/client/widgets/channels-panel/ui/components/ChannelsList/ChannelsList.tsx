@@ -22,7 +22,7 @@ const SectionLabel = ({
 );
 
 export const ChannelsList = ({
-  activeRoom,
+  activeRoomId,
   rooms,
   displayName,
   initial,
@@ -36,7 +36,7 @@ export const ChannelsList = ({
     <div className={s.list}>
       <SectionLabel>Channels</SectionLabel>
       <button
-        className={s.lobbyTrigger({ active: !activeRoom })}
+        className={s.lobbyTrigger({ active: !activeRoomId })}
         type="button"
         onClick={onSelectLobby}
       >
@@ -55,7 +55,7 @@ export const ChannelsList = ({
           key={room.id}
           displayName={displayName}
           initial={initial}
-          isActive={activeRoom === room.name}
+          isActive={activeRoomId === room.id}
           isAdmin={isAdmin}
           room={room}
           onClick={() => onSelectRoom(room)}

@@ -5,8 +5,8 @@ export interface RoomTokenCache {
   url: string;
 }
 
-export const readRoomTokenCache = (room: string): RoomTokenCache | null => {
-  const raw = sessionStorage.getItem(buildRoomStorageKey(room));
+export const readRoomTokenCache = (roomId: string): RoomTokenCache | null => {
+  const raw = sessionStorage.getItem(buildRoomStorageKey(roomId));
 
   if (!raw) return null;
 
@@ -17,10 +17,10 @@ export const readRoomTokenCache = (room: string): RoomTokenCache | null => {
   }
 };
 
-export const writeRoomTokenCache = (room: string, value: RoomTokenCache) => {
-  sessionStorage.setItem(buildRoomStorageKey(room), JSON.stringify(value));
+export const writeRoomTokenCache = (roomId: string, value: RoomTokenCache) => {
+  sessionStorage.setItem(buildRoomStorageKey(roomId), JSON.stringify(value));
 };
 
-export const clearRoomTokenCache = (room: string) => {
-  sessionStorage.removeItem(buildRoomStorageKey(room));
+export const clearRoomTokenCache = (roomId: string) => {
+  sessionStorage.removeItem(buildRoomStorageKey(roomId));
 };

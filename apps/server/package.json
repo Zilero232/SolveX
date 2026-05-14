@@ -26,12 +26,14 @@
     "@prisma/client": "^7.8.0",
     "@prisma/client-runtime-utils": "^7.8.0",
     "@supabase/supabase-js": "^2.105.4",
+    "bcryptjs": "^3.0.3",
     "hono": "^4.6.14",
     "livekit-server-sdk": "^2.15.2",
     "pg": "^8.20.0",
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^3.0.0",
     "@types/bun": "latest",
     "@types/pg": "^8.20.0",
     "dotenv": "^17.4.2",

@@ -1,7 +1,7 @@
 import type { Room } from '@/shared/api';
 
 export interface ChannelsListProps {
-  activeRoom: string | null;
+  activeRoomId: string | null;
   displayName: string;
   initial: string;
   isAdmin: boolean;

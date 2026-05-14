@@ -2,7 +2,6 @@
 
 import { useCurrentUser } from '@/entities/user';
 import { CreateRoomForm } from '@/features/create-room';
-import { JoinRoomForm } from '@/features/join-room';
 import { ScrollArea } from '@/shared/ui/scroll-area';
 
 import { LobbyCard } from './components/LobbyCard';
@@ -17,23 +16,18 @@ export const LobbyPage = () => {
         <div className={s.header}>
           <h2 className={s.title}>Lobby</h2>
           <p className={s.subtitle}>
-            Join an existing voice room or{' '}
-            {isAdmin ? 'create a new one' : 'ask admin to create one'}
+            Pick a voice room on the left
+            {isAdmin ? ' or create a new one below' : ' — ask admin to create one'}
           </p>
         </div>
-        <div className={s.grid}>
-          <LobbyCard description="Enter an existing room name" title="Join a room">
-            <JoinRoomForm />
-          </LobbyCard>
-          {true ? (
-            <LobbyCard
-              description="Admin only — creates room on first connect"
-              title="Create a room"
-            >
+
+        {isAdmin ? (
+          <div className={s.grid}>
+            <LobbyCard description="Creates a new voice room" title="Create a room">
               <CreateRoomForm />
             </LobbyCard>
-          ) : null}
-        </div>
+          </div>
+        ) : null}
       </div>
     </ScrollArea>
   );

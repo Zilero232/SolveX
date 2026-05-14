@@ -23,19 +23,19 @@ export const ChannelsPanel = () => {
   const rooms = useRooms();
   const deleteMutation = useDeleteRoom();
 
-  const activeRoom = params.get('name');
+  const activeRoomId = params.get('id');
   const displayName = user?.email?.split('@')[0] ?? 'you';
   const initial = displayName.charAt(0).toUpperCase();
 
   const handleSelectLobby = () => router.replace(ROUTES.lobby);
-  const handleSelectRoom = (room: Room) => router.push(buildRoomHref(room.name));
+  const handleSelectRoom = ({ id }: Room) => router.push(buildRoomHref(id));
 
   const handleDelete = (room: Room) => {
     deleteMutation.mutate(room.id, {
       onSuccess: () => {
         toast.success('Room deleted', { description: `"${room.name}"` });
 
-        if (activeRoom === room.name) router.replace(ROUTES.lobby);
+        if (activeRoomId === room.id) router.replace(ROUTES.lobby);
       },
       onError: (err) => toast.error(err.message),
     });
@@ -46,7 +46,7 @@ export const ChannelsPanel = () => {
       <ChannelsHeader isAdmin={isAdmin} />
 
       <ChannelsList
-        activeRoom={activeRoom}
+        activeRoomId={activeRoomId}
         displayName={displayName}
         initial={initial}
         isAdmin={isAdmin}

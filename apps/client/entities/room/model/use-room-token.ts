@@ -1,34 +1,28 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 
 import { fetchLiveKitToken } from '@/shared/api';
-import { QUERY_KEYS } from '@/shared/constants';
 
 import type { RoomTokenCache } from '../lib/cache';
 
 import { readRoomTokenCache, writeRoomTokenCache } from '../lib/cache';
 
-interface Params {
-  roomName: string | null;
+interface FetchInput {
+  password?: string;
+  roomId: string;
 }
 
-export const useRoomToken = ({ roomName }: Params) =>
-  useQuery({
-    queryKey: QUERY_KEYS.livekitToken(roomName),
-    enabled: !!roomName,
-    staleTime: Number.POSITIVE_INFINITY,
-    retry: false,
-    queryFn: async (): Promise<RoomTokenCache> => {
-      if (!roomName) throw new Error('Room name required');
+export const useRoomToken = () =>
+  useMutation<RoomTokenCache, Error, FetchInput>({
+    mutationFn: async ({ roomId, password }) => {
+      const cached = readRoomTokenCache(roomId);
 
-      const cached = readRoomTokenCache(roomName);
+      if (cached && !password) return cached;
 
-      if (cached) return cached;
+      const { token, url } = await fetchLiveKitToken({ roomId, password });
 
-      const result = await fetchLiveKitToken({ room: roomName });
+      const value: RoomTokenCache = { token, url };
 
-      const value: RoomTokenCache = { token: result.token, url: result.url };
-
-      writeRoomTokenCache(roomName, value);
+      writeRoomTokenCache(roomId, value);
 
       return value;
     },

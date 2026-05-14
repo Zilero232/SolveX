@@ -30,7 +30,7 @@ export const ChannelsRoomItem = ({
           <span className={s.triggerLabel}>
             <Volume2 className={s.icon({ active: isActive })} />
             {room.name}
-            {room.is_private ? <Lock className={s.privateIcon} /> : null}
+            {room.isPrivate ? <Lock className={s.privateIcon} /> : null}
           </span>
           {isActive ? <span className={s.joinedBadge}>joined</span> : null}
         </button>

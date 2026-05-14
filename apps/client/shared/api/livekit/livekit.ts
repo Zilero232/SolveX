@@ -1,4 +1,4 @@
-import type { TokenRequest, TokenResponse } from './livekit.schema';
+import type { TokenRequest, TokenResponse } from './schema';
 
 import { api } from '../http';
 

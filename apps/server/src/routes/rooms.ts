@@ -2,53 +2,41 @@ import { zValidator } from '@hono/zod-validator';
 import { Hono } from 'hono';
 
 import type { AuthVars } from '../middleware/auth';
-import type {Room} from '../schemas/rooms';
 
+import { hashPassword } from '../lib/password';
 import { prisma } from '../lib/prisma';
-import { createRoomInputSchema  } from '../schemas/rooms';
-
-const toDto = (row: {
-  id: string;
-  name: string;
-  slug: string;
-  isPrivate: boolean;
-  createdById: string;
-  createdAt: Date;
-}): Room => ({
-  id: row.id,
-  name: row.name,
-  slug: row.slug,
-  is_private: row.isPrivate,
-  created_by: row.createdById,
-  created_at: row.createdAt.toISOString(),
-});
+import { createRoomInputSchema } from '../schemas/rooms';
 
 export const roomsRouter = new Hono<{ Variables: AuthVars }>()
   .get('/', async (c) => {
-    const rows = await prisma.room.findMany({ orderBy: { createdAt: 'desc' } });
+    const rooms = await prisma.room.findMany({
+      orderBy: { createdAt: 'desc' },
+      omit: { passwordHash: true },
+    });
 
-    return c.json(rows.map(toDto));
+    return c.json(rooms);
   })
   .post('/', zValidator('json', createRoomInputSchema), async (c) => {
     const userId = c.get('userId');
-    const input = c.req.valid('json');
+    const { isPrivate, name, password } = c.req.valid('json');
 
-    const row = await prisma.room.create({
-      data: {
-        name: input.name,
-        slug: input.name.toLowerCase(),
-        isPrivate: input.isPrivate,
-        createdById: userId,
-      },
+    const passwordHash = isPrivate && password ? await hashPassword(password) : null;
+
+    const room = await prisma.room.create({
+      data: { name, isPrivate, passwordHash, createdById: userId },
+      omit: { passwordHash: true },
     });
 
-    return c.json(toDto(row), 201);
+    return c.json(room, 201);
   })
   .delete('/:id', async (c) => {
     const userId = c.get('userId');
-    const id = c.req.param('id');
+    const { id } = c.req.param();
 
-    const room = await prisma.room.findUnique({ where: { id }, select: { createdById: true } });
+    const room = await prisma.room.findUnique({
+      where: { id },
+      select: { createdById: true },
+    });
 
     if (!room) return c.json({ error: 'Room not found' }, 404);
     if (room.createdById !== userId) return c.json({ error: 'Forbidden' }, 403);

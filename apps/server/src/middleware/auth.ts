@@ -17,8 +17,10 @@ export const authMiddleware: MiddlewareHandler<{ Variables: AuthVars }> = async 
 
   if (error || !data.user) return c.json({ error: 'Unauthorized' }, 401);
 
-  c.set('userId', data.user.id);
-  c.set('email', data.user.email);
+  const { id, email  } = data.user
+
+  c.set('userId', id);
+  c.set('email', email);
 
   await next();
 };

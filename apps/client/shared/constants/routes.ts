@@ -5,5 +5,5 @@ export const ROUTES = {
   room: '/room',
 } as const;
 
-export const buildRoomHref = (roomName: string) =>
-  `${ROUTES.room}?name=${encodeURIComponent(roomName)}`;
+export const buildRoomHref = (roomId: string) =>
+  `${ROUTES.room}?id=${encodeURIComponent(roomId)}`;

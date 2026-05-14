@@ -4,4 +4,4 @@ export {
   createRoomInputSchema,
   type Room,
   roomSchema,
-} from './rooms.schema';
+} from './schema';

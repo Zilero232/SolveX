@@ -1,4 +1,4 @@
-import type { CreateRoomInput, Room } from './rooms.schema';
+import type { CreateRoomInput, Room } from './schema';
 
 import { api } from '../http';
 

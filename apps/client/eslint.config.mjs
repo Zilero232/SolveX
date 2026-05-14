@@ -31,16 +31,6 @@ export default eslint(
       'siberiacancode-tailwind/no-unknown-classes': 'off',
       'style/jsx-quotes': ['error', 'prefer-double'],
       'style/comma-dangle': ['error', 'always-multiline'],
-
-      'style/padding-line-between-statements': [
-        'error',
-        { blankLine: 'always', prev: '*', next: 'return' },
-        { blankLine: 'always', prev: ['const', 'let'], next: '*' },
-        { blankLine: 'any', prev: ['const', 'let'], next: ['const', 'let'] },
-        { blankLine: 'always', prev: ['const', 'let'], next: 'if' },
-        { blankLine: 'always', prev: 'if', next: '*' },
-        { blankLine: 'always', prev: 'block-like', next: '*' },
-      ],
     },
   },
   {

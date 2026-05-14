@@ -4,4 +4,4 @@ export {
   tokenRequestSchema,
   type TokenResponse,
   tokenResponseSchema,
-} from './livekit.schema';
+} from './schema';
