@@ -1,24 +1,30 @@
 {
   "name": "solvex",
-  "private": true,
   "version": "0.1.0",
-  "type": "module",
-  "workspaces": ["apps/*"],
+  "dependencies": {
+    "babel-plugin-react-compiler": "^1.0.0"
+  },
+  "private": true,
   "scripts": {
-    "dev": "bun --filter @solvex/client dev",
-    "build": "bun --filter @solvex/client build",
+    "dev": "bun --filter '@solvex/server' --filter '@solvex/client' --parallel dev",
+    "dev:client": "bun --filter @solvex/client dev",
+    "dev:server": "bun --filter @solvex/server dev",
+    "build": "bun --filter @solvex/server build && bun --filter @solvex/client build",
     "start": "bun --filter @solvex/client start",
+    "server:start": "bun --filter @solvex/server start",
+    "db:push": "bun --filter @solvex/server db:push",
+    "db:migrate": "bun --filter @solvex/server db:migrate",
+    "db:studio": "bun --filter @solvex/server db:studio",
+    "db:generate": "bun --filter @solvex/server db:generate",
     "tauri": "bun --filter @solvex/tauri tauri",
     "tauri:dev": "bun --filter @solvex/tauri dev",
     "tauri:build": "bun --filter @solvex/tauri build",
-    "lint": "biome check ./apps",
-    "lint:fix": "biome check --write ./apps",
-    "format": "biome format --write ./apps"
+    "lint": "eslint apps",
+    "lint:fix": "eslint apps --fix"
   },
+  "type": "module",
+  "workspaces": ["apps/*"],
   "devDependencies": {
-    "@biomejs/biome": "^2.4.15"
-  },
-  "dependencies": {
-    "babel-plugin-react-compiler": "^1.0.0"
+    "@siberiacancode/eslint": "^2.16.13"
   }
 }

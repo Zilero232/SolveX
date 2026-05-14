@@ -2,8 +2,9 @@
 
 import { Avatar, AvatarFallback } from '@/shared/ui/avatar';
 
-import { channelsFooterStyles as s } from './ChannelsFooter.styles';
 import type { ChannelsFooterProps } from './ChannelsFooter.types';
+
+import { channelsFooterStyles as s } from './ChannelsFooter.styles';
 
 export const ChannelsFooter = ({ displayName, initial }: ChannelsFooterProps) => (
   <div className={s.root}>

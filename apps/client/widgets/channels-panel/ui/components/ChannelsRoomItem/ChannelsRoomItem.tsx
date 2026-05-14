@@ -10,8 +10,9 @@ import {
   ContextMenuTrigger,
 } from '@/shared/ui/context-menu';
 
-import { channelsRoomItemStyles as s } from './ChannelsRoomItem.styles';
 import type { ChannelsRoomItemProps } from './ChannelsRoomItem.types';
+
+import { channelsRoomItemStyles as s } from './ChannelsRoomItem.styles';
 
 export const ChannelsRoomItem = ({
   room,
@@ -25,7 +26,7 @@ export const ChannelsRoomItem = ({
   <div>
     <ContextMenu>
       <ContextMenuTrigger asChild>
-        <button type="button" onClick={onClick} className={s.trigger({ active: isActive })}>
+        <button className={s.trigger({ active: isActive })} type="button" onClick={onClick}>
           <span className={s.triggerLabel}>
             <Volume2 className={s.icon({ active: isActive })} />
             {room.name}

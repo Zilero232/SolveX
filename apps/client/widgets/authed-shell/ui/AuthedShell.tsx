@@ -9,12 +9,15 @@ import { ROUTES } from '@/shared/constants';
 import { ChannelsPanel } from '@/widgets/channels-panel';
 import { ServerRail } from '@/widgets/server-rail';
 
-import { authedShellStyles as s } from './AuthedShell.styles';
 import type { AuthedShellProps } from './AuthedShell.types';
+
+import { authedShellStyles as s } from './AuthedShell.styles';
 
 export const AuthedShell = ({ children }: AuthedShellProps) => {
   const router = useRouter();
+
   const session = useAuthStore((state) => state.session);
+
   const [channelsOpened, toggleChannels] = useBoolean(true);
 
   useEffect(() => {

@@ -1,33 +1,33 @@
-import { supabase } from '../supabase';
 import type { CreateRoomInput, Room } from './rooms.schema';
 
-const TABLE = 'rooms';
+import { api } from '../http';
 
 export const listRooms = async (): Promise<Room[]> => {
-  const { data, error } = await supabase
-    .from(TABLE)
-    .select('*')
-    .order('created_at', { ascending: false });
+  const res = await api.api.rooms.$get();
 
-  if (error) throw new Error(error.message);
+  if (!res.ok) throw new Error(`Failed to list rooms: ${res.status}`);
 
-  return (data ?? []) as Room[];
+  return res.json();
 };
 
-export const createRoom = async (input: CreateRoomInput, userId: string): Promise<Room> => {
-  const { data, error } = await supabase
-    .from(TABLE)
-    .insert({ name: input.name, is_private: input.isPrivate, created_by: userId })
-    .select()
-    .single();
+export const createRoom = async (input: CreateRoomInput): Promise<Room> => {
+  const res = await api.api.rooms.$post({ json: input });
 
-  if (error) throw new Error(error.message);
+  if (!res.ok) {
+    const err = (await res.json().catch(() => null)) as { error?: string } | null;
 
-  return data as Room;
+    throw new Error(err?.error ?? `Failed to create room: ${res.status}`);
+  }
+
+  return res.json();
 };
 
 export const deleteRoom = async (id: string): Promise<void> => {
-  const { error } = await supabase.from(TABLE).delete().eq('id', id);
+  const res = await api.api.rooms[':id'].$delete({ param: { id } });
 
-  if (error) throw new Error(error.message);
+  if (!res.ok) {
+    const err = (await res.json().catch(() => null)) as { error?: string } | null;
+
+    throw new Error(err?.error ?? `Failed to delete room: ${res.status}`);
+  }
 };

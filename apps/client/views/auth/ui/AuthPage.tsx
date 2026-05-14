@@ -11,6 +11,7 @@ import { authPageStyles as s } from './AuthPage.styles';
 
 export const AuthPage = () => {
   const router = useRouter();
+
   const session = useAuthStore((s) => s.session);
 
   useEffect(() => {

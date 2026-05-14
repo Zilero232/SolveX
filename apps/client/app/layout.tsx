@@ -1,6 +1,3 @@
-import './globals.css';
-import '@livekit/components-styles';
-
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 
@@ -9,13 +6,17 @@ import { TooltipProvider } from '@/shared/ui/tooltip';
 
 import { Providers } from './providers';
 
+import '@livekit/components-styles';
+
+import './globals.css';
+
 export const metadata: Metadata = {
   title: 'Solvex',
   description: 'Voice rooms',
 };
 
 const RootLayout = ({ children }: { children: ReactNode }) => (
-  <html lang="en" className="dark" suppressHydrationWarning>
+  <html suppressHydrationWarning className="dark" lang="en">
     <body>
       <Providers>
         <TooltipProvider>{children}</TooltipProvider>

@@ -1,3 +1,3 @@
-export type ChannelsHeaderProps = {
+export interface ChannelsHeaderProps {
   isAdmin: boolean;
-};
+}

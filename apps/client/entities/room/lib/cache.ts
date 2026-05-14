@@ -1,9 +1,9 @@
 import { buildRoomStorageKey } from '@/shared/constants';
 
-export type RoomTokenCache = {
+export interface RoomTokenCache {
   token: string;
   url: string;
-};
+}
 
 export const readRoomTokenCache = (room: string): RoomTokenCache | null => {
   const raw = sessionStorage.getItem(buildRoomStorageKey(room));

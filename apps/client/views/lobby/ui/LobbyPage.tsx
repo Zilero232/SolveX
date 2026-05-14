@@ -22,13 +22,13 @@ export const LobbyPage = () => {
           </p>
         </div>
         <div className={s.grid}>
-          <LobbyCard title="Join a room" description="Enter an existing room name">
+          <LobbyCard description="Enter an existing room name" title="Join a room">
             <JoinRoomForm />
           </LobbyCard>
           {true ? (
             <LobbyCard
-              title="Create a room"
               description="Admin only — creates room on first connect"
+              title="Create a room"
             >
               <CreateRoomForm />
             </LobbyCard>

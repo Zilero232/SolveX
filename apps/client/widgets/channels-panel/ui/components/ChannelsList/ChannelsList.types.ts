@@ -1,13 +1,13 @@
 import type { Room } from '@/shared/api';
 
-export type ChannelsListProps = {
+export interface ChannelsListProps {
   activeRoom: string | null;
-  rooms: Room[];
   displayName: string;
   initial: string;
   isAdmin: boolean;
   isLoading: boolean;
+  rooms: Room[];
+  onDeleteRoom: (room: Room) => void;
   onSelectLobby: () => void;
   onSelectRoom: (room: Room) => void;
-  onDeleteRoom: (room: Room) => void;
-};
+}

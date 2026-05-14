@@ -1,6 +1,7 @@
 'use client';
 
 import type { LocalUserChoices } from '@livekit/components-core';
+
 import { PreJoin } from '@livekit/components-react';
 import { useQueryClient } from '@tanstack/react-query';
 import { Loader2 } from 'lucide-react';
@@ -18,11 +19,15 @@ import { roomPageStyles as s } from './RoomPage.styles';
 export const RoomPage = () => {
   const router = useRouter();
   const params = useSearchParams();
-  const name = params.get('name');
+
   const { session } = useCurrentUser();
-  const query = useRoomToken({ roomName: name });
-  const [choices, setChoices] = useState<LocalUserChoices | null>(null);
+
+  const name = params.get('name');
+
   const queryClient = useQueryClient();
+  const query = useRoomToken({ roomName: name });
+
+  const [choices, setChoices] = useState<LocalUserChoices | null>(null);
 
   useEffect(() => {
     if (!name) {
@@ -56,13 +61,13 @@ export const RoomPage = () => {
       <div className={s.preJoinRoot}>
         <div className={s.preJoinFrame} data-lk-theme="default">
           <PreJoin
+            persistUserChoices
             defaults={{
               username: session?.user.email ?? 'guest',
               audioEnabled: true,
               videoEnabled: false,
             }}
             onSubmit={setChoices}
-            persistUserChoices
           />
         </div>
       </div>
@@ -73,17 +78,17 @@ export const RoomPage = () => {
     <div className={s.voiceRoot}>
       <div className={s.voiceFrame}>
         <VoiceRoom
-          token={query.data.token}
-          serverUrl={query.data.url}
           roomName={name}
+          serverUrl={query.data.url}
+          token={query.data.token}
           userChoices={choices}
-          onLeave={() => router.replace(ROUTES.lobby)}
           onConnectFailure={(reason) => {
             toast.error('Failed to join room', { description: `LiveKit: ${reason}` });
             clearRoomTokenCache(name);
             queryClient.removeQueries({ queryKey: QUERY_KEYS.livekitToken(name) });
             router.replace(ROUTES.lobby);
           }}
+          onLeave={() => router.replace(ROUTES.lobby)}
         />
       </div>
     </div>

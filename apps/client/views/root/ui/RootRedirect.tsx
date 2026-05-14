@@ -8,6 +8,7 @@ import { ROUTES } from '@/shared/constants';
 
 export const RootRedirect = () => {
   const router = useRouter();
+
   const session = useAuthStore((s) => s.session);
   const isLoading = useAuthStore((s) => s.isLoading);
 

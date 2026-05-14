@@ -14,7 +14,7 @@ export const createRoomInputSchema = z.object({
     .trim()
     .min(1, 'Name required')
     .max(64, 'Max 64 chars')
-    .regex(/^[a-zA-Z0-9_-]+$/, 'Only letters, digits, _ and -'),
+    .regex(/^[\w-]+$/, 'Only letters, digits, _ and -'),
   isPrivate: z.boolean().default(false),
 });
 

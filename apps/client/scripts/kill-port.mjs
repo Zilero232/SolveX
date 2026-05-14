@@ -1,43 +1,41 @@
 #!/usr/bin/env node
 import { execSync } from 'node:child_process';
-import process from 'node:process';
+import { platform } from 'node:os';
 
-const PORT = process.argv[2] ?? '3000';
-const platform = process.platform;
+const port = Number(process.argv[2]);
 
-const findPids = () => {
-  if (platform === 'win32') {
-    const out = execSync(`netstat -ano | findstr :${PORT}`, { encoding: 'utf8' }).split('\n');
-    return [
-      ...new Set(
-        out
-          .filter((l) => l.includes('LISTENING'))
-          .map((l) => l.trim().split(/\s+/).pop())
-          .filter(Boolean),
-      ),
-    ];
-  }
-  const out = execSync(`lsof -ti tcp:${PORT}`, { encoding: 'utf8' });
-  return out.split('\n').filter(Boolean);
-};
+if (!port || Number.isNaN(port)) {
+  console.error('Usage: kill-port <port>');
+  process.exit(1);
+}
 
-const kill = (pid) => {
-  if (platform === 'win32') execSync(`taskkill /F /PID ${pid}`, { stdio: 'ignore' });
-  else execSync(`kill -9 ${pid}`, { stdio: 'ignore' });
-};
+const isWin = platform() === 'win32';
 
 try {
-  const pids = findPids();
-  if (pids.length === 0) {
-    console.log(`:${PORT} free`);
-  } else {
-    pids.forEach((pid) => {
+  if (isWin) {
+    const out = execSync(`netstat -ano | findstr :${port}`, { encoding: 'utf8' });
+    const pids = new Set();
+
+    for (const line of out.split(/\r?\n/)) {
+      const m = line.match(/\s+(\d+)\s*$/);
+
+      if (m && line.includes('LISTENING')) pids.add(m[1]);
+    }
+
+    for (const pid of pids) {
       try {
-        kill(pid);
-        console.log(`killed pid ${pid} on :${PORT}`);
+        execSync(`taskkill /F /PID ${pid}`, { stdio: 'ignore' });
+        console.log(`Killed PID ${pid} on :${port}`);
       } catch {}
-    });
+    }
+  } else {
+    const out = execSync(`lsof -ti tcp:${port}`, { encoding: 'utf8' }).trim();
+
+    if (out) {
+      execSync(`kill -9 ${out.split(/\s+/).join(' ')}`, { stdio: 'ignore' });
+      console.log(`Killed processes on :${port}`);
+    }
   }
 } catch {
-  console.log(`:${PORT} free`);
+  // Nothing listening on port — silent
 }

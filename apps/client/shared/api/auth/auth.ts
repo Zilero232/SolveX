@@ -19,6 +19,7 @@ export const getFreshAccessToken = async (): Promise<string> => {
   const refreshed = await supabase.auth.refreshSession();
 
   if (refreshed.error) throw refreshed.error;
+
   if (!refreshed.data.session) throw new Error('Session refresh failed');
 
   return refreshed.data.session.access_token;

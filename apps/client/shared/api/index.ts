@@ -1,9 +1,8 @@
 export { getFreshAccessToken } from './auth';
-export { apiClient } from './client';
 export { fetchLiveKitToken } from './livekit';
 export {
-  type CreateRoomInput,
   createRoom,
+  type CreateRoomInput,
   createRoomInputSchema,
   deleteRoom,
   listRooms,

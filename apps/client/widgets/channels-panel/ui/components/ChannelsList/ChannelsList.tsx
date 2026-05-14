@@ -4,9 +4,10 @@ import { Hash, Loader2 } from 'lucide-react';
 
 import { ScrollArea } from '@/shared/ui/scroll-area';
 
+import type { ChannelsListProps } from './ChannelsList.types';
+
 import { ChannelsRoomItem } from '../ChannelsRoomItem';
 import { channelsListStyles as s } from './ChannelsList.styles';
-import type { ChannelsListProps } from './ChannelsList.types';
 
 const SectionLabel = ({
   children,
@@ -35,9 +36,9 @@ export const ChannelsList = ({
     <div className={s.list}>
       <SectionLabel>Channels</SectionLabel>
       <button
+        className={s.lobbyTrigger({ active: !activeRoom })}
         type="button"
         onClick={onSelectLobby}
-        className={s.lobbyTrigger({ active: !activeRoom })}
       >
         <Hash className={s.lobbyIcon} />
         Lobby
@@ -52,11 +53,11 @@ export const ChannelsList = ({
       {rooms.map((room) => (
         <ChannelsRoomItem
           key={room.id}
-          room={room}
-          isActive={activeRoom === room.name}
           displayName={displayName}
           initial={initial}
+          isActive={activeRoom === room.name}
           isAdmin={isAdmin}
+          room={room}
           onClick={() => onSelectRoom(room)}
           onDelete={onDeleteRoom}
         />

@@ -1,13 +1,15 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { fetchLiveKitToken, getFreshAccessToken } from '@/shared/api';
+import { fetchLiveKitToken } from '@/shared/api';
 import { QUERY_KEYS } from '@/shared/constants';
 
-import { type RoomTokenCache, readRoomTokenCache, writeRoomTokenCache } from '../lib/cache';
+import type { RoomTokenCache } from '../lib/cache';
 
-type Params = {
+import { readRoomTokenCache, writeRoomTokenCache } from '../lib/cache';
+
+interface Params {
   roomName: string | null;
-};
+}
 
 export const useRoomToken = ({ roomName }: Params) =>
   useQuery({
@@ -22,8 +24,7 @@ export const useRoomToken = ({ roomName }: Params) =>
 
       if (cached) return cached;
 
-      const accessToken = await getFreshAccessToken();
-      const result = await fetchLiveKitToken({ room: roomName }, accessToken);
+      const result = await fetchLiveKitToken({ room: roomName });
 
       const value: RoomTokenCache = { token: result.token, url: result.url };
 

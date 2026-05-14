@@ -3,9 +3,10 @@
 import { useRouter, useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
 
-import { useDeleteRoom, useRooms, useRoomsRealtime } from '@/entities/room';
-import { useCurrentUser } from '@/entities/user';
 import type { Room } from '@/shared/api';
+
+import { useDeleteRoom, useRooms } from '@/entities/room';
+import { useCurrentUser } from '@/entities/user';
 import { buildRoomHref, ROUTES } from '@/shared/constants';
 
 import { channelsPanelStyles as s } from './ChannelsPanel.styles';
@@ -16,14 +17,18 @@ import { ChannelsList } from './components/ChannelsList';
 export const ChannelsPanel = () => {
   const router = useRouter();
   const params = useSearchParams();
-  const activeRoom = params.get('name');
+
   const { user, isAdmin } = useCurrentUser();
+
   const rooms = useRooms();
   const deleteMutation = useDeleteRoom();
+
+  const activeRoom = params.get('name');
   const displayName = user?.email?.split('@')[0] ?? 'you';
   const initial = displayName.charAt(0).toUpperCase();
 
-  useRoomsRealtime();
+  const handleSelectLobby = () => router.replace(ROUTES.lobby);
+  const handleSelectRoom = (room: Room) => router.push(buildRoomHref(room.name));
 
   const handleDelete = (room: Room) => {
     deleteMutation.mutate(room.id, {
@@ -39,17 +44,19 @@ export const ChannelsPanel = () => {
   return (
     <div className={s.root}>
       <ChannelsHeader isAdmin={isAdmin} />
+
       <ChannelsList
         activeRoom={activeRoom}
-        rooms={rooms.data ?? []}
         displayName={displayName}
         initial={initial}
         isAdmin={isAdmin}
         isLoading={rooms.isLoading}
-        onSelectLobby={() => router.replace(ROUTES.lobby)}
-        onSelectRoom={(room) => router.push(buildRoomHref(room.name))}
+        rooms={rooms.data ?? []}
         onDeleteRoom={handleDelete}
+        onSelectLobby={handleSelectLobby}
+        onSelectRoom={handleSelectRoom}
       />
+
       <ChannelsFooter displayName={displayName} initial={initial} />
     </div>
   );

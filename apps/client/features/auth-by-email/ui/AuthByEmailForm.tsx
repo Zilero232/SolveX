@@ -13,11 +13,12 @@ import { authSchema, useAuthByEmail } from '../model/use-auth-by-email';
 import { authByEmailFormStyles as s } from './AuthByEmailForm.styles';
 
 export const AuthByEmailForm = () => {
-  const [isSignup, toggleSignup] = useBoolean(false);
+  const mutation = useAuthByEmail();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
-  const mutation = useAuthByEmail();
+  const [isSignup, toggleSignup] = useBoolean(false);
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,6 +30,7 @@ export const AuthByEmailForm = () => {
 
       for (const issue of parsed.error.issues) {
         const key = issue.path[0] as 'email' | 'password';
+
         fieldErrors[key] = issue.message;
       }
 
@@ -53,13 +55,13 @@ export const AuthByEmailForm = () => {
   };
 
   return (
-    <form onSubmit={onSubmit} className={s.form}>
+    <form className={s.form} onSubmit={onSubmit}>
       <div className={s.field}>
         <Label htmlFor="auth-email">Email</Label>
         <Input
+          autoComplete="email"
           id="auth-email"
           type="email"
-          autoComplete="email"
           value={email}
           onChange={(e) => setEmail(e.currentTarget.value)}
         />
@@ -69,21 +71,21 @@ export const AuthByEmailForm = () => {
       <div className={s.field}>
         <Label htmlFor="auth-password">Password</Label>
         <Input
+          autoComplete="current-password"
           id="auth-password"
           type="password"
-          autoComplete="current-password"
           value={password}
           onChange={(e) => setPassword(e.currentTarget.value)}
         />
         {errors.password ? <p className={s.error}>{errors.password}</p> : null}
       </div>
 
-      <Button type="submit" disabled={mutation.isPending} className={s.submit}>
+      <Button className={s.submit} disabled={mutation.isPending} type="submit">
         {mutation.isPending ? <Loader2 className={s.submitSpinner} /> : null}
         {isSignup ? 'Sign up' : 'Sign in'}
       </Button>
 
-      <button type="button" onClick={() => toggleSignup()} className={s.toggle}>
+      <button className={s.toggle} type="button" onClick={() => toggleSignup()}>
         {isSignup ? 'Have account? Sign in' : 'No account? Sign up'}
       </button>
     </form>

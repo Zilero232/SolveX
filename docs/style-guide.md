@@ -3,9 +3,16 @@
 Проектный кодстайл и архитектурные правила. Применяется ко всему `apps/client/`.
 
 Инструменты-сторожа:
-- **Biome** (`bun lint`) — формат + базовые правила
-- **TypeScript** strict + `noUnusedLocals` + `noUnusedParameters`
-- Steiger удалён 2026-05-12. FSD-границы держим руками.
+
+- **ESLint** (`bun lint`) — формат + правила. Конфиг: `@siberiacancode/eslint` (antfu under the hood) + плагины React / Next / jsx-a11y / Tailwind / stylistic.
+- **TypeScript** strict + `noUnusedLocals` + `noUnusedParameters`.
+- FSD-границы держим руками + конвенции из этого документа.
+
+Workspaces:
+
+- `apps/client` — Next.js + Tauri UI.
+- `apps/server` — Hono backend (Prisma, LiveKit token, Supabase auth verify).
+- `apps/tauri` — Rust shell.
 
 ---
 
@@ -360,6 +367,66 @@ export type ChatMessage =
 - Файлы клиента — strict `'use client'` сверху.
 - Обработчики событий — `on<Event>` камелкейс: `onSubmit`, `onSelectRoom`.
 
+### 11.1 Порядок хуков (hooks order)
+
+ESLint **не** автофиксит — React требует stable call-order на каждый render, авто-перестановка опасна. Соблюдаем руками + ловим на review.
+
+Порядок групп сверху вниз:
+
+1. **Navigation** — `useRouter`, `usePathname`, `useSearchParams`, `useParams`.
+2. **Store / context** — `useCurrentUser`, `useAuthStore`, `useTheme`, любые `use<Name>Store` / `use<Name>Context`.
+3. **Data** — TanStack Query / Mutation хуки (`useRooms`, `useDeleteRoom`, `useRoomToken`).
+4. **State** — `useState`, `useReducer`.
+5. **Ref** — `useRef`.
+6. **Memo / callbacks** — `useMemo`, `useCallback`, `useDeferredValue`, `useTransition`, `useId`, `useOptimistic`.
+7. **Effects** — `useEffect`, `useLayoutEffect`, `useFormStatus`, `useActionState`.
+8. **Derived const** — обычные `const x = params.get(...)` / `const displayName = user?.email?.split('@')[0]`. Сюда же распакованные значения хуков.
+
+Между группами — **пустая строка**. Внутри группы — без пустой.
+
+### Пример
+
+✅ Каноничный порядок:
+
+```tsx
+export const ChannelsPanel = () => {
+  const router = useRouter();
+  const params = useSearchParams();
+
+  const { user, isAdmin } = useCurrentUser();
+
+  const rooms = useRooms();
+  const deleteMutation = useDeleteRoom();
+
+  const [open, setOpen] = useState(false);
+
+  const handleSelect = useCallback((id: string) => router.push(`/r/${id}`), [router]);
+
+  useEffect(() => {
+    // ...
+  }, [rooms.data]);
+
+  const activeRoom = params.get('name');
+  const displayName = user?.email?.split('@')[0] ?? 'you';
+
+  return /* ... */;
+};
+```
+
+### Правила перестановки
+
+- **Никогда** не переставляй хук с условным вызовом (`if (...) useFoo()` — это уже баг по `react-hooks/rules-of-hooks`, чинить, не сортировать).
+- **Никогда** не переставляй вокруг data dependency: `const name = params.get(...)` → `useRoomToken({ roomName: name })` — `name` обязан быть **до** `useRoomToken`. Если порядок групп этому противоречит, оставь как есть и пометь комментом `// data dep: name → query`.
+- В компонентах-обёртках с одним хуком — группа не нужна.
+
+### Кастомные хуки (`use<Foo>`)
+
+Кастомный хук = чёрный ящик. Его место — по семантике того что внутри:
+
+- Хук, делающий `useQuery/useMutation` (`useRooms`, `useEnterRoom`) → группа **Data**.
+- Хук-обёртка над контекстом/стором (`useCurrentUser`) → группа **Store**.
+- Хук-эффект (`useDocumentTitle`, `useScrollLock`) → группа **Effects**.
+
 ---
 
 ## 12. Сегмент `model/`
@@ -398,35 +465,42 @@ entities/room/lib/
 
 Network-вызовы. Каждая операция — отдельный файл или группа по ресурсу.
 
-```
+```text
 shared/api/
-  client.ts         ← общий axios instance
-  livekit.ts        ← fetchLiveKitToken (через apiClient)
-  supabase.ts       ← supabase client
-  auth.ts           ← getFreshAccessToken
+  http/             ← Hono RPC client (typed)
+    api.ts          ← hc<App>(baseUrl) + auth header
+    index.ts
+  auth/             ← getFreshAccessToken (Supabase session token)
+  supabase/         ← supabase browser client
+  rooms/            ← listRooms / createRoom / deleteRoom (RPC wrappers)
+  livekit/          ← fetchLiveKitToken
   index.ts          ← barrel
 ```
 
-**HTTP — `axios` через `apiClient` из `shared/api/client.ts`**:
+**HTTP — Hono RPC client из `shared/api/http`**. Базовый URL — `env.NEXT_PUBLIC_API_URL`. Авторизация автоматом через `getFreshAccessToken()` в `headers()` callback клиента.
+
+Шаблон wrapper'а:
 
 ```ts
-import { AxiosError } from 'axios';
-import { apiClient } from './client';
+import { api } from '../http';
+import type { CreateRoomInput, Room } from './rooms.schema';
 
-export const fetchSomething = async (body: ReqBody, accessToken: string) => {
-  try {
-    const { data } = await apiClient.post<ResData>('/api/something', body, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
-    return data;
-  } catch (e) {
-    if (e instanceof AxiosError) throw new Error(e.response?.data?.error ?? e.message);
-    throw e;
+export const createRoom = async (input: CreateRoomInput): Promise<Room> => {
+  const res = await api.api.rooms.$post({ json: input });
+
+  if (!res.ok) {
+    const err = (await res.json().catch(() => null)) as { error?: string } | null;
+
+    throw new Error(err?.error ?? `Failed to create room: ${res.status}`);
   }
+
+  return res.json();
 };
 ```
 
-`fetch` не используем для бизнес-вызовов — только если нужен streaming/SSE и axios неудобен.
+Запросы на сервер (`apps/server`) шарят типы через `import type { App } from '@solvex/server'` — RPC client сразу типизирует body/response. **Не** делаем `fetch` руками — теряется типизация.
+
+`apiClient` (axios) удалён. axios как dep тоже.
 
 ---
 
@@ -453,7 +527,7 @@ export const fetchSomething = async (body: ReqBody, accessToken: string) => {
 
 **После `if`-блока** (открыто `{...}`) — пустая строка перед следующим statement, если есть.
 
-**Биом этого не фиксит автоматом** (нет правила `padding-line-between-statements`). Соблюдаем руками + ловим на code-review.
+ESLint **автофиксит**: правило `style/padding-line-between-statements` подключено в `apps/client/eslint.config.mjs`. `bun lint:fix` расставит пустые строки сам.
 
 ### Примеры
 
@@ -557,20 +631,23 @@ return <VoiceRoom />;
 ## 17. Запреты
 
 - `console.log` оставлять в коммите (можно только локально для дебага).
-- `any` (`noExplicitAny: error`).
-- Non-null assertion `!` (warn).
+- `any` (`@typescript-eslint/no-explicit-any: error`).
+- Non-null assertion `!` без обоснования.
 - Deep imports мимо barrel.
 - Cross-import между слайсами одного слоя.
-- ESLint, Prettier, CSS-in-JS (emotion/styled-components). Только Tailwind + Biome.
+- Prettier, Biome, CSS-in-JS (emotion/styled-components). Только Tailwind + ESLint (siberiacancode).
+- `axios` / ручной `fetch` для бизнес-вызовов. Только Hono RPC client (`shared/api/http`).
 
 ---
 
 ## 18. Чек-лист перед коммитом
 
 ```bash
-bun lint:fix                                  # биом фиксит формат + сортировку
-cd apps/client && bunx tsc --noEmit           # типы
-bun --filter @solvex/client build             # сборка
+bun lint:fix                                  # ESLint фиксит формат, импорты, padding-line
+cd apps/client && bunx tsc --noEmit           # типы client
+cd apps/server && bunx tsc --noEmit           # типы server
+bun --filter @solvex/client build             # сборка client
+bun --filter @solvex/server build             # сборка server
 ```
 
-Все три должны быть green.
+Все green.

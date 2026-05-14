@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 
-export type LobbyCardProps = {
-  title: string;
-  description: string;
+export interface LobbyCardProps {
   children: ReactNode;
-};
+  description: string;
+  title: string;
+}

@@ -12,8 +12,9 @@ import { Label } from '@/shared/ui/label';
 import { joinRoomFormStyles as s } from './JoinRoomForm.styles';
 
 export const JoinRoomForm = () => {
-  const [room, setRoom] = useState('');
   const enter = useEnterRoom();
+
+  const [room, setRoom] = useState('');
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,18 +22,18 @@ export const JoinRoomForm = () => {
   };
 
   return (
-    <form onSubmit={onSubmit} className={s.form}>
+    <form className={s.form} onSubmit={onSubmit}>
       <div className={s.field}>
         <Label htmlFor="join-room-name">Room name</Label>
         <Input
+          autoComplete="off"
           id="join-room-name"
           placeholder="my-room"
-          autoComplete="off"
           value={room}
           onChange={(e) => setRoom(e.currentTarget.value)}
         />
       </div>
-      <Button type="submit" disabled={enter.isPending || !room.trim()}>
+      <Button disabled={enter.isPending || !room.trim()} type="submit">
         {enter.isPending ? <Loader2 className={s.spinner} /> : null}
         Join room
       </Button>

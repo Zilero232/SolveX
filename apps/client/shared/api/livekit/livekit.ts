@@ -1,25 +1,15 @@
-import { AxiosError } from 'axios';
-
-import { apiClient } from '../client';
 import type { TokenRequest, TokenResponse } from './livekit.schema';
 
-export const fetchLiveKitToken = async (
-  body: TokenRequest,
-  supabaseAccessToken: string,
-): Promise<TokenResponse> => {
-  try {
-    const { data } = await apiClient.post<TokenResponse>('/api/livekit-token', body, {
-      headers: { Authorization: `Bearer ${supabaseAccessToken}` },
-    });
+import { api } from '../http';
 
-    return data;
-  } catch (e) {
-    if (e instanceof AxiosError) {
-      const message = e.response?.data?.error ?? e.message;
+export const fetchLiveKitToken = async (body: TokenRequest): Promise<TokenResponse> => {
+  const res = await api.api.livekit.token.$post({ json: body });
 
-      throw new Error(message);
-    }
+  if (!res.ok) {
+    const err = (await res.json().catch(() => null)) as { error?: string } | null;
 
-    throw e;
+    throw new Error(err?.error ?? `LiveKit token failed: ${res.status}`);
   }
+
+  return res.json();
 };

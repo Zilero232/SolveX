@@ -1,17 +1,18 @@
 import type { Session, User } from '@supabase/supabase-js';
+
 import { create } from 'zustand';
 
 import { supabase } from '@/shared/api';
 
 export type UserRole = 'admin' | 'user';
 
-type AuthState = {
+interface AuthState {
+  isLoading: boolean;
+  role: UserRole;
   session: Session | null;
   user: User | null;
-  role: UserRole;
-  isLoading: boolean;
   setSession: (session: Session | null) => void;
-};
+}
 
 const readRole = (user: User | null | undefined): UserRole =>
   user?.app_metadata?.role === 'admin' ? 'admin' : 'user';
@@ -32,6 +33,7 @@ export const useAuthStore = create<AuthState>((set) => ({
 
 export const bootstrapAuth = async () => {
   const { data } = await supabase.auth.getSession();
+
   useAuthStore.getState().setSession(data.session);
 
   supabase.auth.onAuthStateChange((_event, session) => {

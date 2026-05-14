@@ -14,11 +14,13 @@ import { Label } from '@/shared/ui/label';
 import { createRoomFormStyles as s } from './CreateRoomForm.styles';
 
 export const CreateRoomForm = () => {
-  const [name, setName] = useState('');
-  const [isPrivate, togglePrivate] = useBoolean(false);
-  const [nameError, setNameError] = useState<string | null>(null);
   const createMutation = useCreateRoom();
   const enterMutation = useEnterRoom();
+
+  const [name, setName] = useState('');
+  const [nameError, setNameError] = useState<string | null>(null);
+  const [isPrivate, togglePrivate] = useBoolean(false);
+
   const isPending = createMutation.isPending || enterMutation.isPending;
 
   const onSubmit = (e: React.FormEvent) => {
@@ -49,13 +51,13 @@ export const CreateRoomForm = () => {
   };
 
   return (
-    <form onSubmit={onSubmit} className={s.form}>
+    <form className={s.form} onSubmit={onSubmit}>
       <div className={s.field}>
         <Label htmlFor="create-room-name">New room name</Label>
         <Input
+          autoComplete="off"
           id="create-room-name"
           placeholder="team-standup"
-          autoComplete="off"
           value={name}
           onChange={(e) => setName(e.currentTarget.value)}
         />
@@ -64,15 +66,15 @@ export const CreateRoomForm = () => {
 
       <label className={s.checkboxRow}>
         <input
-          type="checkbox"
-          className={s.checkbox}
           checked={isPrivate}
+          className={s.checkbox}
+          type="checkbox"
           onChange={(e) => togglePrivate(e.currentTarget.checked)}
         />
         <span>Private (only you can see)</span>
       </label>
 
-      <Button type="submit" variant="secondary" disabled={isPending || !name.trim()}>
+      <Button disabled={isPending || !name.trim()} type="submit" variant="secondary">
         {isPending ? <Loader2 className={s.spinner} /> : null}
         Create room
       </Button>

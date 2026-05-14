@@ -12,8 +12,9 @@ import { DisconnectReason, Track } from 'livekit-client';
 import { Volume2 } from 'lucide-react';
 import { useRef } from 'react';
 
-import { voiceRoomStyles as s } from './VoiceRoom.styles';
 import type { VoiceRoomProps } from './VoiceRoom.types';
+
+import { voiceRoomStyles as s } from './VoiceRoom.styles';
 
 const FAILURE_REASONS = new Set<DisconnectReason>([
   DisconnectReason.JOIN_FAILURE,
@@ -50,9 +51,6 @@ export const VoiceRoom = ({
 
   return (
     <LiveKitRoom
-      className={s.root}
-      token={token}
-      serverUrl={serverUrl}
       connect
       audio={
         userChoices.audioEnabled ? { deviceId: userChoices.audioDeviceId || undefined } : false
@@ -60,7 +58,10 @@ export const VoiceRoom = ({
       video={
         userChoices.videoEnabled ? { deviceId: userChoices.videoDeviceId || undefined } : false
       }
+      className={s.root}
       data-lk-theme="default"
+      serverUrl={serverUrl}
+      token={token}
       onConnected={() => {
         hasConnectedRef.current = true;
       }}

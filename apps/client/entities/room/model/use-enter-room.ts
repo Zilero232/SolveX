@@ -1,14 +1,14 @@
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 
-import { fetchLiveKitToken, getFreshAccessToken } from '@/shared/api';
+import { fetchLiveKitToken } from '@/shared/api';
 import { buildRoomHref } from '@/shared/constants';
 
 import { writeRoomTokenCache } from '../lib/cache';
 
-export type EnterRoomInput = {
+export interface EnterRoomInput {
   room: string;
-};
+}
 
 export const useEnterRoom = () => {
   const router = useRouter();
@@ -19,8 +19,7 @@ export const useEnterRoom = () => {
 
       if (!trimmed) throw new Error('Room name required');
 
-      const accessToken = await getFreshAccessToken();
-      const { token, url } = await fetchLiveKitToken({ room: trimmed }, accessToken);
+      const { token, url } = await fetchLiveKitToken({ room: trimmed });
 
       writeRoomTokenCache(trimmed, { token, url });
       router.push(buildRoomHref(trimmed));

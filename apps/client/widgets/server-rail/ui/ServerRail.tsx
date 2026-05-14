@@ -10,14 +10,16 @@ import { Avatar, AvatarFallback } from '@/shared/ui/avatar';
 import { Button } from '@/shared/ui/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/shared/ui/tooltip';
 
-import { serverRailStyles as s } from './ServerRail.styles';
 import type { ServerRailProps } from './ServerRail.types';
+
+import { serverRailStyles as s } from './ServerRail.styles';
 
 export const ServerRail = ({ channelsOpened, onToggleChannels }: ServerRailProps) => {
   const router = useRouter();
 
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
+
     if (error) toast.error(error.message);
   };
 
@@ -26,10 +28,10 @@ export const ServerRail = ({ channelsOpened, onToggleChannels }: ServerRailProps
       <Tooltip>
         <TooltipTrigger asChild>
           <Button
-            variant="ghost"
-            size="icon"
-            onClick={onToggleChannels}
             aria-label="Toggle channels"
+            size="icon"
+            variant="ghost"
+            onClick={onToggleChannels}
           >
             {channelsOpened ? <PanelLeftClose /> : <PanelLeftOpen />}
           </Button>
@@ -41,7 +43,7 @@ export const ServerRail = ({ channelsOpened, onToggleChannels }: ServerRailProps
 
       <Tooltip>
         <TooltipTrigger asChild>
-          <button type="button" onClick={() => router.replace(ROUTES.lobby)} className={s.logo}>
+          <button className={s.logo} type="button" onClick={() => router.replace(ROUTES.lobby)}>
             <Avatar className={s.logoAvatar}>
               <AvatarFallback className={s.logoFallback}>S</AvatarFallback>
             </Avatar>
@@ -53,10 +55,10 @@ export const ServerRail = ({ channelsOpened, onToggleChannels }: ServerRailProps
       <Tooltip>
         <TooltipTrigger asChild>
           <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => router.replace(ROUTES.lobby)}
             aria-label="Lobby"
+            size="icon"
+            variant="ghost"
+            onClick={() => router.replace(ROUTES.lobby)}
           >
             <Home />
           </Button>
@@ -68,7 +70,7 @@ export const ServerRail = ({ channelsOpened, onToggleChannels }: ServerRailProps
 
       <Tooltip>
         <TooltipTrigger asChild>
-          <Button variant="ghost" size="icon" onClick={handleLogout} aria-label="Logout">
+          <Button aria-label="Logout" size="icon" variant="ghost" onClick={handleLogout}>
             <LogOut />
           </Button>
         </TooltipTrigger>

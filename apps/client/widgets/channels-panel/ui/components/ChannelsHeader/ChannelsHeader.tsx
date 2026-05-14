@@ -1,7 +1,8 @@
 'use client';
 
-import { channelsHeaderStyles as s } from './ChannelsHeader.styles';
 import type { ChannelsHeaderProps } from './ChannelsHeader.types';
+
+import { channelsHeaderStyles as s } from './ChannelsHeader.styles';
 
 export const ChannelsHeader = ({ isAdmin }: ChannelsHeaderProps) => (
   <div className={s.root}>

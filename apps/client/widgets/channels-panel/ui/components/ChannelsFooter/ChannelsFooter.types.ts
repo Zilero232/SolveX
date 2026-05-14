@@ -1,4 +1,4 @@
-export type ChannelsFooterProps = {
+export interface ChannelsFooterProps {
   displayName: string;
   initial: string;
-};
+}

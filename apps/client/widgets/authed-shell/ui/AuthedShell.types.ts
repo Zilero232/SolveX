@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
 
-export type AuthedShellProps = {
+export interface AuthedShellProps {
   children: ReactNode;
-};
+}

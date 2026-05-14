@@ -18,7 +18,9 @@ export const useAuthByEmail = () =>
         mode === 'signin'
           ? await supabase.auth.signInWithPassword(values)
           : await supabase.auth.signUp(values);
+
       if (error) throw error;
+
       return data;
     },
   });

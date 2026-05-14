@@ -1,7 +1,7 @@
 export { fetchLiveKitToken } from './livekit';
 export {
   type TokenRequest,
-  type TokenResponse,
   tokenRequestSchema,
+  type TokenResponse,
   tokenResponseSchema,
 } from './livekit.schema';

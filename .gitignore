@@ -19,8 +19,14 @@ out
 *.tsbuildinfo
 
 # Tauri / Rust
-apps/desktop/target
-apps/desktop/gen
+apps/tauri/target
+apps/tauri/gen
+
+# Prisma generated client
+apps/server/generated
+
+# Server build
+apps/server/dist
 
 # Editor directories and files
 .vscode/*
