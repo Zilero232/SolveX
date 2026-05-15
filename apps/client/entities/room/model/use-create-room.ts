@@ -1,6 +1,6 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import type { CreateRoomInput, Room } from '@solvex/schemas/rooms';
 
-import type { CreateRoomInput, Room } from '@/shared/api';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { createRoom } from '@/shared/api';
 import { QUERY_KEYS } from '@/shared/constants';

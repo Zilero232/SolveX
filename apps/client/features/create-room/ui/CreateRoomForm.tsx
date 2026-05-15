@@ -1,73 +1,53 @@
 'use client';
 
-import { useBoolean } from '@siberiacancode/reactuse';
+import type { CreateRoomInput, CreateRoomRawInput } from '@solvex/schemas/rooms';
+
+import { zodResolver } from '@hookform/resolvers/zod';
+import { createRoomInputSchema } from '@solvex/schemas/rooms';
 import { Loader2 } from 'lucide-react';
-import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 
 import { useCreateRoom, useEnterRoom } from '@/entities/room';
-import { createRoomInputSchema } from '@/shared/api';
-import { Button } from '@/shared/ui/button';
-import { Input } from '@/shared/ui/input';
-import { Label } from '@/shared/ui/label';
+import { Button, Input, Label } from '@/shared/ui';
 
 import { createRoomFormStyles as s } from './CreateRoomForm.styles';
 
-interface FieldErrors {
-  name?: string;
-  password?: string;
-}
+const DEFAULT_VALUES: CreateRoomRawInput = { name: '', isPrivate: false };
 
 export const CreateRoomForm = () => {
   const createMutation = useCreateRoom();
   const enterMutation = useEnterRoom();
 
-  const [name, setName] = useState('');
-  const [password, setPassword] = useState('');
-  const [errors, setErrors] = useState<FieldErrors>({});
-  const [isPrivate, togglePrivate] = useBoolean(false);
+  const {
+    formState: { errors },
+    handleSubmit,
+    register,
+    reset,
+    watch,
+  } = useForm<CreateRoomRawInput, unknown, CreateRoomInput>({
+    resolver: zodResolver(createRoomInputSchema),
+    mode: 'onChange',
+    defaultValues: DEFAULT_VALUES,
+  });
 
+  const isPrivate = watch('isPrivate');
+  const name = watch('name');
   const isPending = createMutation.isPending || enterMutation.isPending;
 
-  const onSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const parsed = createRoomInputSchema.safeParse({
-      name,
-      isPrivate,
-      password: isPrivate ? password : undefined,
-    });
-
-    if (!parsed.success) {
-      const next: FieldErrors = {};
-
-      for (const issue of parsed.error.issues) {
-        const key = issue.path[0] as keyof FieldErrors;
-
-        next[key] = issue.message;
-      }
-
-      setErrors(next);
-
-      return;
-    }
-
-    setErrors({});
-
-    createMutation.mutate(parsed.data, {
+  const onSubmit = handleSubmit((values) => {
+    createMutation.mutate(values, {
       onSuccess: (room) => {
         toast.success('Room created', { description: `"${room.name}"` });
-        setName('');
-        setPassword('');
-        togglePrivate(false);
+        reset(DEFAULT_VALUES);
         enterMutation.mutate(
-          { roomId: room.id, password: isPrivate ? password : undefined },
+          { roomId: room.id, password: values.isPrivate ? values.password : undefined },
           { onError: (err: Error) => toast.error(err.message) },
         );
       },
       onError: (err: Error) => toast.error(err.message),
     });
-  };
+  });
 
   return (
     <form className={s.form} onSubmit={onSubmit}>
@@ -77,21 +57,10 @@ export const CreateRoomForm = () => {
           autoComplete="off"
           id="create-room-name"
           placeholder="team standup"
-          value={name}
-          onChange={(e) => setName(e.currentTarget.value)}
+          {...register('name')}
         />
-        {errors.name ? <p className={s.error}>{errors.name}</p> : null}
+        {errors.name ? <p className={s.error}>{errors.name.message}</p> : null}
       </div>
-
-      <label className={s.checkboxRow}>
-        <input
-          checked={isPrivate}
-          className={s.checkbox}
-          type="checkbox"
-          onChange={(e) => togglePrivate(e.currentTarget.checked)}
-        />
-        <span>Private (password required to join)</span>
-      </label>
 
       {isPrivate ? (
         <div className={s.field}>
@@ -101,14 +70,18 @@ export const CreateRoomForm = () => {
             id="create-room-password"
             placeholder="Min 4 chars"
             type="password"
-            value={password}
-            onChange={(e) => setPassword(e.currentTarget.value)}
+            {...register('password')}
           />
-          {errors.password ? <p className={s.error}>{errors.password}</p> : null}
+          {errors.password ? <p className={s.error}>{errors.password.message}</p> : null}
         </div>
       ) : null}
 
-      <Button disabled={isPending || !name.trim()} type="submit" variant="secondary">
+      <label className={s.checkboxRow}>
+        <input className={s.checkbox} type="checkbox" {...register('isPrivate')} />
+        <span>Private (password required to join)</span>
+      </label>
+
+      <Button disabled={isPending || !name?.trim()} type="submit" variant="secondary">
         {isPending ? <Loader2 className={s.spinner} /> : null}
         Create room
       </Button>

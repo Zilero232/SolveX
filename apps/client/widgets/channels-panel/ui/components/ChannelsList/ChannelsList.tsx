@@ -1,8 +1,8 @@
 'use client';
 
-import { Hash, Loader2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 
-import { ScrollArea } from '@/shared/ui/scroll-area';
+import { ScrollArea } from '@/shared/ui';
 
 import type { ChannelsListProps } from './ChannelsList.types';
 
@@ -28,22 +28,11 @@ export const ChannelsList = ({
   initial,
   isAdmin,
   isLoading,
-  onSelectLobby,
   onSelectRoom,
   onDeleteRoom,
 }: ChannelsListProps) => (
   <ScrollArea className={s.scroll}>
     <div className={s.list}>
-      <SectionLabel>Channels</SectionLabel>
-      <button
-        className={s.lobbyTrigger({ active: !activeRoomId })}
-        type="button"
-        onClick={onSelectLobby}
-      >
-        <Hash className={s.lobbyIcon} />
-        Lobby
-      </button>
-
       <SectionLabel offset>Voice rooms</SectionLabel>
 
       {isLoading ? <Loader2 className={s.loaderIcon} /> : null}

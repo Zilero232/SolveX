@@ -1,15 +1,16 @@
+import type { TokenResponse } from '@solvex/schemas/livekit';
+
 import { zValidator } from '@hono/zod-validator';
+import { tokenRequestSchema } from '@solvex/schemas/livekit';
 import { Hono } from 'hono';
 import { AccessToken } from 'livekit-server-sdk';
 
 import type { AuthVars } from '../middleware/auth';
-import type { TokenResponse } from '../schemas/livekit';
 
 import { env } from '../lib/env';
 import { verifyPassword } from '../lib/password';
 import { prisma } from '../lib/prisma';
 import { supabaseAdmin } from '../lib/supabase';
-import { tokenRequestSchema } from '../schemas/livekit';
 
 const readRole = (metadata: Record<string, unknown> | undefined): 'admin' | 'user' =>
   metadata?.role === 'admin' ? 'admin' : 'user';

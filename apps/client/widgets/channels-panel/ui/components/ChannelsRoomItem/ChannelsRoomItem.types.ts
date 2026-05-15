@@ -1,4 +1,4 @@
-import type { Room } from '@/shared/api';
+import type { Room } from '@solvex/schemas/rooms';
 
 export interface ChannelsRoomItemProps {
   displayName: string;

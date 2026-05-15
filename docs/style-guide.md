@@ -1,4 +1,4 @@
-# Solvex Style Guide
+# SolveX Style Guide
 
 Проектный кодстайл и архитектурные правила. Применяется ко всему `apps/client/`.
 

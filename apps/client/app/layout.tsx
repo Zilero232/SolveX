@@ -1,8 +1,7 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 
-import { Toaster } from '@/shared/ui/sonner';
-import { TooltipProvider } from '@/shared/ui/tooltip';
+import { Toaster, TooltipProvider } from '@/shared/ui';
 
 import { Providers } from './providers';
 
@@ -11,7 +10,7 @@ import '@livekit/components-styles';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Solvex',
+  title: 'SolveX',
   description: 'Voice rooms',
 };
 

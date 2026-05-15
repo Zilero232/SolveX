@@ -1,23 +1,25 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "solvex",
+  "productName": "SolveX",
   "version": "0.1.0",
-  "identifier": "com.react.solvex",
+  "identifier": "com.solvex.app",
   "build": {
-    "beforeDevCommand": "bun --filter @solvex/client dev",
+    "frontendDist": "../../dist",
     "devUrl": "http://localhost:3000",
-    "beforeBuildCommand": "bun --filter @solvex/client build",
-    "frontendDist": "../client/out"
+    "beforeDevCommand": "bun --filter @solvex/client dev",
+    "beforeBuildCommand": "bun --filter @solvex/client build"
   },
   "app": {
     "windows": [
       {
-        "title": "Solvex",
+        "label": "main",
+        "title": "SolveX",
         "width": 1280,
         "height": 800,
+        "center": true,
         "minWidth": 940,
         "minHeight": 560,
-        "resizable": true
+        "backgroundColor": "#09090b"
       }
     ],
     "security": {
@@ -33,6 +35,27 @@
       "icons/128x128@2x.png",
       "icons/icon.icns",
       "icons/icon.ico"
-    ]
+    ],
+    "category": "SocialNetworking",
+    "shortDescription": "SolveX desktop client",
+    "longDescription": "SolveX — voice and video chat desktop client built with Tauri 2.",
+    "copyright": "Copyright © 2026 SolveX",
+    "publisher": "SolveX",
+    "homepage": "https://solvex.app",
+    "license": "MIT",
+    "createUpdaterArtifacts": true
+  },
+  "plugins": {
+    "updater": {
+      "active": true,
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDY2NkJFMTc4NTU2Q0ZGOTIKUldTUy8yeFZlT0ZyWmtQSWhLaXV1UnBKN3Uvb3ZmeHBaQlRNWkdOYTl3UnhScG80MHZpOUNZc3EK",
+      "endpoints": [
+        "https://github.com/solvex/solvex/releases/latest/download/latest.json"
+      ],
+      "dialog": true,
+      "windows": {
+        "installMode": "passive"
+      }
+    }
   }
 }

@@ -1,9 +1,9 @@
 'use client';
 
+import type { Room } from '@solvex/schemas/rooms';
+
 import { useRouter, useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
-
-import type { Room } from '@/shared/api';
 
 import { useDeleteRoom, useRooms } from '@/entities/room';
 import { useCurrentUser } from '@/entities/user';
@@ -27,7 +27,6 @@ export const ChannelsPanel = () => {
   const displayName = user?.email?.split('@')[0] ?? 'you';
   const initial = displayName.charAt(0).toUpperCase();
 
-  const handleSelectLobby = () => router.replace(ROUTES.lobby);
   const handleSelectRoom = ({ id }: Room) => router.push(buildRoomHref(id));
 
   const handleDelete = (room: Room) => {
@@ -53,7 +52,6 @@ export const ChannelsPanel = () => {
         isLoading={rooms.isLoading}
         rooms={rooms.data ?? []}
         onDeleteRoom={handleDelete}
-        onSelectLobby={handleSelectLobby}
         onSelectRoom={handleSelectRoom}
       />
 

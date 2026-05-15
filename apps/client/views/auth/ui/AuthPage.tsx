@@ -22,7 +22,7 @@ export const AuthPage = () => {
     <div className={s.root}>
       <div className={s.card}>
         <div className={s.header}>
-          <h1 className={s.title}>Solvex</h1>
+          <h1 className={s.title}>SolveX</h1>
           <p className={s.subtitle}>Sign in to join voice rooms</p>
         </div>
         <AuthByEmailForm />

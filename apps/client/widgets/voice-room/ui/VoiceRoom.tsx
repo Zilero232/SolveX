@@ -2,18 +2,16 @@
 
 import {
   ControlBar,
-  GridLayout,
   LiveKitRoom,
-  ParticipantTile,
   RoomAudioRenderer,
-  useTracks,
 } from '@livekit/components-react';
-import { DisconnectReason, Track } from 'livekit-client';
+import { DisconnectReason } from 'livekit-client';
 import { Volume2 } from 'lucide-react';
 import { useRef } from 'react';
 
 import type { VoiceRoomProps } from './VoiceRoom.types';
 
+import { Stage } from './components/Stage';
 import { voiceRoomStyles as s } from './VoiceRoom.styles';
 
 const FAILURE_REASONS = new Set<DisconnectReason>([
@@ -22,22 +20,6 @@ const FAILURE_REASONS = new Set<DisconnectReason>([
   DisconnectReason.SERVER_SHUTDOWN,
   DisconnectReason.STATE_MISMATCH,
 ]);
-
-const Stage = () => {
-  const tracks = useTracks(
-    [
-      { source: Track.Source.Camera, withPlaceholder: true },
-      { source: Track.Source.ScreenShare, withPlaceholder: false },
-    ],
-    { onlySubscribed: false },
-  );
-
-  return (
-    <GridLayout className={s.stage} tracks={tracks}>
-      <ParticipantTile />
-    </GridLayout>
-  );
-};
 
 export const VoiceRoom = ({
   token,

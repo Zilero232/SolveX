@@ -2,21 +2,27 @@
 
 import type { LocalUserChoices } from '@livekit/components-core';
 
-import { PreJoin } from '@livekit/components-react';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
+import { z } from 'zod';
 
-import { clearRoomTokenCache, useRooms, useRoomToken } from '@/entities/room';
+import { useRooms, useRoomToken } from '@/entities/room';
 import { useCurrentUser } from '@/entities/user';
 import { ROUTES } from '@/shared/constants';
-import { Button } from '@/shared/ui/button';
-import { Input } from '@/shared/ui/input';
-import { Label } from '@/shared/ui/label';
+import { Button, Input, Label } from '@/shared/ui';
 import { VoiceRoom } from '@/widgets/voice-room';
 
 import { roomPageStyles as s } from './RoomPage.styles';
+
+const passwordSchema = z.object({
+  password: z.string().trim().min(1, 'Password required'),
+});
+
+type PasswordValues = z.infer<typeof passwordSchema>;
 
 export const RoomPage = () => {
   const router = useRouter();
@@ -27,13 +33,27 @@ export const RoomPage = () => {
   const rooms = useRooms();
   const tokenMutation = useRoomToken();
 
+  const {
+    formState: { errors },
+    handleSubmit,
+    register,
+    setError,
+  } = useForm<PasswordValues>({
+    resolver: zodResolver(passwordSchema),
+    defaultValues: { password: '' },
+  });
+
   const roomId = params.get('id');
   const room = rooms.data?.find((r) => r.id === roomId);
   const displayName = room?.name ?? roomId ?? '';
 
-  const [password, setPassword] = useState('');
-  const [passwordError, setPasswordError] = useState<string | null>(null);
-  const [choices, setChoices] = useState<LocalUserChoices | null>(null);
+  const choices: LocalUserChoices = {
+    username: session?.user.email ?? 'guest',
+    audioEnabled: true,
+    videoEnabled: false,
+    audioDeviceId: '',
+    videoDeviceId: '',
+  };
 
   useEffect(() => {
     if (!roomId) {
@@ -42,12 +62,18 @@ export const RoomPage = () => {
       return;
     }
 
-    if (!room || tokenMutation.data || tokenMutation.isPending) return;
-
-    if (room.isPrivate) return;
+    if (
+      !room ||
+      room.isPrivate ||
+      tokenMutation.data ||
+      tokenMutation.isPending ||
+      tokenMutation.isError
+    ) {
+      return;
+    }
 
     tokenMutation.mutate({ roomId });
-  }, [roomId, room, tokenMutation, router]);
+  }, [roomId, room?.id, room?.isPrivate, tokenMutation, router]);
 
   if (!roomId) return null;
 
@@ -74,23 +100,14 @@ export const RoomPage = () => {
   }
 
   if (room.isPrivate && !tokenMutation.data) {
-    const onSubmit = (e: React.FormEvent) => {
-      e.preventDefault();
-
-      const trimmed = password.trim();
-
-      if (!trimmed) {
-        setPasswordError('Password required');
-
-        return;
-      }
-
-      setPasswordError(null);
+    const onSubmit = handleSubmit(({ password }) => {
       tokenMutation.mutate(
-        { roomId, password: trimmed },
-        { onError: (err) => setPasswordError(err.message) },
+        { roomId, password },
+        {
+          onError: (err) => setError('password', { message: err.message }),
+        },
       );
-    };
+    });
 
     return (
       <div className={s.loaderRoot}>
@@ -102,10 +119,9 @@ export const RoomPage = () => {
               disabled={tokenMutation.isPending}
               id="room-password"
               type="password"
-              value={password}
-              onChange={(e) => setPassword(e.currentTarget.value)}
+              {...register('password')}
             />
-            {passwordError ? <p className={s.error}>{passwordError}</p> : null}
+            {errors.password ? <p className={s.error}>{errors.password.message}</p> : null}
           </div>
           <Button disabled={tokenMutation.isPending} type="submit">
             {tokenMutation.isPending ? <Loader2 className={s.spinner} /> : null}
@@ -127,24 +143,6 @@ export const RoomPage = () => {
     );
   }
 
-  if (!choices) {
-    return (
-      <div className={s.preJoinRoot}>
-        <div className={s.preJoinFrame} data-lk-theme="default">
-          <PreJoin
-            persistUserChoices
-            defaults={{
-              username: session?.user.email ?? 'guest',
-              audioEnabled: true,
-              videoEnabled: false,
-            }}
-            onSubmit={setChoices}
-          />
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className={s.voiceRoot}>
       <div className={s.voiceFrame}>
@@ -155,7 +153,6 @@ export const RoomPage = () => {
           userChoices={choices}
           onConnectFailure={(reason) => {
             toast.error('Failed to join room', { description: `LiveKit: ${reason}` });
-            clearRoomTokenCache(roomId);
             tokenMutation.reset();
             router.replace(ROUTES.lobby);
           }}

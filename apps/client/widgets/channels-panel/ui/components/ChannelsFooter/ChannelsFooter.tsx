@@ -1,6 +1,6 @@
 'use client';
 
-import { Avatar, AvatarFallback } from '@/shared/ui/avatar';
+import { Avatar, AvatarFallback } from '@/shared/ui';
 
 import type { ChannelsFooterProps } from './ChannelsFooter.types';
 

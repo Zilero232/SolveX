@@ -29,6 +29,7 @@ const Toaster = ({ ...props }: ToasterProps) => (
       } as React.CSSProperties
     }
     className="toaster group"
+    position="top-right"
     theme="dark"
     {...props}
   />

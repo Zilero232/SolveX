@@ -1,4 +1,4 @@
-import type { Room } from '@/shared/api';
+import type { Room } from '@solvex/schemas/rooms';
 
 export interface ChannelsListProps {
   activeRoomId: string | null;
@@ -8,6 +8,5 @@ export interface ChannelsListProps {
   isLoading: boolean;
   rooms: Room[];
   onDeleteRoom: (room: Room) => void;
-  onSelectLobby: () => void;
   onSelectRoom: (room: Room) => void;
 }

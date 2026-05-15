@@ -1,4 +1,4 @@
-import type { CreateRoomInput, Room } from './schema';
+import type { CreateRoomInput, Room } from '@solvex/schemas/rooms';
 
 import { api } from '../http';
 

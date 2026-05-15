@@ -2,13 +2,14 @@
 
 import { Lock, Trash2, Volume2 } from 'lucide-react';
 
-import { Avatar, AvatarFallback } from '@/shared/ui/avatar';
 import {
+  Avatar,
+  AvatarFallback,
   ContextMenu,
   ContextMenuContent,
   ContextMenuItem,
   ContextMenuTrigger,
-} from '@/shared/ui/context-menu';
+} from '@/shared/ui';
 
 import type { ChannelsRoomItemProps } from './ChannelsRoomItem.types';
 

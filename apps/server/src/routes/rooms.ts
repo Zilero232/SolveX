@@ -1,17 +1,17 @@
 import { zValidator } from '@hono/zod-validator';
+import { createRoomInputSchema } from '@solvex/schemas/rooms';
 import { Hono } from 'hono';
 
 import type { AuthVars } from '../middleware/auth';
 
 import { hashPassword } from '../lib/password';
 import { prisma } from '../lib/prisma';
-import { createRoomInputSchema } from '../schemas/rooms';
 
 export const roomsRouter = new Hono<{ Variables: AuthVars }>()
   .get('/', async (c) => {
     const rooms = await prisma.room.findMany({
       orderBy: { createdAt: 'desc' },
-      omit: { passwordHash: true },
+      select: { id: true, name: true, isPrivate: true },
     });
 
     return c.json(rooms);
@@ -24,7 +24,7 @@ export const roomsRouter = new Hono<{ Variables: AuthVars }>()
 
     const room = await prisma.room.create({
       data: { name, isPrivate, passwordHash, createdById: userId },
-      omit: { passwordHash: true },
+      select: { id: true, name: true, isPrivate: true },
     });
 
     return c.json(room, 201);

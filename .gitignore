@@ -43,3 +43,7 @@ apps/server/dist
 .env
 .env.local
 .env.*.local
+
+# Tauri updater minisign keys
+*.key
+*.key.pub

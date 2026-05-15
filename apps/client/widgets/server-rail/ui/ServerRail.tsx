@@ -6,9 +6,12 @@ import { toast } from 'sonner';
 
 import { supabase } from '@/shared/api';
 import { ROUTES } from '@/shared/constants';
-import { Avatar, AvatarFallback } from '@/shared/ui/avatar';
-import { Button } from '@/shared/ui/button';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/shared/ui/tooltip';
+import {
+  Button,
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/shared/ui';
 
 import type { ServerRailProps } from './ServerRail.types';
 
@@ -39,17 +42,6 @@ export const ServerRail = ({ channelsOpened, onToggleChannels }: ServerRailProps
         <TooltipContent side="right">
           {channelsOpened ? 'Hide channels' : 'Show channels'}
         </TooltipContent>
-      </Tooltip>
-
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <button className={s.logo} type="button" onClick={() => router.replace(ROUTES.lobby)}>
-            <Avatar className={s.logoAvatar}>
-              <AvatarFallback className={s.logoFallback}>S</AvatarFallback>
-            </Avatar>
-          </button>
-        </TooltipTrigger>
-        <TooltipContent side="right">Solvex</TooltipContent>
       </Tooltip>
 
       <Tooltip>
