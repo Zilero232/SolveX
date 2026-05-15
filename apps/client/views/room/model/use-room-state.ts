@@ -10,12 +10,28 @@ import { useCurrentUser } from '@/entities/user';
 import { ROUTES } from '@/shared/constants';
 
 export type RoomState =
-  | { kind: 'active'; choices: LocalUserChoices; displayName: string; token: string; url: string }
+  | {
+    kind: 'active';
+    choices: LocalUserChoices;
+    displayName: string;
+    onConnectFailure: () => void;
+    onLeave: () => void;
+    roomId: string;
+    token: string;
+    url: string;
+  }
   | { kind: 'connecting'; displayName: string }
   | { kind: 'loading' }
   | { kind: 'no-id' }
   | { kind: 'not-found' }
-  | { kind: 'password'; displayName: string; roomId: string };
+  | {
+    kind: 'password';
+    displayName: string;
+    error: string | undefined;
+    isSubmitting: boolean;
+    onSubmit: (password: string) => Promise<void>;
+    roomId: string;
+  };
 
 export const useRoomState = (): RoomState => {
   const router = useRouter();
@@ -29,6 +45,12 @@ export const useRoomState = (): RoomState => {
   const roomId = params.get('id');
   const room = rooms.data?.find((r) => r.id === roomId);
   const displayName = room?.name ?? roomId ?? '';
+
+  const { reset } = tokenMutation;
+
+  useEffect(() => {
+    reset();
+  }, [roomId, reset]);
 
   useEffect(() => {
     if (!roomId) {
@@ -57,7 +79,16 @@ export const useRoomState = (): RoomState => {
   if (!room) return { kind: 'not-found' };
 
   if (room.isPrivate && !tokenMutation.data) {
-    return { kind: 'password', displayName, roomId };
+    return {
+      kind: 'password',
+      displayName,
+      error: tokenMutation.isError ? tokenMutation.error.message : undefined,
+      isSubmitting: tokenMutation.isPending,
+      onSubmit: async (password) => {
+        await tokenMutation.mutateAsync({ roomId, password });
+      },
+      roomId,
+    };
   }
 
   if (tokenMutation.isPending || !tokenMutation.data) {
@@ -76,6 +107,12 @@ export const useRoomState = (): RoomState => {
     kind: 'active',
     choices,
     displayName,
+    onConnectFailure: () => {
+      tokenMutation.reset();
+      router.replace(ROUTES.lobby);
+    },
+    onLeave: () => router.replace(ROUTES.lobby),
+    roomId,
     token: tokenMutation.data.token,
     url: tokenMutation.data.url,
   };
