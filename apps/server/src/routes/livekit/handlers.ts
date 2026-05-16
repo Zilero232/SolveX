@@ -2,16 +2,16 @@ import type { RouteHandler } from '@hono/zod-openapi';
 import type { TokenResponse } from '@solvex/schemas/livekit';
 
 import { AccessToken } from 'livekit-server-sdk';
-
-import type { AuthVars } from '../../middleware/auth';
-import type { tokenRoute } from './routes';
-
 import { env } from '../../lib/env';
 import { verifyPassword } from '../../lib/password';
 import { prisma } from '../../lib/prisma';
 import { supabaseAdmin } from '../../lib/supabase';
+import type { AuthVars } from '../../middleware/auth';
+import type { tokenRoute } from './routes';
 
-interface Env { Variables: AuthVars }
+interface Env {
+  Variables: AuthVars;
+}
 
 const readRole = (metadata: Record<string, unknown> | undefined): 'admin' | 'user' =>
   metadata?.role === 'admin' ? 'admin' : 'user';

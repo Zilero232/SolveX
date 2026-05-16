@@ -1,0 +1,10 @@
+# Next.js
+.next/
+out/
+
+# Build output
+dist/
+dist-ssr/
+
+# Next.js generated types
+next-env.d.ts

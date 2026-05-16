@@ -13,10 +13,7 @@ import { tileWithVisualizerStyles as s } from './TileWithVisualizer.styles';
 export const TileWithVisualizer = () => {
   const trackRef = useMaybeTrackRefContext();
   const participant = trackRef?.participant;
-  const [micTrack] = useParticipantTracks(
-    [Track.Source.Microphone],
-    participant?.identity,
-  );
+  const [micTrack] = useParticipantTracks([Track.Source.Microphone], participant?.identity);
 
   return (
     <div className={s.root}>

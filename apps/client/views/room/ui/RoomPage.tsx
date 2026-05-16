@@ -6,12 +6,7 @@ import { match } from 'ts-pattern';
 import { VoiceRoom } from '@/widgets/voice-room';
 
 import { useRoomState } from '../model/use-room-state';
-import {
-  RoomConnecting,
-  RoomLoadingFallback,
-  RoomNotFound,
-  RoomPasswordForm,
-} from './components';
+import { RoomConnecting, RoomLoadingFallback, RoomNotFound, RoomPasswordForm } from './components';
 
 const styles = {
   root: 'h-full p-4',
@@ -33,9 +28,7 @@ export const RoomPage = () => {
         onSubmit={onSubmit}
       />
     ))
-    .with({ kind: 'connecting' }, ({ displayName }) => (
-      <RoomConnecting displayName={displayName} />
-    ))
+    .with({ kind: 'connecting' }, ({ displayName }) => <RoomConnecting displayName={displayName} />)
     .with(
       { kind: 'active' },
       ({ choices, displayName, onConnectFailure, onLeave, roomId, token, url }) => (

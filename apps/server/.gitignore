@@ -1,0 +1,5 @@
+# Prisma generated client
+generated/
+
+# Build output
+dist/

@@ -4,9 +4,11 @@
 
 Инструменты-сторожа:
 
-- **ESLint** (`bun lint`) — формат + правила. Конфиг: `@siberiacancode/eslint` (antfu under the hood) + плагины React / Next / jsx-a11y / Tailwind / stylistic.
+- **Biome** (`bun lint` / `bun lint:fix`) — форматтер + линтер + organize imports в одном бинаре. Конфиг: корневой `biome.json` (один на весь монорепо).
 - **TypeScript** strict + `noUnusedLocals` + `noUnusedParameters`.
 - FSD-границы держим руками + конвенции из этого документа.
+
+**Почему Biome, а не ESLint+Prettier:** один инструмент вместо связки, на порядок быстрее, конфиг — один `biome.json` без плагин-зоопарка. Цена: Biome не покрывает часть React-специфики, которую давал antfu-набор. Чего у Biome нет и что держим руками (см. ниже): порядок React-хуков, расширенный jsx-a11y, next-плагин, пустые строки между логическими шагами. `useExhaustiveDependencies` и `useSortedClasses` (Tailwind) Biome закрывает.
 
 Workspaces:
 
@@ -138,14 +140,14 @@ export type { VoiceRoomProps } from './ui/VoiceRoom.types';
 import type { LocalUserChoices } from '@livekit/components-core';
 import type { DisconnectReason } from 'livekit-client';
 
-export type VoiceRoomProps = {
+export interface VoiceRoomProps {
   token: string;
   serverUrl: string;
   roomName: string;
   userChoices: LocalUserChoices;
   onLeave: () => void;
   onConnectFailure: (reason: DisconnectReason) => void;
-};
+}
 ```
 
 ### Пример: `VoiceRoom.styles.ts`
@@ -288,19 +290,19 @@ widgets/channels-panel/ui/
 `@/` указывает на корень `apps/client/`. Используем для всего, кроме относительных в той же папке компонента.
 
 ```ts
-// ✓ внешние импорты
-import { Button } from '@/shared/ui/button';
-import { useCurrentUser } from '@/entities/user';
+// 1-я группа: внешние пакеты + node:-builtins + @solvex/*
+import { useForm } from 'react-hook-form';
+import type { Room } from '@solvex/schemas/rooms';
 
-// ✓ относительные внутри папки компонента
+// 2-я группа: @/ алиасы и относительные ./ ../ — вместе
+import { useCurrentUser } from '@/entities/user';
+import { Button } from '@/shared/ui/button';
+import { groupMessages } from '../lib/grouping';
 import { voiceRoomStyles as s } from './VoiceRoom.styles';
 import type { VoiceRoomProps } from './VoiceRoom.types';
-
-// ✓ относительные внутри слайса (между сегментами/папками)
-import { groupMessages } from '../lib/grouping';
 ```
 
-### Запреты (Biome `noRestrictedImports`)
+### Запреты (держим руками)
 
 Глубокий импорт в сегменты слайса с верхних слоёв запрещён — только через barrel `@/<layer>/<slice>`:
 
@@ -316,21 +318,19 @@ import { ChannelsPanel } from '@/widgets/channels-panel';
 - `@/shared/ui/<primitive>` — допустимо (shadcn-конвенция).
 - Внутри одного слайса — относительные ОК.
 
-### Порядок групп (Biome auto-organize)
+Biome **не** проверяет FSD-границы (`noRestrictedImports` в `biome.json` не включён — он требует ручного перечисления путей и плохо ложится на слайсовую структуру). Это правило ловим на review.
 
-```
-1. Bun/Node builtin
+### Порядок импортов (Biome organize)
+
+`assist.actions.source.organizeImports` в `biome.json` сортирует импорты автоматически при `bun lint:fix`. Biome группирует так:
+
+1. Внешние пакеты (включая `node:`-builtins и `@solvex/*` workspace).
 2. (пустая строка)
-3. Внешние пакеты
-4. (пустая строка)
-5. @solvex/* workspace
-6. (пустая строка)
-7. @/ алиасы
-8. (пустая строка)
-9. ./ относительные
-```
+3. Алиасы `@/` и относительные `./`, `../` — **в одной группе**, без пустой строки между ними.
 
-Сортировка внутри группы — Biome сам.
+Внутри каждой группы — алфавитная сортировка, `import type` идёт по тому же порядку что и обычные импорты (не отдельной группой).
+
+> Biome organize-imports проще, чем antfu/perfectionist: он **не** делает отдельных групп под builtin / workspace / alias с пустыми строками между ними. Не воюй с ним вручную — формат, который ставит `bun lint:fix`, и есть канон.
 
 ---
 
@@ -358,9 +358,10 @@ export type { VoiceRoomProps } from './VoiceRoom.types';
 
 ## 10. Типы
 
-- Используем `type`, не `interface` (Biome enforce: `useConsistentTypeDefinitions: { style: 'type' }`).
+- **Props — `interface`**, всё остальное — `type`. Biome не форсит выбор (`useConsistentTypeDefinitions` в конфиг не включён), поэтому это ручная конвенция: `interface FooProps {}` для пропсов компонента, `type` для unions / алиасов / DTO.
 - Props всегда в `<Name>.types.ts`, рядом с компонентом.
-- Импорт типов через `import type { ... }` (Biome: `useImportType`).
+- Импорт типов через `import type { ... }` — Biome enforce (`useImportType: error`), `bun lint:fix` чинит сам.
+- Экспорт типов через `export type { ... }` — Biome enforce (`useExportType: error`).
 - `unknown` вместо `any`. `any` запрещён (`noExplicitAny: error`).
 - Discriminated unions для вариантов:
 
@@ -368,6 +369,15 @@ export type { VoiceRoomProps } from './VoiceRoom.types';
 export type ChatMessage =
   | { type: 'text'; body: string }
   | { type: 'file'; url: string; name: string; size: number; mime: string };
+```
+
+```ts
+// Props — interface
+export interface VoiceRoomProps {
+  roomName: string;
+  token: string;
+  onLeave: () => void;
+}
 ```
 
 ---
@@ -382,7 +392,7 @@ export type ChatMessage =
 
 ### 11.1 Порядок хуков (hooks order)
 
-ESLint **не** автофиксит — React требует stable call-order на каждый render, авто-перестановка опасна. Соблюдаем руками + ловим на review.
+Biome **не** проверяет и не сортирует порядок хуков — React требует stable call-order на каждый render, авто-перестановка опасна. Соблюдаем руками + ловим на review.
 
 Порядок групп сверху вниз:
 
@@ -540,7 +550,7 @@ export const createRoom = async (input: CreateRoomInput): Promise<Room> => {
 
 **После `if`-блока** (открыто `{...}`) — пустая строка перед следующим statement, если есть.
 
-ESLint **автофиксит**: правило `style/padding-line-between-statements` подключено в `apps/client/eslint.config.mjs`. `bun lint:fix` расставит пустые строки сам.
+Biome **этого не автофиксит** — у него нет аналога ESLint-правила `padding-line-between-statements`. `bun lint:fix` пустые строки между statements не расставит. Соблюдаем руками + ловим на review. Biome-форматтер схлопывает только подряд идущие пустые строки (2+ → 1), но не добавляет недостающие.
 
 ### Примеры
 
@@ -833,12 +843,12 @@ Swagger UI на `/docs`, OpenAPI JSON на `/openapi.json`.
 
 ## 22. Запреты
 
-- `console.log` оставлять в коммите (можно только локально для дебага).
-- `any` (`@typescript-eslint/no-explicit-any: error`).
-- Non-null assertion `!` без обоснования.
+- `console.log` оставлять в коммите (можно только локально для дебага). Biome ловит как `noConsole: warn`, в `shared/ui/**` и `scripts/**` правило отключено.
+- `any` (Biome `noExplicitAny: error`). `unknown` вместо него.
+- Non-null assertion `!` без обоснования (Biome `noNonNullAssertion: warn`).
 - Deep imports мимо barrel.
 - Cross-import между слайсами одного слоя.
-- Prettier, Biome, CSS-in-JS (emotion/styled-components). Только Tailwind + ESLint (siberiacancode).
+- ESLint, Prettier, CSS-in-JS (emotion/styled-components). Только Biome (форматтер + линтер) + Tailwind.
 - `axios` / ручной `fetch` для бизнес-вызовов. Только Hono RPC client (`shared/api/http`).
 - Дублирование схем между client/server. Только `@solvex/schemas`.
 - Самописный form state (`useState` для name/email/password). Только `react-hook-form`.
@@ -850,7 +860,8 @@ Swagger UI на `/docs`, OpenAPI JSON на `/openapi.json`.
 ## 18. Чек-лист перед коммитом
 
 ```bash
-bun lint:fix                                  # ESLint фиксит формат, импорты, padding-line
+bun lint:fix                                  # Biome: формат + organize imports + safe lint fixes
+bun lint                                       # Biome: проверка, должно быть 0 errors/warnings
 cd apps/client && bunx tsc --noEmit           # типы client
 cd apps/server && bunx tsc --noEmit           # типы server
 bun --filter @solvex/client build             # сборка client
@@ -858,3 +869,5 @@ bun --filter @solvex/server build             # сборка server
 ```
 
 Все green.
+
+`bun lint:fix` (= `biome check --write`) чинит формат, импорты и безопасные lint-фиксы. Что он **не** чинит и надо глазами: пустые строки между логическими шагами (секция 16), порядок хуков (секция 11.1), FSD-границы импортов. Unsafe-фиксы (например сортировка Tailwind-классов в JSX) применяются только через `biome check --write --unsafe` — запускай точечно на конкретном файле и проверяй диф.

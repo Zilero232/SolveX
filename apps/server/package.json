@@ -16,8 +16,8 @@
     "db:format": "prisma format",
     "db:studio": "prisma studio",
     "db:generate": "prisma generate",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
     "postinstall": "prisma generate"
   },
   "dependencies": {

@@ -8,10 +8,8 @@ import { useAuthStore } from '@/entities/user';
 import { ROUTES } from '@/shared/constants';
 import { ChannelsPanel } from '@/widgets/channels-panel';
 import { ServerRail } from '@/widgets/server-rail';
-
-import type { AuthedShellProps } from './AuthedShell.types';
-
 import { authedShellStyles as s } from './AuthedShell.styles';
+import type { AuthedShellProps } from './AuthedShell.types';
 
 export const AuthedShell = ({ children }: AuthedShellProps) => {
   const router = useRouter();

@@ -1,12 +1,11 @@
 'use client';
 
-import type { z } from 'zod';
-
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useBoolean } from '@siberiacancode/reactuse';
 import { Loader2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
+import type { z } from 'zod';
 
 import { Button, Input, Label } from '@/shared/ui';
 

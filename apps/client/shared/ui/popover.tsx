@@ -1,14 +1,17 @@
 'use client';
 
-import type * as React from 'react';
-
 import { Popover as PopoverPrimitive } from 'radix-ui';
+import type * as React from 'react';
 
 import { cn } from '@/shared/lib/cn';
 
-const Popover = ({ ...props }: React.ComponentProps<typeof PopoverPrimitive.Root>) => <PopoverPrimitive.Root data-slot="popover" {...props} />;
+const Popover = ({ ...props }: React.ComponentProps<typeof PopoverPrimitive.Root>) => (
+  <PopoverPrimitive.Root data-slot="popover" {...props} />
+);
 
-const PopoverTrigger = ({ ...props }: React.ComponentProps<typeof PopoverPrimitive.Trigger>) => <PopoverPrimitive.Trigger data-slot="popover-trigger" {...props} />;
+const PopoverTrigger = ({ ...props }: React.ComponentProps<typeof PopoverPrimitive.Trigger>) => (
+  <PopoverPrimitive.Trigger data-slot="popover-trigger" {...props} />
+);
 
 const PopoverContent = ({
   className,
@@ -30,7 +33,9 @@ const PopoverContent = ({
   </PopoverPrimitive.Portal>
 );
 
-const PopoverAnchor = ({ ...props }: React.ComponentProps<typeof PopoverPrimitive.Anchor>) => <PopoverPrimitive.Anchor data-slot="popover-anchor" {...props} />;
+const PopoverAnchor = ({ ...props }: React.ComponentProps<typeof PopoverPrimitive.Anchor>) => (
+  <PopoverPrimitive.Anchor data-slot="popover-anchor" {...props} />
+);
 
 const PopoverHeader = ({ className, ...props }: React.ComponentProps<'div'>) => (
   <div
@@ -40,7 +45,9 @@ const PopoverHeader = ({ className, ...props }: React.ComponentProps<'div'>) => 
   />
 );
 
-const PopoverTitle = ({ className, ...props }: React.ComponentProps<'h2'>) => <div className={cn('font-medium', className)} data-slot="popover-title" {...props} />;
+const PopoverTitle = ({ className, ...props }: React.ComponentProps<'h2'>) => (
+  <div className={cn('font-medium', className)} data-slot="popover-title" {...props} />
+);
 
 const PopoverDescription = ({ className, ...props }: React.ComponentProps<'p'>) => (
   <p

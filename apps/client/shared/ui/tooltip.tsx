@@ -1,6 +1,5 @@
-import type * as React from 'react';
-
 import { Tooltip as TooltipPrimitive } from 'radix-ui';
+import type * as React from 'react';
 
 import { cn } from '@/shared/lib/cn';
 
@@ -15,9 +14,13 @@ const TooltipProvider = ({
   />
 );
 
-const Tooltip = ({ ...props }: React.ComponentProps<typeof TooltipPrimitive.Root>) => <TooltipPrimitive.Root data-slot="tooltip" {...props} />;
+const Tooltip = ({ ...props }: React.ComponentProps<typeof TooltipPrimitive.Root>) => (
+  <TooltipPrimitive.Root data-slot="tooltip" {...props} />
+);
 
-const TooltipTrigger = ({ ...props }: React.ComponentProps<typeof TooltipPrimitive.Trigger>) => <TooltipPrimitive.Trigger data-slot="tooltip-trigger" {...props} />;
+const TooltipTrigger = ({ ...props }: React.ComponentProps<typeof TooltipPrimitive.Trigger>) => (
+  <TooltipPrimitive.Trigger data-slot="tooltip-trigger" {...props} />
+);
 
 const TooltipContent = ({
   className,

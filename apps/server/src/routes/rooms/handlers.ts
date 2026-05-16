@@ -1,12 +1,12 @@
 import type { RouteHandler } from '@hono/zod-openapi';
-
+import { hashPassword } from '../../lib/password';
+import { prisma } from '../../lib/prisma';
 import type { AuthVars } from '../../middleware/auth';
 import type { createRoomRoute, deleteRoomRoute, listRoomsRoute } from './routes';
 
-import { hashPassword } from '../../lib/password';
-import { prisma } from '../../lib/prisma';
-
-interface Env { Variables: AuthVars }
+interface Env {
+  Variables: AuthVars;
+}
 
 export const listRoomsHandler: RouteHandler<typeof listRoomsRoute, Env> = async (c) => {
   const rooms = await prisma.room.findMany({

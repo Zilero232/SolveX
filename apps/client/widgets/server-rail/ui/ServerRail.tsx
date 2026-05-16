@@ -1,9 +1,8 @@
 'use client';
 
-import type { ServerRailProps } from './ServerRail.types';
-
 import { LobbyButton, LogoutButton, ToggleChannelsButton } from './components';
 import { serverRailStyles as s } from './ServerRail.styles';
+import type { ServerRailProps } from './ServerRail.types';
 
 export const ServerRail = ({ channelsOpened, onToggleChannels }: ServerRailProps) => (
   <div className={s.root}>

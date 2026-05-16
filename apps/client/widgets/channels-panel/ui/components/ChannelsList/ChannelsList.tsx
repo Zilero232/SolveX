@@ -34,7 +34,9 @@ export const ChannelsList = () => {
           <p className={s.emptyHint}>No rooms yet</p>
         ) : null}
 
-        {rooms.data?.map((room) => <ChannelsRoomItem key={room.id} room={room} />)}
+        {rooms.data?.map((room) => (
+          <ChannelsRoomItem key={room.id} room={room} />
+        ))}
       </div>
     </ScrollArea>
   );

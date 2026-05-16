@@ -12,7 +12,8 @@ export const useDeleteRoom = () => {
     mutationFn: deleteRoom,
     onSuccess: (_data, id) => {
       queryClient.setQueryData<Room[]>(QUERY_KEYS.rooms(), (prev) =>
-        prev ? prev.filter((r) => r.id !== id) : prev);
+        prev ? prev.filter((r) => r.id !== id) : prev,
+      );
     },
   });
 };

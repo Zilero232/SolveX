@@ -1,16 +1,13 @@
 'use client';
 
-import type { z } from 'zod';
-
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
+import type { z } from 'zod';
 
 import { Button, Input, Label } from '@/shared/ui';
-
-import type { RoomPasswordFormProps } from './RoomPasswordForm.types';
-
 import { passwordSchema, roomPasswordFormStyles as s } from './RoomPasswordForm.styles';
+import type { RoomPasswordFormProps } from './RoomPasswordForm.types';
 
 type PasswordValues = z.infer<typeof passwordSchema>;
 

@@ -1,8 +1,7 @@
 'use client';
 
-import type * as React from 'react';
-
 import { Avatar as AvatarPrimitive } from 'radix-ui';
+import type * as React from 'react';
 
 import { cn } from '@/shared/lib/cn';
 
@@ -24,7 +23,10 @@ const Avatar = ({
   />
 );
 
-const AvatarImage = ({ className, ...props }: React.ComponentProps<typeof AvatarPrimitive.Image>) => (
+const AvatarImage = ({
+  className,
+  ...props
+}: React.ComponentProps<typeof AvatarPrimitive.Image>) => (
   <AvatarPrimitive.Image
     className={cn('aspect-square size-full', className)}
     data-slot="avatar-image"

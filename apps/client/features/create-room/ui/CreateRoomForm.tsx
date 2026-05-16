@@ -1,8 +1,7 @@
 'use client';
 
-import type { CreateRoomInput, CreateRoomRawInput } from '@solvex/schemas/rooms';
-
 import { zodResolver } from '@hookform/resolvers/zod';
+import type { CreateRoomInput, CreateRoomRawInput } from '@solvex/schemas/rooms';
 import { createRoomInputSchema } from '@solvex/schemas/rooms';
 import { Loader2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';

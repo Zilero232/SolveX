@@ -15,10 +15,8 @@ import {
   ContextMenuItem,
   ContextMenuTrigger,
 } from '@/shared/ui';
-
-import type { ChannelsRoomItemProps } from './ChannelsRoomItem.types';
-
 import { channelsRoomItemStyles as s } from './ChannelsRoomItem.styles';
+import type { ChannelsRoomItemProps } from './ChannelsRoomItem.types';
 
 export const ChannelsRoomItem = ({ room }: ChannelsRoomItemProps) => {
   const router = useRouter();

@@ -11,22 +11,8 @@ lerna-debug.log*
 node_modules
 *.local
 
-# Build output
-dist
-dist-ssr
-.next
-out
+# TypeScript incremental build info (can appear in any package)
 *.tsbuildinfo
-
-# Tauri / Rust
-apps/tauri/target
-apps/tauri/gen
-
-# Prisma generated client
-apps/server/generated
-
-# Server build
-apps/server/dist
 
 # Editor directories and files
 .vscode/*
@@ -39,7 +25,7 @@ apps/server/dist
 *.sln
 *.sw?
 
-# Secrets
+# Secrets — kept at root so they are caught in every package
 .env
 .env.local
 .env.*.local
@@ -47,3 +33,8 @@ apps/server/dist
 # Tauri updater minisign keys
 *.key
 *.key.pub
+
+# Package-specific build output is ignored by each package's own .gitignore:
+#   apps/client/.gitignore   — .next/, out/, dist/
+#   apps/server/.gitignore   — generated/, dist/
+#   apps/tauri/.gitignore    — target/, gen/

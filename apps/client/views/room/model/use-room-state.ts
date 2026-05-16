@@ -11,27 +11,27 @@ import { ROUTES } from '@/shared/constants';
 
 export type RoomState =
   | {
-    kind: 'active';
-    choices: LocalUserChoices;
-    displayName: string;
-    onConnectFailure: () => void;
-    onLeave: () => void;
-    roomId: string;
-    token: string;
-    url: string;
-  }
+      kind: 'active';
+      choices: LocalUserChoices;
+      displayName: string;
+      onConnectFailure: () => void;
+      onLeave: () => void;
+      roomId: string;
+      token: string;
+      url: string;
+    }
   | { kind: 'connecting'; displayName: string }
   | { kind: 'loading' }
   | { kind: 'no-id' }
   | { kind: 'not-found' }
   | {
-    kind: 'password';
-    displayName: string;
-    error: string | undefined;
-    isSubmitting: boolean;
-    onSubmit: (password: string) => Promise<void>;
-    roomId: string;
-  };
+      kind: 'password';
+      displayName: string;
+      error: string | undefined;
+      isSubmitting: boolean;
+      onSubmit: (password: string) => Promise<void>;
+      roomId: string;
+    };
 
 export const useRoomState = (): RoomState => {
   const router = useRouter();
@@ -48,6 +48,7 @@ export const useRoomState = (): RoomState => {
 
   const { reset } = tokenMutation;
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: roomId is the trigger — reset() must run on every room switch, not just on mount
   useEffect(() => {
     reset();
   }, [roomId, reset]);
@@ -70,7 +71,7 @@ export const useRoomState = (): RoomState => {
     }
 
     tokenMutation.mutate({ roomId });
-  }, [roomId, room?.id, room?.isPrivate, tokenMutation, router]);
+  }, [roomId, room, tokenMutation, router]);
 
   if (!roomId) return { kind: 'no-id' };
 

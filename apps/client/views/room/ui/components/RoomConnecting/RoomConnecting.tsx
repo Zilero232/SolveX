@@ -1,8 +1,6 @@
 import { Loader2 } from 'lucide-react';
-
-import type { RoomConnectingProps } from './RoomConnecting.types';
-
 import { roomConnectingStyles as s } from './RoomConnecting.styles';
+import type { RoomConnectingProps } from './RoomConnecting.types';
 
 export const RoomConnecting = ({ displayName }: RoomConnectingProps) => (
   <div className={s.root}>

@@ -1,10 +1,9 @@
 'use client';
 
-import type { ReactNode } from 'react';
-
 import { useMount } from '@siberiacancode/reactuse';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import type { ReactNode } from 'react';
 
 import { bootstrapAuth, useAuthStore } from '@/entities/user';
 
@@ -19,7 +18,7 @@ const queryClient = new QueryClient({
 });
 
 const BootSplash = () => (
-  <div className="flex h-full items-center justify-center text-sm text-muted-foreground">
+  <div className="flex h-full items-center justify-center text-muted-foreground text-sm">
     Loading...
   </div>
 );

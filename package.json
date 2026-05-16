@@ -3,10 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "workspaces": ["apps/*", "packages/*"],
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
-    "lint": "eslint apps",
-    "lint:fix": "eslint apps --fix",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "format": "biome format --write .",
     "dev": "bun --filter '@solvex/server' --filter '@solvex/client' --parallel dev",
     "dev:client": "bun --filter @solvex/client dev",
     "dev:server": "bun --filter @solvex/server dev",
@@ -19,6 +23,6 @@
     "babel-plugin-react-compiler": "^1.0.0"
   },
   "devDependencies": {
-    "@siberiacancode/eslint": "^2.16.13"
+    "@biomejs/biome": "2.4.15"
   }
 }

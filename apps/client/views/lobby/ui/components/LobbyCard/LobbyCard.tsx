@@ -1,6 +1,5 @@
-import type { LobbyCardProps } from './LobbyCard.types';
-
 import { lobbyCardStyles as s } from './LobbyCard.styles';
+import type { LobbyCardProps } from './LobbyCard.types';
 
 export const LobbyCard = ({ title, description, children }: LobbyCardProps) => (
   <div className={s.root}>

@@ -1,18 +1,12 @@
 'use client';
 
-import {
-  ControlBar,
-  LiveKitRoom,
-  RoomAudioRenderer,
-} from '@livekit/components-react';
+import { ControlBar, LiveKitRoom, RoomAudioRenderer } from '@livekit/components-react';
 import { DisconnectReason } from 'livekit-client';
 import { Volume2 } from 'lucide-react';
 import { useRef } from 'react';
-
-import type { VoiceRoomProps } from './VoiceRoom.types';
-
 import { Stage } from './components';
 import { voiceRoomStyles as s } from './VoiceRoom.styles';
+import type { VoiceRoomProps } from './VoiceRoom.types';
 
 const FAILURE_REASONS = new Set<DisconnectReason>([
   DisconnectReason.JOIN_FAILURE,
