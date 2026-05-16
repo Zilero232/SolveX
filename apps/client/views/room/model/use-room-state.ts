@@ -40,12 +40,20 @@ export const useRoomState = (): RoomState => {
   const room = rooms.data?.find((r) => r.id === roomId);
   const displayName = room?.name ?? roomId ?? '';
 
+  // data dep: roomId, room → publicToken
   const publicToken = usePublicRoomToken(roomId, !!room && !room.isPrivate);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: redirect must fire only on roomId change; router is a stable ref
   useEffect(() => {
     if (!roomId) router.replace(ROUTES.lobby);
   }, [roomId]);
+
+  const publicTokenFailed = publicToken.isError;
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: redirect must fire only when the public-room token fetch fails; router is a stable ref
+  useEffect(() => {
+    if (publicTokenFailed) router.replace(ROUTES.lobby);
+  }, [publicTokenFailed]);
 
   if (!roomId) return { kind: 'no-id' };
 
@@ -75,13 +83,14 @@ export const useRoomState = (): RoomState => {
   return {
     kind: 'active',
     displayName,
-    onConnectFailure: () => {
-      tokenMutation.reset();
-      router.replace(ROUTES.lobby);
-    },
-    onLeave: () => router.replace(ROUTES.lobby),
     roomId,
     token: tokenData.token,
     url: tokenData.url,
+    onConnectFailure: () => {
+      if (room.isPrivate) tokenMutation.reset();
+
+      router.replace(ROUTES.lobby);
+    },
+    onLeave: () => router.replace(ROUTES.lobby),
   };
 };
