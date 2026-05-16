@@ -12,7 +12,7 @@ interface RoomToken {
   url: string;
 }
 
-export const useRoomToken = () =>
+export const useRoomTokenMutation = () =>
   useMutation<RoomToken, Error, FetchInput>({
     mutationFn: async ({ roomId, password }) => {
       const { token, url } = await fetchLiveKitToken({ roomId, password });
