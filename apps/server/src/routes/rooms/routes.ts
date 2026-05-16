@@ -21,6 +21,25 @@ export const listRoomsRoute = createRoute({
   },
 });
 
+export const getRoomRoute = createRoute({
+  method: 'get',
+  path: '/{id}',
+  tags: ['rooms'],
+  summary: 'Get room',
+  security: [{ bearerAuth: [] }],
+  request: { params: idParamSchema },
+  responses: {
+    200: {
+      description: 'Room',
+      content: { 'application/json': { schema: roomSchema } },
+    },
+    404: {
+      description: 'Not found',
+      content: { 'application/json': { schema: errorSchema } },
+    },
+  },
+});
+
 export const createRoomRoute = createRoute({
   method: 'post',
   path: '/',

@@ -2,7 +2,7 @@ import type { RouteHandler } from '@hono/zod-openapi';
 import { hashPassword } from '../../lib/password';
 import { prisma } from '../../lib/prisma';
 import type { AuthVars } from '../../middleware/auth';
-import type { createRoomRoute, deleteRoomRoute, listRoomsRoute } from './routes';
+import type { createRoomRoute, deleteRoomRoute, getRoomRoute, listRoomsRoute } from './routes';
 
 interface Env {
   Variables: AuthVars;
@@ -15,6 +15,19 @@ export const listRoomsHandler: RouteHandler<typeof listRoomsRoute, Env> = async 
   });
 
   return c.json(rooms, 200);
+};
+
+export const getRoomHandler: RouteHandler<typeof getRoomRoute, Env> = async (c) => {
+  const { id } = c.req.valid('param');
+
+  const room = await prisma.room.findUnique({
+    where: { id },
+    select: { id: true, name: true, isPrivate: true },
+  });
+
+  if (!room) return c.json({ error: 'Room not found' }, 404);
+
+  return c.json(room, 200);
 };
 
 export const createRoomHandler: RouteHandler<typeof createRoomRoute, Env> = async (c) => {
