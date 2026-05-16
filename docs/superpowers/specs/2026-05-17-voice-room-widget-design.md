@@ -116,3 +116,83 @@ bun --filter @solvex/client build
 - Реальный выбор устройств (device picker) — `choices` намеренно хардкодятся.
 - Видео-flow — остаётся `false`.
 - Рефактор password-формы.
+
+---
+
+## Ревизия 2 (2026-05-17) — расформировать хук-слой, отдельный запрос комнаты
+
+После реализации разделов 1, 3, 4 (закоммичено: split token-хука + самодостаточный
+`VoiceRoom` + чистый `RoomPage`) принято решение продолжить рефактор:
+
+1. **`use-room-state` удаляется как слой.** Хук-обёртка признана лишней. Вся логика
+   (хуки данных + эффекты-редиректы + сборка `RoomState` union) переезжает прямо
+   в `RoomPage`. Файл `views/room/model/use-room-state.ts` удаляется.
+2. **Получение комнаты — отдельным запросом.** `useRooms()` + `.find()` заменяется
+   на `useRoomById(roomId)` — `useQuery` за одной комнатой. Требует нового
+   серверного эндпоинта `GET /rooms/:id`.
+
+### R2.A — серверный `GET /rooms/:id`
+
+- `apps/server/src/routes/rooms/routes.ts` — `getRoomRoute`: `method: 'get'`,
+  `path: '/{id}'`, `request: { params: idParamSchema }` (idParamSchema уже есть),
+  responses `200 → roomSchema`, `404 → errorSchema`.
+- `apps/server/src/routes/rooms/handlers.ts` — `getRoomHandler`:
+  `prisma.room.findUnique({ where: { id }, select: { id: true, name: true, isPrivate: true } })`;
+  нет → `c.json({ error: 'Room not found' }, 404)`.
+- `apps/server/src/routes/rooms/index.ts` — `.openapi(getRoomRoute, getRoomHandler)`.
+- Схема не меняется — `roomSchema` уже описывает `id/name/isPrivate`. Миграции БД нет.
+
+### R2.B — клиентский RPC + хук
+
+- `apps/client/shared/api/rooms/rooms.ts` — `getRoom(id: string): Promise<Room>`
+  через `api.api.rooms[':id'].$get({ param: { id } })`; `!res.ok` → `throw` с
+  сообщением из тела (по образцу `deleteRoom`).
+- `apps/client/shared/api/rooms/index.ts` — добавить `getRoom` в экспорт.
+- `apps/client/shared/constants/query-keys.ts` — новый ключ
+  `room: (id: string | null) => ['room', id] as const`.
+- `apps/client/entities/room/model/use-room-by-id.ts` (новый):
+
+```ts
+import { useQuery } from '@tanstack/react-query';
+
+import { getRoom } from '@/shared/api';
+import { QUERY_KEYS } from '@/shared/constants';
+
+export const useRoomById = (roomId: string | null) =>
+  useQuery({
+    queryKey: QUERY_KEYS.room(roomId),
+    queryFn: () => getRoom(roomId as string),
+    enabled: !!roomId,
+    retry: false,
+  });
+```
+
+- `entities/room/index.ts` — экспорт `useRoomById`.
+
+### R2.C — расформировать хук, всё инлайн в `RoomPage`
+
+- Удалить `apps/client/views/room/model/use-room-state.ts`.
+- Тип `RoomState` переезжает в `apps/client/views/room/ui/RoomPage.types.ts`
+  (FSD §2 — union-тип рядом с компонентом).
+- `RoomPage.tsx` инлайн содержит: `useRouter`, `useSearchParams`, `useRoomById`,
+  `useRoomTokenMutation`, `usePublicRoomToken`; `roomId` из params; 2 `useEffect`
+  редиректа (нет `roomId` → lobby; `publicToken.isError` → lobby); сборку
+  `RoomState` union перед `return match(state)`.
+- `publicToken` enabled-условие: `usePublicRoomToken(roomId, !!room && !room.isPrivate)`,
+  где `room` — `roomById.data`.
+- Ветки маппинга: `roomById.isLoading` → `loading`; `roomById.isError` → `not-found`;
+  приватная без токена → `password`; нет токена → `connecting`; есть → `active`.
+
+### R2.D — style-guide §15
+
+§15 сейчас абсолютно запрещает «condition hell в view» и требует derived state
+в хуке. Поскольку Ревизия 2 осознанно убирает хук и собирает state инлайн в `RoomPage`,
+§15 переформулируется: сборка discriminated-union state допустима инлайн в view,
+если она компактна, не переиспользуется и view остаётся читаемым; хук выделяют
+когда логика переиспользуется или объёмна. Абсолютный запрет снимается, даётся критерий.
+
+### Вне scope ревизии 2
+
+- `useRooms` (list) остаётся — используется `channels-panel` и др.
+- Авторизация/доступ к приватной комнате на `GET /rooms/:id` — эндпоинт отдаёт
+  метаданные (`id/name/isPrivate`) как и `listRooms`, без `passwordHash`. Не меняем модель доступа.
