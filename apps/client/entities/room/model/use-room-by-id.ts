@@ -8,5 +8,5 @@ export const useRoomById = (roomId: string | null) =>
     queryKey: QUERY_KEYS.room(roomId),
     queryFn: () => getRoom(roomId as string),
     enabled: !!roomId,
-    retry: false,
+    retry: false, // 404 = room not found; do not retry
   });
