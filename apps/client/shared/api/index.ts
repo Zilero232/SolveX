@@ -1,4 +1,4 @@
 export { getFreshAccessToken } from './auth';
 export { fetchLiveKitToken } from './livekit';
-export { createRoom, deleteRoom, listRooms } from './rooms';
+export { createRoom, deleteRoom, getRoom, listRooms } from './rooms';
 export { supabase } from './supabase';

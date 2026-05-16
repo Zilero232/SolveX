@@ -22,6 +22,18 @@ export const createRoom = async (input: CreateRoomInput): Promise<Room> => {
   return res.json();
 };
 
+export const getRoom = async (id: string): Promise<Room> => {
+  const res = await api.api.rooms[':id'].$get({ param: { id } });
+
+  if (!res.ok) {
+    const err = (await res.json().catch(() => null)) as { error?: string } | null;
+
+    throw new Error(err?.error ?? `Failed to get room: ${res.status}`);
+  }
+
+  return res.json();
+};
+
 export const deleteRoom = async (id: string): Promise<void> => {
   const res = await api.api.rooms[':id'].$delete({ param: { id } });
 
