@@ -21,19 +21,12 @@ export const RoomPasswordForm = ({
     formState: { errors },
     handleSubmit,
     register,
-    setError,
   } = useForm<PasswordValues>({
     resolver: zodResolver(passwordSchema),
     defaultValues: { password: '' },
   });
 
-  const submit = handleSubmit(async ({ password }) => {
-    try {
-      await onSubmit(password);
-    } catch (err) {
-      setError('password', { message: err instanceof Error ? err.message : 'Failed' });
-    }
-  });
+  const submit = handleSubmit(({ password }) => onSubmit(password));
 
   const fieldError = errors.password?.message ?? error;
 

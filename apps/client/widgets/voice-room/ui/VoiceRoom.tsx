@@ -5,7 +5,7 @@ import { DisconnectReason } from 'livekit-client';
 import { Volume2 } from 'lucide-react';
 import { useRef } from 'react';
 
-import { Stage } from './components';
+import { ParticipantsView } from './components';
 import { voiceRoomStyles as s } from './VoiceRoom.styles';
 import type { VoiceRoomProps } from './VoiceRoom.types';
 
@@ -54,10 +54,10 @@ export const VoiceRoom = ({
             <span className={s.headerTitle}>{roomName}</span>
           </div>
 
-          <Stage />
+          <ParticipantsView />
 
           <div className={s.controls} data-lk-theme="default">
-            <ControlBar controls={{ chat: false, settings: false }} variation="minimal" />
+            <ControlBar variation="minimal" />
           </div>
 
           <RoomAudioRenderer />

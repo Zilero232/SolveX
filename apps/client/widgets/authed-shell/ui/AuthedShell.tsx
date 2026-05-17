@@ -4,7 +4,7 @@ import { useBoolean } from '@siberiacancode/reactuse';
 import { useRouter } from 'next/navigation';
 import { Suspense, useEffect } from 'react';
 
-import { useAuthStore } from '@/entities/user';
+import { useCurrentUser } from '@/entities/user';
 import { ROUTES } from '@/shared/constants';
 import { ChannelsPanel } from '@/widgets/channels-panel';
 import { ServerRail } from '@/widgets/server-rail';
@@ -14,13 +14,14 @@ import type { AuthedShellProps } from './AuthedShell.types';
 export const AuthedShell = ({ children }: AuthedShellProps) => {
   const router = useRouter();
 
-  const session = useAuthStore((state) => state.session);
+  const { session } = useCurrentUser();
 
   const [channelsOpened, toggleChannels] = useBoolean(true);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: redirect must fire only on session change; router is a stable ref
   useEffect(() => {
     if (!session) router.replace(ROUTES.auth);
-  }, [session, router]);
+  }, [session]);
 
   if (!session) return null;
 

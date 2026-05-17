@@ -21,20 +21,18 @@ const SectionLabel = ({
 );
 
 export const ChannelsList = () => {
-  const rooms = useRooms();
+  const { rooms, isLoading, isEmpty } = useRooms();
 
   return (
     <ScrollArea className={s.scroll}>
       <div className={s.list}>
         <SectionLabel offset>Voice rooms</SectionLabel>
 
-        {rooms.isLoading ? <Loader2 className={s.loaderIcon} /> : null}
+        {isLoading ? <Loader2 className={s.loaderIcon} /> : null}
 
-        {!rooms.isLoading && (rooms.data?.length ?? 0) === 0 ? (
-          <p className={s.emptyHint}>No rooms yet</p>
-        ) : null}
+        {isEmpty ? <p className={s.emptyHint}>No rooms yet</p> : null}
 
-        {rooms.data?.map((room) => (
+        {rooms.map((room) => (
           <ChannelsRoomItem key={room.id} room={room} />
         ))}
       </div>

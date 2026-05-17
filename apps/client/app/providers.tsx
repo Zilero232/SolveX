@@ -1,21 +1,12 @@
 'use client';
 
-import { useMount } from '@siberiacancode/reactuse';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import type { ReactNode } from 'react';
+import { useEffect } from 'react';
 
-import { bootstrapAuth, useAuthStore } from '@/entities/user';
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 30_000,
-      retry: 1,
-      refetchOnWindowFocus: false,
-    },
-  },
-});
+import { subscribeAuth, useCurrentUser } from '@/entities/user';
+import { queryClient } from '@/shared/api';
 
 const BootSplash = () => (
   <div className="flex h-full items-center justify-center text-muted-foreground text-sm">
@@ -23,19 +14,19 @@ const BootSplash = () => (
   </div>
 );
 
-export const Providers = ({ children }: { children: ReactNode }) => {
-  const isLoading = useAuthStore((s) => s.isLoading);
+const AuthBootstrap = ({ children }: { children: ReactNode }) => {
+  const { isLoading } = useCurrentUser();
 
-  useMount(() => {
-    bootstrapAuth();
-  });
+  useEffect(() => {
+    return subscribeAuth();
+  }, []);
 
-  return (
-    <QueryClientProvider client={queryClient}>
-      {isLoading ? <BootSplash /> : children}
-      {process.env.NODE_ENV === 'development' ? (
-        <ReactQueryDevtools buttonPosition="bottom-right" />
-      ) : null}
-    </QueryClientProvider>
-  );
+  return isLoading ? <BootSplash /> : children;
 };
+
+export const Providers = ({ children }: { children: ReactNode }) => (
+  <QueryClientProvider client={queryClient}>
+    <AuthBootstrap>{children}</AuthBootstrap>
+    {process.env.NODE_ENV === 'development' && <ReactQueryDevtools buttonPosition="bottom-right" />}
+  </QueryClientProvider>
+);

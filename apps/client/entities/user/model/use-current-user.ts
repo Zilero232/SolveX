@@ -1,18 +1,35 @@
-import { useAuthStore } from './auth-store';
+import type { User } from '@supabase/supabase-js';
+import { useQuery } from '@tanstack/react-query';
+
+import { supabase } from '@/shared/api';
+import { QUERY_KEYS } from '@/shared/constants';
+
+import type { UserRole } from './types';
+
+const readRole = (user: User | null): UserRole =>
+  user?.app_metadata?.role === 'admin' ? 'admin' : 'user';
 
 export const useCurrentUser = () => {
-  const user = useAuthStore((s) => s.user);
-  const role = useAuthStore((s) => s.role);
-  const session = useAuthStore((s) => s.session);
-  const isLoading = useAuthStore((s) => s.isLoading);
+  const { data: session, isLoading } = useQuery({
+    queryKey: QUERY_KEYS.session(),
+    queryFn: async () => {
+      const { data } = await supabase.auth.getSession();
 
+      return data.session;
+    },
+    staleTime: Number.POSITIVE_INFINITY,
+    gcTime: Number.POSITIVE_INFINITY,
+  });
+
+  const user = session?.user ?? null;
+  const role = readRole(user);
   const displayName = user?.email?.split('@')[0] ?? 'you';
   const initial = displayName.charAt(0).toUpperCase();
 
   return {
     user,
     role,
-    session,
+    session: session ?? null,
     isLoading,
     displayName,
     initial,
