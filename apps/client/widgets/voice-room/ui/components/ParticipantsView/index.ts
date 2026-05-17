@@ -1,2 +1,1 @@
-export { ParticipantCard } from './ParticipantCard';
 export { ParticipantsView } from './ParticipantsView';

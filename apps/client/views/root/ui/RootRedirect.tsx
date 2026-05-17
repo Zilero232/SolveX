@@ -3,20 +3,20 @@
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
-import { useAuthStore } from '@/entities/user';
+import { useCurrentUser } from '@/entities/user';
 import { ROUTES } from '@/shared/constants';
 
 export const RootRedirect = () => {
   const router = useRouter();
 
-  const session = useAuthStore((s) => s.session);
-  const isLoading = useAuthStore((s) => s.isLoading);
+  const { session, isLoading } = useCurrentUser();
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: redirect must fire only on auth-state change; router is a stable ref
   useEffect(() => {
     if (isLoading) return;
 
     router.replace(session ? ROUTES.lobby : ROUTES.auth);
-  }, [isLoading, session, router]);
+  }, [isLoading, session]);
 
   return null;
 };

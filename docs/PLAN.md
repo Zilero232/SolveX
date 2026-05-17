@@ -180,8 +180,8 @@ server/
 - `src/shared/api/supabase.ts` — singleton Supabase client.
 - `src/shared/api/livekit.ts` — `fetchLiveKitToken({ room, supabaseToken })` → строка JWT.
 - `src/shared/config/env.ts` — `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`, `VITE_TOKEN_SERVER_URL`, `VITE_LIVEKIT_URL`.
-- `src/entities/user/model/use-current-user.ts` — хук `useCurrentUser()`: возвращает `{ user, role, isAdmin }`.
-- `src/entities/user/model/auth-store.ts` — Zustand store: session, user, role; подписан на `supabase.auth.onAuthStateChange`.
+- `src/entities/user/model/use-user.ts` — хук `useCurrentUser()`: возвращает `{ user, role, isAdmin, ... }`; внутри `useSession` (TanStack Query кэш сессии Supabase).
+- `src/entities/user/model/auth-bridge.ts` — `subscribeAuth(queryClient)`: одна app-wide подписка на `supabase.auth.onAuthStateChange`, пишет сессию в кэш.
 - `src/entities/voice-participant/ui/ParticipantTile.tsx` — карточка участника с видео + индикатор speaking.
 - `src/features/auth-by-email/` — форма login/signup, кнопки sign-in/sign-up, обработка ошибок.
 - `src/features/logout/` — кнопка в топбаре, `supabase.auth.signOut()` + редирект на /auth.

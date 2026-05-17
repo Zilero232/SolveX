@@ -4,8 +4,5 @@ import type { createRoomInputSchema } from './inputs';
 import type { roomSchema } from './outputs';
 
 export type Room = z.infer<typeof roomSchema>;
-export type CreateRoomInput = z.output<typeof createRoomInputSchema>;
-export type CreateRoomRawInput = z.input<typeof createRoomInputSchema>;
 
-export type CreateRoomRequest = CreateRoomInput;
-export type RoomResponse = Room;
+export type CreateRoomRequest = z.infer<typeof createRoomInputSchema>;

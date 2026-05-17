@@ -4,7 +4,8 @@ import { ControlBar, LiveKitRoom, RoomAudioRenderer } from '@livekit/components-
 import { DisconnectReason } from 'livekit-client';
 import { Volume2 } from 'lucide-react';
 import { useRef } from 'react';
-import { Stage } from './components';
+
+import { ParticipantsView } from './components';
 import { voiceRoomStyles as s } from './VoiceRoom.styles';
 import type { VoiceRoomProps } from './VoiceRoom.types';
 
@@ -19,50 +20,49 @@ export const VoiceRoom = ({
   token,
   serverUrl,
   roomName,
-  userChoices,
   onLeave,
   onConnectFailure,
 }: VoiceRoomProps) => {
   const hasConnectedRef = useRef(false);
 
   return (
-    <LiveKitRoom
-      connect
-      audio={
-        userChoices.audioEnabled ? { deviceId: userChoices.audioDeviceId || undefined } : false
-      }
-      video={
-        userChoices.videoEnabled ? { deviceId: userChoices.videoDeviceId || undefined } : false
-      }
-      className={s.root}
-      data-lk-theme="default"
-      serverUrl={serverUrl}
-      token={token}
-      onConnected={() => {
-        hasConnectedRef.current = true;
-      }}
-      onDisconnected={(reason) => {
-        if (!hasConnectedRef.current) {
-          if (reason !== undefined && FAILURE_REASONS.has(reason)) onConnectFailure(reason);
+    <div className={s.root}>
+      <div className={s.frame}>
+        <LiveKitRoom
+          connect
+          audio
+          className={s.room}
+          data-lk-theme="default"
+          serverUrl={serverUrl}
+          token={token}
+          video={false}
+          onConnected={() => {
+            hasConnectedRef.current = true;
+          }}
+          onDisconnected={(reason) => {
+            if (!hasConnectedRef.current) {
+              if (reason !== undefined && FAILURE_REASONS.has(reason)) onConnectFailure(reason);
 
-          return;
-        }
+              return;
+            }
 
-        onLeave();
-      }}
-    >
-      <div className={s.header}>
-        <Volume2 className={s.headerIcon} />
-        <span className={s.headerTitle}>{roomName}</span>
+            onLeave();
+          }}
+        >
+          <div className={s.header}>
+            <Volume2 className={s.headerIcon} />
+            <span className={s.headerTitle}>{roomName}</span>
+          </div>
+
+          <ParticipantsView />
+
+          <div className={s.controls} data-lk-theme="default">
+            <ControlBar variation="minimal" />
+          </div>
+
+          <RoomAudioRenderer />
+        </LiveKitRoom>
       </div>
-
-      <Stage />
-
-      <div className={s.controls} data-lk-theme="default">
-        <ControlBar controls={{ chat: false, settings: false }} variation="minimal" />
-      </div>
-
-      <RoomAudioRenderer />
-    </LiveKitRoom>
+    </div>
   );
 };

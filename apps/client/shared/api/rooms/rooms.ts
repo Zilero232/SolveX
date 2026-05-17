@@ -1,4 +1,4 @@
-import type { CreateRoomInput, Room } from '@solvex/schemas/rooms';
+import type { CreateRoomRequest, Room } from '@solvex/schemas/rooms';
 
 import { api } from '../http';
 
@@ -10,13 +10,25 @@ export const listRooms = async (): Promise<Room[]> => {
   return res.json();
 };
 
-export const createRoom = async (input: CreateRoomInput): Promise<Room> => {
+export const createRoom = async (input: CreateRoomRequest): Promise<Room> => {
   const res = await api.api.rooms.$post({ json: input });
 
   if (!res.ok) {
     const err = (await res.json().catch(() => null)) as { error?: string } | null;
 
     throw new Error(err?.error ?? `Failed to create room: ${res.status}`);
+  }
+
+  return res.json();
+};
+
+export const getRoom = async (id: string): Promise<Room> => {
+  const res = await api.api.rooms[':id'].$get({ param: { id } });
+
+  if (!res.ok) {
+    const err = (await res.json().catch(() => null)) as { error?: string } | null;
+
+    throw new Error(err?.error ?? `Failed to get room: ${res.status}`);
   }
 
   return res.json();

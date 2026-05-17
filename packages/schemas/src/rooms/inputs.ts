@@ -2,13 +2,13 @@ import { z } from 'zod';
 
 export const createRoomInputSchema = z
   .object({
+    isPrivate: z.boolean(),
     name: z
       .string()
       .trim()
       .min(1, 'Name required')
       .max(64, 'Max 64 chars')
       .regex(/^[\w\s-]+$/, 'Only letters, digits, spaces, _ and -'),
-    isPrivate: z.boolean().default(false),
     password: z
       .string()
       .min(4, 'Min 4 chars')

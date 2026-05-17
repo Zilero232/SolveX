@@ -59,8 +59,6 @@ export const tokenHandler: RouteHandler<typeof tokenRoute, Env> = async (c) => {
 
   const payload: TokenResponse = {
     token: await at.toJwt(),
-    url: env.LIVEKIT_URL,
-    isAdmin,
   };
 
   return c.json(payload, 200);

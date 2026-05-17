@@ -1,7 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import type { CreateRoomInput, CreateRoomRawInput } from '@solvex/schemas/rooms';
+import type { CreateRoomRequest } from '@solvex/schemas/rooms';
 import { createRoomInputSchema } from '@solvex/schemas/rooms';
 import { Loader2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
@@ -12,7 +12,7 @@ import { Button, Input, Label } from '@/shared/ui';
 
 import { createRoomFormStyles as s } from './CreateRoomForm.styles';
 
-const DEFAULT_VALUES: CreateRoomRawInput = { name: '', isPrivate: false };
+const DEFAULT_VALUES: CreateRoomRequest = { name: '', isPrivate: false };
 
 export const CreateRoomForm = () => {
   const createMutation = useCreateRoom();
@@ -24,7 +24,7 @@ export const CreateRoomForm = () => {
     register,
     reset,
     watch,
-  } = useForm<CreateRoomRawInput, unknown, CreateRoomInput>({
+  } = useForm<CreateRoomRequest>({
     resolver: zodResolver(createRoomInputSchema),
     mode: 'onChange',
     defaultValues: DEFAULT_VALUES,

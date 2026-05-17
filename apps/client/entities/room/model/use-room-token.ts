@@ -1,22 +1,23 @@
-import { useMutation } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 
 import { fetchLiveKitToken } from '@/shared/api';
+import { QUERY_KEYS } from '@/shared/constants';
 
-interface FetchInput {
+interface Options {
+  isPrivate: boolean;
   password?: string;
-  roomId: string;
 }
 
-interface RoomToken {
-  token: string;
-  url: string;
-}
-
-export const useRoomToken = () =>
-  useMutation<RoomToken, Error, FetchInput>({
-    mutationFn: async ({ roomId, password }) => {
-      const { token, url } = await fetchLiveKitToken({ roomId, password });
-
-      return { token, url };
-    },
+// Single LiveKit-token source for both public and private rooms.
+// Public: fetches once roomId is known. Private: stays idle until a password
+// is supplied, then fetches. Password is closed over (not in queryKey) so it
+// never lands in the cache/devtools — call refetch() to retry with a new one.
+export const useRoomToken = (roomId: string | null, { isPrivate, password }: Options) =>
+  useQuery({
+    queryKey: QUERY_KEYS.livekitToken(roomId),
+    queryFn: () => fetchLiveKitToken({ roomId: roomId as string, password }),
+    select: ({ token }) => token,
+    enabled: !!roomId && (!isPrivate || !!password),
+    retry: false,
+    staleTime: 0,
   });

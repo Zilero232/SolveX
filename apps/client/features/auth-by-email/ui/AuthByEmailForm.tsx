@@ -17,7 +17,7 @@ type FormValues = z.infer<typeof authSchema>;
 const DEFAULT_VALUES: FormValues = { email: '', password: '' };
 
 export const AuthByEmailForm = () => {
-  const mutation = useAuthByEmail();
+  const { isPending, mutate } = useAuthByEmail();
 
   const {
     formState: { errors },
@@ -27,10 +27,11 @@ export const AuthByEmailForm = () => {
     resolver: zodResolver(authSchema),
     defaultValues: DEFAULT_VALUES,
   });
+
   const [isSignup, toggleSignup] = useBoolean(false);
 
   const onSubmit = handleSubmit((values) => {
-    mutation.mutate(
+    mutate(
       { mode: isSignup ? 'signup' : 'signin', values },
       {
         onSuccess: () => {
@@ -62,8 +63,8 @@ export const AuthByEmailForm = () => {
         {errors.password ? <p className={s.error}>{errors.password.message}</p> : null}
       </div>
 
-      <Button className={s.submit} disabled={mutation.isPending} type="submit">
-        {mutation.isPending ? <Loader2 className={s.submitSpinner} /> : null}
+      <Button className={s.submit} disabled={isPending} type="submit">
+        {isPending ? <Loader2 className={s.submitSpinner} /> : null}
         {isSignup ? 'Sign up' : 'Sign in'}
       </Button>
 
