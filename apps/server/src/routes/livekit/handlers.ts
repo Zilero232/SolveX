@@ -1,5 +1,5 @@
+import type { TokenResponse } from '@chatovo/schemas/livekit';
 import type { RouteHandler } from '@hono/zod-openapi';
-import type { TokenResponse } from '@solvex/schemas/livekit';
 
 import { AccessToken } from 'livekit-server-sdk';
 import { env } from '../../lib/env';

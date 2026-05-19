@@ -9,7 +9,7 @@ export const ChannelsHeader = () => {
 
   return (
     <div className={s.root}>
-      <span className={s.title}>SolveX</span>
+      <span className={s.title}>Chatovo</span>
       {isAdmin ? <span className={s.adminBadge}>admin</span> : null}
     </div>
   );

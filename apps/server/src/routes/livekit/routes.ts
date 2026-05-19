@@ -1,5 +1,5 @@
+import { tokenRequestSchema, tokenResponseSchema } from '@chatovo/schemas/livekit';
 import { createRoute } from '@hono/zod-openapi';
-import { tokenRequestSchema, tokenResponseSchema } from '@solvex/schemas/livekit';
 
 import { errorSchema } from '../shared/schemas';
 

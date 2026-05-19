@@ -1,5 +1,5 @@
 {
-  "name": "@solvex/client",
+  "name": "@chatovo/client",
   "type": "module",
   "version": "0.1.0",
   "private": true,
@@ -18,8 +18,8 @@
     "@livekit/components-styles": "^1.2.0",
     "@radix-ui/react-slot": "^1.2.4",
     "@siberiacancode/reactuse": "^0.3.22",
-    "@solvex/schemas": "workspace:*",
-    "@solvex/server": "workspace:*",
+    "@chatovo/schemas": "workspace:*",
+    "@chatovo/server": "workspace:*",
     "@supabase/supabase-js": "^2.105.4",
     "@tanstack/react-query": "^5.100.10",
     "@tanstack/react-query-devtools": "^5.100.10",

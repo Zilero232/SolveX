@@ -1,8 +1,8 @@
 'use client';
 
+import type { CreateRoomRequest } from '@chatovo/schemas/rooms';
+import { createRoomInputSchema } from '@chatovo/schemas/rooms';
 import { zodResolver } from '@hookform/resolvers/zod';
-import type { CreateRoomRequest } from '@solvex/schemas/rooms';
-import { createRoomInputSchema } from '@solvex/schemas/rooms';
 import { Loader2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';

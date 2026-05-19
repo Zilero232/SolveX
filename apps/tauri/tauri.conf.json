@@ -1,19 +1,19 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "SolveX",
+  "productName": "Chatovo",
   "version": "0.1.0",
-  "identifier": "com.solvex.app",
+  "identifier": "ru.chatovo.app",
   "build": {
     "frontendDist": "../../dist",
     "devUrl": "http://localhost:3000",
-    "beforeDevCommand": "bun --filter @solvex/client dev",
-    "beforeBuildCommand": "bun --filter @solvex/client build"
+    "beforeDevCommand": "bun --filter @chatovo/client dev",
+    "beforeBuildCommand": "bun --filter @chatovo/client build"
   },
   "app": {
     "windows": [
       {
         "label": "main",
-        "title": "SolveX",
+        "title": "Chatovo",
         "width": 1280,
         "height": 800,
         "center": true,
@@ -37,11 +37,11 @@
       "icons/icon.ico"
     ],
     "category": "SocialNetworking",
-    "shortDescription": "SolveX desktop client",
-    "longDescription": "SolveX — voice and video chat desktop client built with Tauri 2.",
-    "copyright": "Copyright © 2026 SolveX",
-    "publisher": "SolveX",
-    "homepage": "https://solvex.app",
+    "shortDescription": "Chatovo desktop client",
+    "longDescription": "Chatovo — voice and video chat desktop client built with Tauri 2.",
+    "copyright": "Copyright © 2026 Chatovo",
+    "publisher": "Chatovo",
+    "homepage": "https://chatovo.ru",
     "license": "MIT",
     "createUpdaterArtifacts": true
   },

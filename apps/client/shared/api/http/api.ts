@@ -1,4 +1,4 @@
-import type { App } from '@solvex/server';
+import type { App } from '@chatovo/server';
 
 import { hc } from 'hono/client';
 

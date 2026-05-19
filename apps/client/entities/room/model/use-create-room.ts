@@ -1,4 +1,4 @@
-import type { CreateRoomRequest, Room } from '@solvex/schemas/rooms';
+import type { CreateRoomRequest, Room } from '@chatovo/schemas/rooms';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { uniqueBy } from 'remeda';

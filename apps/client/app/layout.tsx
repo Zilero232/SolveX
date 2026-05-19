@@ -10,7 +10,7 @@ import '@livekit/components-styles';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'SolveX',
+  title: 'Chatovo',
   description: 'Voice rooms',
 };
 

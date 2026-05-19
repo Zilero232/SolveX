@@ -1,4 +1,4 @@
-import type { Room } from '@solvex/schemas/rooms';
+import type { Room } from '@chatovo/schemas/rooms';
 
 export interface ChannelsRoomItemProps {
   room: Room;

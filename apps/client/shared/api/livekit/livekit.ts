@@ -1,4 +1,4 @@
-import type { TokenRequest, TokenResponse } from '@solvex/schemas/livekit';
+import type { TokenRequest, TokenResponse } from '@chatovo/schemas/livekit';
 
 import { api } from '../http';
 

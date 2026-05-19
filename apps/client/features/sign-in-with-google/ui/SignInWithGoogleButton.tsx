@@ -32,11 +32,7 @@ export const SignInWithGoogleButton = () => {
       type="button"
       variant="outline"
     >
-      {isPending ? (
-        <Loader2 className={s.spinner} />
-      ) : (
-        <GoogleIcon className={s.icon} />
-      )}
+      {isPending ? <Loader2 className={s.spinner} /> : <GoogleIcon className={s.icon} />}
       Continue with Google
     </Button>
   );

@@ -1,4 +1,4 @@
-# SolveX Style Guide
+# Chatovo Style Guide
 
 Проектные кодстайл-конвенции для `apps/client/`. Архитектурные правила — в [`docs/fsd.md`](./fsd.md).
 
@@ -182,7 +182,7 @@ export const VoiceRoom = ({ token, serverUrl }: VoiceRoomProps) => (
 | Тип Props | `<Name>Props` | `VoiceRoomProps` |
 | DTO тип | `<Name>Input/Output` | `EnterRoomInput` |
 
-> Канон FSD: kebab-case для всех файлов. SolveX отклонение: PascalCase для папок и файлов компонентов, kebab-case для хуков/утилит.
+> Канон FSD: kebab-case для всех файлов. Chatovo отклонение: PascalCase для папок и файлов компонентов, kebab-case для хуков/утилит.
 
 ---
 
@@ -193,9 +193,9 @@ export const VoiceRoom = ({ token, serverUrl }: VoiceRoomProps) => (
 `@/` → корень `apps/client/`. Используем для всего кроме относительных в той же папке.
 
 ```ts
-// 1-я группа: внешние пакеты + node:-builtins + @solvex/*
+// 1-я группа: внешние пакеты + node:-builtins + @chatovo/*
 import { useForm } from 'react-hook-form';
-import type { Room } from '@solvex/schemas/rooms';
+import type { Room } from '@chatovo/schemas/rooms';
 
 // 2-я группа: @/ алиасы и относительные ./  ../ — вместе, без пустой строки
 import { useCurrentUser } from '@/entities/user';
@@ -493,7 +493,7 @@ return <VoiceRoom />;
 
 ---
 
-## 13. Shared схемы — `@solvex/schemas`
+## 13. Shared схемы — `@chatovo/schemas`
 
 Zod схемы и типы, общие для client/server, — в `packages/schemas`:
 
@@ -510,7 +510,7 @@ packages/schemas/src/
 
 ```ts
 // ✓ ОК
-import { createRoomInputSchema, type Room } from '@solvex/schemas/rooms';
+import { createRoomInputSchema, type Room } from '@chatovo/schemas/rooms';
 
 // ✗ НЕ ОК
 import { Room } from '@/shared/api';
@@ -532,7 +532,7 @@ import { Room } from '@/shared/api';
 ```tsx
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { createRoomInputSchema, type CreateRoomInput, type CreateRoomRawInput } from '@solvex/schemas/rooms';
+import { createRoomInputSchema, type CreateRoomInput, type CreateRoomRawInput } from '@chatovo/schemas/rooms';
 
 const DEFAULT_VALUES: CreateRoomRawInput = { name: '', isPrivate: false };
 
@@ -546,7 +546,7 @@ const { formState: { errors }, handleSubmit, register, reset } = useForm<
 });
 ```
 
-- Схема — в `@solvex/schemas/<resource>`, не inline в форме.
+- Схема — в `@chatovo/schemas/<resource>`, не inline в форме.
 - Server-side ошибки — `setError('field', { message: err.message })`.
 - Boolean toggles вне формы — `useBoolean` из `@siberiacancode/reactuse`, не `useState`.
 
@@ -669,7 +669,7 @@ apps/server/src/routes/
 - Cross-import между слайсами одного слоя.
 - ESLint, Prettier, CSS-in-JS. Только Biome + Tailwind.
 - `axios` / ручной `fetch` для бизнес-вызовов. Только Hono RPC client.
-- Дублирование схем client/server. Только `@solvex/schemas`.
+- Дублирование схем client/server. Только `@chatovo/schemas`.
 - `useState` для form fields. Только `react-hook-form`.
 - Вложенные `if (...) return <X />` на 3+ ветки. Используй `ts-pattern match`.
 - Prop-drilling когда leaf может вызвать хук сам.
@@ -683,8 +683,8 @@ bun lint:fix                               # Biome: формат + organize impo
 bun lint                                   # должно быть 0 errors/warnings
 cd apps/client && bunx tsc --noEmit        # типы client
 cd apps/server && bunx tsc --noEmit        # типы server
-bun --filter @solvex/client build          # сборка client
-bun --filter @solvex/server build          # сборка server
+bun --filter @chatovo/client build          # сборка client
+bun --filter @chatovo/server build          # сборка server
 ```
 
 `bun lint:fix` не чинит: пустые строки (секция 12), порядок хуков (секция 9.1), FSD-границы импортов (→ [`docs/fsd.md`](./fsd.md)). Для unsafe-фиксов (Tailwind sort): `biome check --write --unsafe <file>` — точечно с проверкой диффа.

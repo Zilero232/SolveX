@@ -1,5 +1,5 @@
+import { createRoomInputSchema, roomSchema } from '@chatovo/schemas/rooms';
 import { createRoute, z } from '@hono/zod-openapi';
-import { createRoomInputSchema, roomSchema } from '@solvex/schemas/rooms';
 
 import { errorSchema } from '../shared/schemas';
 

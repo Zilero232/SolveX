@@ -1,4 +1,4 @@
-# Feature-Sliced Design — SolveX
+# Feature-Sliced Design — Chatovo
 
 FSD-методология для `apps/client/`. Этот документ — рабочая справка по архитектуре фронтенда: иерархия слоёв, правила импортов, публичные API, сегменты.
 
@@ -6,7 +6,7 @@ FSD-методология для `apps/client/`. Этот документ — 
 
 > **Расхождения с каноном FSD в этом проекте** (осознанные, см. причины ниже):
 >
-> | Канон FSD | SolveX | Почему |
+> | Канон FSD | Chatovo | Почему |
 > |---|---|---|
 > | Корень `src/` | Корень `apps/client/` (без `src/`) | Монорепо: `apps/client` уже изолирует фронтенд. `@/` → `apps/client/`. |
 > | Слой `pages/` | Слой `views/` | `pages/` в корне Next.js включает Pages Router. `views/` его обходит. |
@@ -134,7 +134,7 @@ export default Page;
 
 Роут-файлы (`page.tsx`, `layout.tsx`) — серверные компоненты, без `'use client'`. Содержат только: metadata, обёртку, default export. Вся UI и логика — во `views/<name>/`.
 
-> Канон FSD рекомендует `export { Page as default } from '@/views/...'` и пустую `pages/` с `.gitkeep`. В SolveX слой назван `views/` — конфликта с Next.js Pages Router нет, `.gitkeep`-заглушка не нужна. Роут-обёртка пишется как обычный компонент (см. выше).
+> Канон FSD рекомендует `export { Page as default } from '@/views/...'` и пустую `pages/` с `.gitkeep`. В Chatovo слой назван `views/` — конфликта с Next.js Pages Router нет, `.gitkeep`-заглушка не нужна. Роут-обёртка пишется как обычный компонент (см. выше).
 
 ### Path-алиасы
 
@@ -191,7 +191,7 @@ Feature
 - [ ] Слой Shared не содержит бизнес-логики — только project-agnostic код
 - [ ] Слой Entities не содержит UI-логики интеракций — это уровень Features
 
-> **Naming в SolveX:** канон FSD требует kebab-case для всех файлов. SolveX-кодстайл (см. `style-guide.md` секция 7): kebab-case для слайсов/сегментов, **PascalCase для папок и файлов компонентов** (`VoiceRoom/VoiceRoom.tsx`), camelCase для хуков/утилит. Это локальная конвенция поверх FSD.
+> **Naming в Chatovo:** канон FSD требует kebab-case для всех файлов. Chatovo-кодстайл (см. `style-guide.md` секция 7): kebab-case для слайсов/сегментов, **PascalCase для папок и файлов компонентов** (`VoiceRoom/VoiceRoom.tsx`), camelCase для хуков/утилит. Это локальная конвенция поверх FSD.
 
 ---
 
@@ -214,4 +214,4 @@ Feature
 - Полная спецификация: [feature-sliced.design](https://feature-sliced.design)
 - Линтер FSD-правил: [Steiger](https://github.com/feature-sliced/steiger)
 - Cross-entity паттерн `@x` — секция 2 выше
-- Кодстайл SolveX поверх FSD (структура слайса, naming, размер компонента): `docs/style-guide.md`
+- Кодстайл Chatovo поверх FSD (структура слайса, naming, размер компонента): `docs/style-guide.md`

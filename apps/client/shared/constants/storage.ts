@@ -1,3 +1,3 @@
 export const STORAGE_KEYS = {
-  authSession: 'solvex.auth',
+  authSession: 'chatovo.auth',
 } as const;
