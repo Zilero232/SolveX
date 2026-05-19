@@ -1,0 +1,42 @@
+# Keep the Docker build context small and reproducible.
+
+# Dependencies — reinstalled inside the image
+node_modules
+**/node_modules
+
+# Build artifacts
+apps/client/.next
+apps/client/out
+apps/server/dist
+apps/server/generated
+apps/tauri/target
+apps/tauri/gen
+**/*.tsbuildinfo
+
+# The Tauri desktop app is not part of either image
+apps/tauri
+
+# docker-compose.yml runs on the VPS, not needed inside any image.
+# NOTE: deploy/Caddyfile IS needed — the client image copies it, so the
+# `deploy/` directory is intentionally NOT ignored.
+docker-compose.yml
+
+# Secrets — env files are provided to the container at runtime, never baked in
+.env
+**/.env
+**/.env.local
+**/.env.*.local
+*.key
+*.key.pub
+
+# Git / CI / editor
+.git
+.github
+.vscode
+.idea
+
+# Docs and local files
+*.md
+!apps/server/prisma/**/*.md
+logs
+*.log

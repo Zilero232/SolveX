@@ -16,12 +16,22 @@ app.openAPIRegistry.registerComponent('securitySchemes', 'bearerAuth', {
   bearerFormat: 'JWT',
 });
 
+// Web client origins come from env (comma-separated); Tauri origins are always allowed
+// so the desktop app can reach the same API as the website.
+const tauriOrigins = ['tauri://localhost', 'http://tauri.localhost'];
+const allowedOrigins = [
+  ...env.CORS_ORIGINS.split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean),
+  ...tauriOrigins,
+];
+
 export const routes = app
   .use('*', logger())
   .use(
     '*',
     cors({
-      origin: ['http://localhost:3000', 'tauri://localhost', 'http://tauri.localhost'],
+      origin: allowedOrigins,
       credentials: true,
     }),
   )
@@ -32,7 +42,7 @@ export const routes = app
 
 app.doc('/openapi.json', {
   openapi: '3.0.0',
-  info: { title: 'Solvex API', version: '0.1.0' },
+  info: { title: 'Chatovo API', version: '0.1.0' },
 });
 
 app.get('/docs', swaggerUI({ url: '/openapi.json' }));

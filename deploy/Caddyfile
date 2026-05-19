@@ -1,0 +1,44 @@
+# Chatovo — Caddy config (runs on the VPS).
+#
+# One domain, one site block: chatovo.ru serves the static web client, and
+# requests under /api are reverse-proxied to the Bun API server. Because the
+# site and the API share the same origin, no CORS setup is needed for the web.
+#
+# Caddy obtains and renews a free TLS certificate from Let's Encrypt
+# automatically — no certbot, no manual setup.
+#
+# Requirements for the auto-certificate to work:
+#   - DNS A-records for chatovo.ru and www.chatovo.ru point at this VPS
+#   - ports 80 and 443 are open on the VPS firewall
+#
+# To use a different domain, change the site address below.
+
+chatovo.ru, www.chatovo.ru {
+	# Redirect the www host to the bare domain.
+	redir https://chatovo.ru{uri} permanent
+
+	# --- API: forward /api/* and /health to the Bun server ---
+	# The Hono server mounts routes at /api/... and /health, so the path
+	# is passed through unchanged.
+	@api path /api/* /health
+	handle @api {
+		reverse_proxy server:4000
+	}
+
+	# --- Web client: static Next.js export ---
+	handle {
+		# Static files are uploaded here by CI (see docker-compose volume).
+		root * /srv/www
+
+		# Cache hashed Next.js assets aggressively.
+		@assets path /_next/static/*
+		header @assets Cache-Control "public, max-age=31536000, immutable"
+
+		encode gzip
+
+		# SPA / static-export routing: try the file, then `<path>.html`,
+		# then the directory index, finally fall back to the 404 page.
+		try_files {path} {path}.html {path}/index.html /404.html
+		file_server
+	}
+}

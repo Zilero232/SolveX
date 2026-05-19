@@ -25,10 +25,12 @@ node_modules
 *.sln
 *.sw?
 
-# Secrets — kept at root so they are caught in every package
+# Secrets — kept at root so they are caught in every package.
+# The only env file committed is the template `.env.example`.
 .env
 .env.local
 .env.*.local
+!.env.example
 
 # Tauri updater minisign keys
 *.key

@@ -3,7 +3,10 @@ import { z } from 'zod';
 const clientSchema = z.object({
   NEXT_PUBLIC_SUPABASE_URL: z.url(),
   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: z.string().min(1),
-  NEXT_PUBLIC_API_URL: z.url().default('http://localhost:4000'),
+  // Either an absolute URL (http://localhost:4000, https://chatovo.ru/api)
+  // or a same-origin relative path (/api) — so the production website can
+  // call the API without hardcoding its own domain.
+  NEXT_PUBLIC_API_URL: z.string().min(1).default('http://localhost:4000'),
   NEXT_PUBLIC_LIVEKIT_URL: z.string().min(1),
 });
 

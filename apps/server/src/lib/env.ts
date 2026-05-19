@@ -15,6 +15,10 @@ const envSchema = z.object({
   LIVEKIT_URL: z.string().url(),
 
   ADMIN_EMAILS: z.string().default(''),
+
+  // Comma-separated list of allowed CORS origins (web client domains).
+  // Tauri origins are always allowed and don't need to be listed here.
+  CORS_ORIGINS: z.string().default('http://localhost:3000'),
 });
 
 const parsed = envSchema.safeParse(process.env);

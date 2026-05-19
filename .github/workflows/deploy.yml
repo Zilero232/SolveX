@@ -1,0 +1,149 @@
+name: Deploy to Timeweb
+
+# Auto-deploy on every push to master.
+# - lint:        checks the whole monorepo with Biome
+# - build-web:   builds the client Docker image and pushes it to ghcr.io
+# - build-api:   builds the server Docker image and pushes it to ghcr.io
+# - deploy:      pulls both new images on the VPS and restarts the stack
+#
+# Both images are built on CI and stored in the private GitHub Container
+# Registry (ghcr.io). Pushing uses the built-in GITHUB_TOKEN — no extra secret.
+# The VPS pulls the images; it must be logged in to ghcr.io once (see DEPLOY.md).
+#
+# Required GitHub repository secrets (Settings -> Secrets and variables -> Actions):
+#   SSH_HOST                 VPS IP or hostname
+#   SSH_USER                 SSH login (e.g. root or a deploy user)
+#   SSH_PRIVATE_KEY          private key whose public half is in the VPS authorized_keys
+#   SSH_PORT                 SSH port (optional, defaults to 22)
+#   DEPLOY_PATH              absolute path to the repo on the VPS (e.g. /opt/chatovo)
+#   NEXT_PUBLIC_API_URL                  /api   (same origin — site and API share chatovo.ru)
+#   NEXT_PUBLIC_SUPABASE_URL             https://<project>.supabase.co
+#   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY sb_publishable_...
+#   NEXT_PUBLIC_LIVEKIT_URL              wss://<project>.livekit.cloud
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch: {}
+
+# Never run two deploys at once.
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+env:
+  # Image names in the registry. github.repository_owner is the account/org;
+  # it is forced to lowercase per-job below (ghcr.io rejects uppercase).
+  WEB_IMAGE: ghcr.io/${{ github.repository_owner }}/chatovo-web
+  API_IMAGE: ghcr.io/${{ github.repository_owner }}/chatovo-server
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.14
+      - run: bun install --frozen-lockfile
+      - run: bun lint
+
+  build-web:
+    needs: lint
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      # Lowercase the image name — ghcr.io rejects uppercase letters.
+      - name: Normalize image name
+        run: echo "WEB_IMAGE=${WEB_IMAGE,,}" >> "$GITHUB_ENV"
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Build the client image. NEXT_PUBLIC_* values are baked into the static
+      # bundle at build time, so they are passed as build args.
+      - name: Build and push web image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: apps/client/Dockerfile
+          push: true
+          build-args: |
+            NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}
+            NEXT_PUBLIC_SUPABASE_URL=${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+            NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=${{ secrets.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY }}
+            NEXT_PUBLIC_LIVEKIT_URL=${{ secrets.NEXT_PUBLIC_LIVEKIT_URL }}
+          tags: |
+            ${{ env.WEB_IMAGE }}:latest
+            ${{ env.WEB_IMAGE }}:${{ github.sha }}
+
+  build-api:
+    needs: lint
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Normalize image name
+        run: echo "API_IMAGE=${API_IMAGE,,}" >> "$GITHUB_ENV"
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Build the server image, tagged with both `latest` and the commit SHA
+      # (the SHA tag enables rollbacks).
+      - name: Build and push server image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: apps/server/Dockerfile
+          push: true
+          tags: |
+            ${{ env.API_IMAGE }}:latest
+            ${{ env.API_IMAGE }}:${{ github.sha }}
+
+  deploy:
+    needs: [build-web, build-api]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -p "${{ secrets.SSH_PORT || 22 }}" -H "${{ secrets.SSH_HOST }}" >> ~/.ssh/known_hosts
+
+      # Copy only docker-compose.yml to the VPS — the VPS has no repo clone.
+      - name: Copy compose file to VPS
+        run: |
+          scp -i ~/.ssh/deploy_key -P "${{ secrets.SSH_PORT || 22 }}" \
+            docker-compose.yml \
+            "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.DEPLOY_PATH }}/docker-compose.yml"
+
+      # Pull the freshly built images on the VPS and restart the stack.
+      # The VPS builds nothing — it only pulls ready images.
+      - name: Pull images and restart on VPS
+        run: |
+          ssh -i ~/.ssh/deploy_key -p "${{ secrets.SSH_PORT || 22 }}" \
+            "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" \
+            "set -e && \
+             cd '${{ secrets.DEPLOY_PATH }}' && \
+             docker compose pull && \
+             docker compose up -d && \
+             docker image prune -f"
