@@ -13,10 +13,12 @@
 #
 # To use a different domain, change the site address below.
 
-chatovo.ru, www.chatovo.ru {
-	# Redirect the www host to the bare domain.
+www.chatovo.ru {
+	# Send the www host to the bare domain (preserve scheme via Caddy default).
 	redir https://chatovo.ru{uri} permanent
+}
 
+chatovo.ru {
 	# --- API: forward /api/* and /health to the Bun server ---
 	# The Hono server mounts routes at /api/... and /health, so the path
 	# is passed through unchanged.
