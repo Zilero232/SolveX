@@ -150,3 +150,29 @@ jobs:
              docker compose pull && \
              docker compose up -d && \
              docker image prune -f"
+
+  # After a successful deploy, delete every older version of both GHCR
+  # packages, keeping only the single most recent one (which is what the
+  # VPS just pulled). The new `:latest` tag has already been moved to the
+  # fresh image by the build jobs above, so older versions are safe to drop.
+  cleanup-registry:
+    needs: deploy
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+    steps:
+      - name: Delete old chatovo-web versions (keep latest 1)
+        uses: actions/delete-package-versions@v5
+        with:
+          package-name: chatovo-web
+          package-type: container
+          min-versions-to-keep: 1
+          delete-only-untagged-versions: false
+
+      - name: Delete old chatovo-server versions (keep latest 1)
+        uses: actions/delete-package-versions@v5
+        with:
+          package-name: chatovo-server
+          package-type: container
+          min-versions-to-keep: 1
+          delete-only-untagged-versions: false
