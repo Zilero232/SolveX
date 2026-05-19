@@ -36,9 +36,10 @@ export const routes = app
     }),
   )
   .get('/health', (c) => c.json({ ok: true }))
-  .use('/api/*', authMiddleware)
-  .route('/api/rooms', roomsRouter)
-  .route('/api/livekit', livekitRouter);
+  .use('/rooms/*', authMiddleware)
+  .use('/livekit/*', authMiddleware)
+  .route('/rooms', roomsRouter)
+  .route('/livekit', livekitRouter);
 
 app.doc('/openapi.json', {
   openapi: '3.0.0',

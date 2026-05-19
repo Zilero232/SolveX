@@ -19,11 +19,19 @@ www.chatovo.ru {
 }
 
 chatovo.ru {
-	# --- API: forward /api/* and /health to the Bun server ---
-	# The Hono server mounts routes at /api/... and /health, so the path
-	# is passed through unchanged.
-	@api path /api/* /health
+	# --- API: forward /api/* to the Bun server, stripping the /api prefix ---
+	# The Hono server mounts routes without any /api prefix (e.g. /rooms,
+	# /livekit) — the prefix is purely a routing marker for Caddy. We strip it
+	# before proxying so the server sees clean paths.
+	@api path /api/*
 	handle @api {
+		uri strip_prefix /api
+		reverse_proxy server:4000
+	}
+
+	# --- Healthcheck: forwarded as-is (the server route is also /health). ---
+	@health path /health
+	handle @health {
 		reverse_proxy server:4000
 	}
 
