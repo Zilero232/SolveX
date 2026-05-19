@@ -1,0 +1,23 @@
+User-agent: *
+Allow: /$
+
+Disallow: /auth
+Disallow: /lobby
+Disallow: /room
+Disallow: /api/
+
+# Block known AI scrapers from crawling app pages
+User-agent: GPTBot
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /
+
+Sitemap: https://chatovo.ru/sitemap.xml
+Host: https://chatovo.ru

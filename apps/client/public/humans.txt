@@ -1,0 +1,12 @@
+/* TEAM */
+Author: Alexandr Artemev
+Project: Chatovo
+Site: https://chatovo.ru
+Contact: alexandr.artemev.me [at] gmail.com
+
+/* SITE */
+Last update: 2026-05-20
+Language: English
+Doctype: HTML5
+Components: Next.js, React, Tauri, LiveKit, Hono, Supabase
+Standards: HTML5, CSS3, Open Graph, JSON-LD, PWA
