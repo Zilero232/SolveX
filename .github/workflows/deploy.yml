@@ -45,7 +45,10 @@ jobs:
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: 1.3.14
-      - run: bun install --frozen-lockfile
+      # Skip lifecycle scripts: the server's postinstall runs `prisma generate`,
+      # which loads prisma.config.ts and requires DIRECT_URL — unavailable in CI
+      # and unnecessary for linting. The Dockerfile installs the same way.
+      - run: bun install --frozen-lockfile --ignore-scripts
       - run: bun lint
 
   build-web:
