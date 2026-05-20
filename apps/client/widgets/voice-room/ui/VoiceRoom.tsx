@@ -1,11 +1,15 @@
 'use client';
 
 import { ControlBar, LiveKitRoom, RoomAudioRenderer } from '@livekit/components-react';
+import { useBoolean } from '@siberiacancode/reactuse';
 import { DisconnectReason } from 'livekit-client';
-import { Volume2 } from 'lucide-react';
+import { MessageSquare, Volume2 } from 'lucide-react';
 import { useRef } from 'react';
 
-import { ParticipantsView } from './components';
+import { Button } from '@/shared/ui';
+
+import { RoomChatProvider } from '../model';
+import { ChatPanel, ParticipantsView } from './components';
 import { voiceRoomStyles as s } from './VoiceRoom.styles';
 import type { VoiceRoomProps } from './VoiceRoom.types';
 
@@ -24,6 +28,7 @@ export const VoiceRoom = ({
   onConnectFailure,
 }: VoiceRoomProps) => {
   const hasConnectedRef = useRef(false);
+  const [isChatOpen, toggleChat] = useBoolean(false);
 
   return (
     <div className={s.root}>
@@ -49,18 +54,34 @@ export const VoiceRoom = ({
             onLeave();
           }}
         >
-          <div className={s.header}>
-            <Volume2 className={s.headerIcon} />
-            <span className={s.headerTitle}>{roomName}</span>
-          </div>
+          <RoomChatProvider>
+            <div className={s.header}>
+              <Volume2 className={s.headerIcon} />
+              <span className={s.headerTitle}>{roomName}</span>
+              <Button
+                aria-label={isChatOpen ? 'Hide chat' : 'Show chat'}
+                aria-pressed={isChatOpen}
+                size="icon-sm"
+                type="button"
+                variant={isChatOpen ? 'secondary' : 'ghost'}
+                onClick={() => toggleChat()}
+              >
+                <MessageSquare />
+              </Button>
+            </div>
 
-          <ParticipantsView />
+            <div className={s.body}>
+              <ParticipantsView />
+            </div>
 
-          <div className={s.controls} data-lk-theme="default">
-            <ControlBar variation="minimal" />
-          </div>
+            <div className={s.controls} data-lk-theme="default">
+              <ControlBar variation="minimal" />
+            </div>
 
-          <RoomAudioRenderer />
+            <RoomAudioRenderer />
+
+            <ChatPanel isOpen={isChatOpen} onClose={() => toggleChat(false)} />
+          </RoomChatProvider>
         </LiveKitRoom>
       </div>
     </div>
