@@ -1,3 +1,3 @@
-export interface RoomConnectingProps {
+export type RoomConnectingProps = {
   displayName: string;
-}
+};

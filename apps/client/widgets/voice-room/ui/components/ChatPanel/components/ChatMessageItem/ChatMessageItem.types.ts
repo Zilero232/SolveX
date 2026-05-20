@@ -1,7 +1,7 @@
 import type { ReceivedChatMessage } from '@livekit/components-core';
 
-export interface ChatMessageItemProps {
+export type ChatMessageItemProps = {
   isGrouped: boolean;
   isOwn: boolean;
   message: ReceivedChatMessage;
-}
+};

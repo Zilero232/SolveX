@@ -2,10 +2,10 @@ import type { MiddlewareHandler } from 'hono';
 
 import { supabaseAdmin } from '../lib/supabase';
 
-export interface AuthVars {
+export type AuthVars = {
   email?: string;
   userId: string;
-}
+};
 
 export const authMiddleware: MiddlewareHandler<{ Variables: AuthVars }> = async (c, next) => {
   const header = c.req.header('Authorization');

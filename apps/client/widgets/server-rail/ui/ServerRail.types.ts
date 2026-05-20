@@ -1,4 +1,4 @@
-export interface ServerRailProps {
+export type ServerRailProps = {
   channelsOpened: boolean;
   onToggleChannels: () => void;
-}
+};

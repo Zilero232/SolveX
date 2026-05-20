@@ -9,9 +9,9 @@ import { supabaseAdmin } from '../../lib/supabase';
 import type { AuthVars } from '../../middleware/auth';
 import type { tokenRoute } from './routes';
 
-interface Env {
+type Env = {
   Variables: AuthVars;
-}
+};
 
 const readRole = (metadata: Record<string, unknown> | undefined): 'admin' | 'user' =>
   metadata?.role === 'admin' ? 'admin' : 'user';

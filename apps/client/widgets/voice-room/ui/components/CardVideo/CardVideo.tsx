@@ -7,9 +7,9 @@ import type { KeyboardEvent } from 'react';
 
 import { cardVideoStyles as s } from './CardVideo.styles';
 
-interface CardVideoProps {
+type CardVideoProps = {
   trackRef: TrackReference;
-}
+};
 
 export const CardVideo = ({ trackRef }: CardVideoProps) => {
   const { ref, toggle } = useFullscreen<HTMLDivElement>();

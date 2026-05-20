@@ -1,0 +1,1 @@
+export { PlatformCard } from './PlatformCard';

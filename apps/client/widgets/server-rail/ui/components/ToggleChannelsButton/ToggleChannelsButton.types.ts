@@ -1,4 +1,4 @@
-export interface ToggleChannelsButtonProps {
+export type ToggleChannelsButtonProps = {
   opened: boolean;
   onToggle: () => void;
-}
+};

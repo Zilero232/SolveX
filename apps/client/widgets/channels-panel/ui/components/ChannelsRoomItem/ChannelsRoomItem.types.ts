@@ -1,5 +1,5 @@
 import type { Room } from '@chatovo/schemas/rooms';
 
-export interface ChannelsRoomItemProps {
+export type ChannelsRoomItemProps = {
   room: Room;
-}
+};

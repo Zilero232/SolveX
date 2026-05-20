@@ -4,9 +4,9 @@ import { prisma } from '../../lib/prisma';
 import type { AuthVars } from '../../middleware/auth';
 import type { createRoomRoute, deleteRoomRoute, getRoomRoute, listRoomsRoute } from './routes';
 
-interface Env {
+type Env = {
   Variables: AuthVars;
-}
+};
 
 export const listRoomsHandler: RouteHandler<typeof listRoomsRoute, Env> = async (c) => {
   const rooms = await prisma.room.findMany({

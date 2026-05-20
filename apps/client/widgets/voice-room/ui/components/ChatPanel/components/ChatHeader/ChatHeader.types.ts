@@ -1,3 +1,3 @@
-export interface ChatHeaderProps {
+export type ChatHeaderProps = {
   onClose: () => void;
-}
+};

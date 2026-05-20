@@ -74,7 +74,11 @@
         "noNonNullAssertion": "warn",
         "useShorthandFunctionType": "error",
         "noParameterAssign": "error",
-        "useNodejsImportProtocol": "error"
+        "useNodejsImportProtocol": "error",
+        "useConsistentTypeDefinitions": {
+          "level": "error",
+          "options": { "style": "type" }
+        }
       },
       "suspicious": {
         "noExplicitAny": "error",

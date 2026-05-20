@@ -3,10 +3,10 @@ import { useQuery } from '@tanstack/react-query';
 import { fetchLiveKitToken } from '@/shared/api';
 import { QUERY_KEYS } from '@/shared/constants';
 
-interface Options {
+type Options = {
   isPrivate: boolean;
   password?: string;
-}
+};
 
 // Single LiveKit-token source for both public and private rooms.
 // Public: fetches once roomId is known. Private: stays idle until a password

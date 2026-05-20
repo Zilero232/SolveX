@@ -4,10 +4,10 @@ import { useRouter } from 'next/navigation';
 import { fetchLiveKitToken } from '@/shared/api';
 import { buildRoomHref } from '@/shared/constants';
 
-export interface EnterRoomInput {
+export type EnterRoomInput = {
   password?: string;
   roomId: string;
-}
+};
 
 export const useEnterRoom = () => {
   const router = useRouter();
