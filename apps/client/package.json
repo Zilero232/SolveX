@@ -1,7 +1,7 @@
 {
   "name": "@chatovo/client",
   "type": "module",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "private": true,
   "scripts": {
     "predev": "node scripts/kill-port.mjs 3000",

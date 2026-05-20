@@ -17,8 +17,10 @@ export const PlatformCard = ({ Icon, asset, label }: PlatformCardProps) => {
   return (
     <a
       className={s.root({ state: 'available' })}
+      download
       href={asset.downloadUrl}
       rel="noopener noreferrer"
+      target="_blank"
     >
       <Icon className={s.icon} />
       <span className={s.name}>{label}</span>
