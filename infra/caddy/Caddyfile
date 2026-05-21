@@ -65,19 +65,6 @@ api.chatovo.ru {
 	# — no path rewriting needed. The web client uses fetch('https://api.chatovo.ru/...')
 	# directly; Tauri uses the same origin.
 
-	# /livekit/presence is a long-lived Server-Sent Events stream. Caddy must
-	# not buffer it: flush_interval -1 forwards every chunk immediately, and a
-	# disabled read timeout keeps the idle connection open between keepalive
-	# pings. Without this the stream is cut mid-frame and the browser reports
-	# net::ERR_INCOMPLETE_CHUNKED_ENCODING, dropping the user out of the room.
-	@sse path /livekit/presence
-	reverse_proxy @sse server:4000 {
-		flush_interval -1
-		transport http {
-			read_timeout 0
-		}
-	}
-
 	reverse_proxy server:4000
 }
 
