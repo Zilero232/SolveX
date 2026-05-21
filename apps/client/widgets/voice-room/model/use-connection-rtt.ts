@@ -17,7 +17,7 @@ const POLL_INTERVAL_MS = 2_000;
  */
 export const useConnectionRtt = (): number | null => {
   const [rtt, setRtt] = useState<number | null>(null);
-  
+
   const room = useRoomContext();
 
   useEffect(() => {
@@ -53,7 +53,7 @@ export const useConnectionRtt = (): number | null => {
 
     return () => {
       cancelled = true;
-      
+
       clearInterval(timer);
     };
   }, [room]);
