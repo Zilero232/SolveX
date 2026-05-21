@@ -36,6 +36,7 @@ export const VoiceRoom = ({
           audio
           className={s.room}
           data-lk-theme="default"
+          options={{ webAudioMix: true }}
           serverUrl={serverUrl}
           token={token}
           video={false}

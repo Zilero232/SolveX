@@ -11,7 +11,6 @@ import { connectionIndicatorStyles as s } from './ConnectionIndicator.styles';
 // Bar heights in px, shortest to tallest.
 const BAR_HEIGHTS = [4, 7, 10, 13, 16] as const;
 
-/** Maps round-trip time (ms) to a 1-5 signal strength. */
 const barsFromRtt = (rtt: number): number => {
   if (rtt < 50) return 5;
   if (rtt < 100) return 4;
@@ -21,7 +20,7 @@ const barsFromRtt = (rtt: number): number => {
   return 1;
 };
 
-/** Fallback when no RTT sample exists yet — derives bars from the quality enum. */
+// Fallback when no RTT sample exists yet — derives bars from the quality enum.
 const barsFromQuality = (quality: ConnectionQuality): number =>
   match(quality)
     .with(ConnectionQuality.Excellent, () => 5)
@@ -30,10 +29,6 @@ const barsFromQuality = (quality: ConnectionQuality): number =>
     .with(ConnectionQuality.Lost, () => 0)
     .otherwise(() => 0);
 
-/**
- * Live connection-quality indicator: 1-5 signal bars plus the round-trip
- * time in milliseconds. Renders the local participant's link to the SFU.
- */
 export const ConnectionIndicator = () => {
   // The indicator lives in the room header, outside any ParticipantContext,
   // so the local participant must be passed to the quality hook explicitly.

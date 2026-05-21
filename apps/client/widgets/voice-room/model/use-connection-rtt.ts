@@ -5,16 +5,9 @@ import { useEffect, useState } from 'react';
 
 const POLL_INTERVAL_MS = 2_000;
 
-/**
- * Reads the current round-trip time (ping, in ms) to the LiveKit SFU.
- *
- * LiveKit's `useConnectionQuality` only exposes a coarse enum — it has no
- * millisecond figure. The real RTT lives in the WebRTC layer, so this polls
- * the peer connection's `getStats()` for the active candidate pair every
- * couple of seconds.
- *
- * Returns `null` until the first sample arrives (or while disconnected).
- */
+// LiveKit's useConnectionQuality exposes only a coarse enum, so this polls the
+// WebRTC peer connection's getStats() for the real RTT. Returns null until the
+// first sample arrives (or while disconnected).
 export const useConnectionRtt = (): number | null => {
   const [rtt, setRtt] = useState<number | null>(null);
 
@@ -25,8 +18,9 @@ export const useConnectionRtt = (): number | null => {
 
     const sample = async () => {
       // The publisher transport exists once connected; its candidate pair
-      // carries the same transport RTT as the subscriber.
-      const publisher = room.engine.pcManager?.publisher;
+      // carries the same transport RTT as the subscriber. `engine` itself is
+      // undefined until the room finishes connecting.
+      const publisher = room.engine?.pcManager?.publisher;
 
       if (!publisher) return;
 

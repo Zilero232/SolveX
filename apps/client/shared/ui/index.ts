@@ -10,5 +10,6 @@ export * from './popover';
 export * from './scroll-area';
 export * from './separator';
 export * from './sheet';
+export * from './slider';
 export * from './sonner';
 export * from './tooltip';

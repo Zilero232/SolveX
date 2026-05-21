@@ -18,4 +18,9 @@ export const channelsListStyles = {
   lobbyIcon: 'size-3.5',
   loaderIcon: 'mx-auto my-2 size-4 animate-spin text-muted-foreground',
   emptyHint: 'px-2 py-1 text-muted-foreground text-xs italic',
+  search: 'px-2 pt-2',
+  searchField: 'relative',
+  searchIcon:
+    '-translate-y-1/2 pointer-events-none absolute top-1/2 left-2.5 size-3.5 text-muted-foreground',
+  searchInput: 'h-8 pl-8 text-sm',
 } as const;

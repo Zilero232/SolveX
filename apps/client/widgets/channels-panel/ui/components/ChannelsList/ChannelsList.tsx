@@ -1,8 +1,12 @@
 'use client';
 
-import { Loader2 } from 'lucide-react';
-import { useRooms } from '@/entities/room';
-import { ScrollArea } from '@/shared/ui';
+import { Loader2, Search } from 'lucide-react';
+import { useState } from 'react';
+import { isEmpty as isEmptyList } from 'remeda';
+import { match } from 'ts-pattern';
+import { useRooms, useRoomsPresence } from '@/entities/room';
+import { Input, ScrollArea } from '@/shared/ui';
+import { groupRooms } from '../../../model';
 import { ChannelsRoomItem } from '../ChannelsRoomItem';
 import { channelsListStyles as s } from './ChannelsList.styles';
 
@@ -20,20 +24,45 @@ const SectionLabel = ({
 
 export const ChannelsList = () => {
   const { rooms, isLoading, isEmpty } = useRooms();
+  const presence = useRoomsPresence();
+
+  const [query, setQuery] = useState('');
+
+  const sections = groupRooms(rooms, presence, query);
 
   return (
-    <ScrollArea className={s.scroll}>
-      <div className={s.list}>
-        <SectionLabel offset>Voice rooms</SectionLabel>
-
-        {isLoading && <Loader2 className={s.loaderIcon} />}
-
-        {isEmpty && <p className={s.emptyHint}>No rooms yet</p>}
-
-        {rooms.map((room) => (
-          <ChannelsRoomItem key={room.id} room={room} />
-        ))}
+    <>
+      <div className={s.search}>
+        <div className={s.searchField}>
+          <Search className={s.searchIcon} />
+          <Input
+            className={s.searchInput}
+            placeholder="Search rooms..."
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+          />
+        </div>
       </div>
-    </ScrollArea>
+
+      <ScrollArea className={s.scroll}>
+        <div className={s.list}>
+          {match({ isLoading, isEmpty, nothingFound: isEmptyList(sections) })
+            .with({ isLoading: true }, () => <Loader2 className={s.loaderIcon} />)
+            .with({ isEmpty: true }, () => <p className={s.emptyHint}>No rooms yet</p>)
+            .with({ nothingFound: true }, () => <p className={s.emptyHint}>Nothing found</p>)
+            .otherwise(() =>
+              sections.map((section, index) => (
+                <div key={section.key}>
+                  <SectionLabel offset={index > 0}>{section.label}</SectionLabel>
+
+                  {section.rooms.map((room) => (
+                    <ChannelsRoomItem key={room.id} room={room} />
+                  ))}
+                </div>
+              )),
+            )}
+        </div>
+      </ScrollArea>
+    </>
   );
 };

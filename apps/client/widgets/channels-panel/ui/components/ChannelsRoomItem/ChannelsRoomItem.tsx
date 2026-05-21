@@ -28,7 +28,16 @@ export const ChannelsRoomItem = ({ room }: ChannelsRoomItemProps) => {
           {room.name}
           {room.isPrivate && <Lock className={s.privateIcon} />}
         </span>
-        {isActive && <span className={s.joinedBadge}>joined</span>}
+        {isActive ? (
+          <span className={s.joinedBadge}>joined</span>
+        ) : (
+          !isEmpty(participants) && (
+            <span className={s.count}>
+              <span className={s.countDot} />
+              {participants.length}
+            </span>
+          )
+        )}
       </button>
       {!isEmpty(participants) && (
         <div className={s.participants}>

@@ -21,6 +21,8 @@ export const channelsRoomItemStyles = {
     defaultVariants: { active: false },
   }),
   joinedBadge: 'rounded border border-green-500/40 px-1.5 py-0.5 text-[9px] text-green-500',
+  count: 'flex items-center gap-1 text-muted-foreground text-xs tabular-nums',
+  countDot: 'size-1.5 rounded-full bg-green-500',
   participants: 'flex flex-col',
   participant: 'flex items-center gap-2 py-1 pr-2 pl-8',
   participantAvatar: 'size-5',

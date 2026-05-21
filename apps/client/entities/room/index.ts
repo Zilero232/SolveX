@@ -1,4 +1,4 @@
-export { RoomsPresenceProvider } from './model/rooms-presence';
+export { RoomsPresenceProvider, useRoomsPresence } from './model/rooms-presence';
 export { useCreateRoom } from './model/use-create-room';
 export { useDeleteRoom } from './model/use-delete-room';
 export { useEnterRoom } from './model/use-enter-room';
