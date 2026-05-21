@@ -146,7 +146,7 @@ jobs:
           ssh -i ~/.ssh/deploy_key -p "${{ secrets.SSH_PORT || 22 }}" \
             "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" \
             "set -e && \
-             cd '${{ secrets.DEPLOY_PATH }}' && \ 
+             cd '${{ secrets.DEPLOY_PATH }}' && \
              docker compose pull && \
              docker compose up -d && \
              docker image prune -f"
