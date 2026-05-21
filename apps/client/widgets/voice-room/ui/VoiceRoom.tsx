@@ -3,11 +3,11 @@
 import { ControlBar, LiveKitRoom, RoomAudioRenderer } from '@livekit/components-react';
 import { useBoolean } from '@siberiacancode/reactuse';
 import { DisconnectReason } from 'livekit-client';
-import { MessageSquare, Volume2 } from 'lucide-react';
+import { MessageSquare } from 'lucide-react';
 import { useRef } from 'react';
 import { Button } from '@/shared/ui';
 import { RoomChatProvider } from '../model';
-import { ChatPanel, ParticipantsView } from './components';
+import { ChatPanel, ConnectionIndicator, ParticipantsView } from './components';
 import { voiceRoomStyles as s } from './VoiceRoom.styles';
 import type { VoiceRoomProps } from './VoiceRoom.types';
 
@@ -54,26 +54,30 @@ export const VoiceRoom = ({
         >
           <RoomChatProvider>
             <div className={s.header}>
-              <Volume2 className={s.headerIcon} />
               <span className={s.headerTitle}>{roomName}</span>
-              <Button
-                aria-label={isChatOpen ? 'Hide chat' : 'Show chat'}
-                aria-pressed={isChatOpen}
-                size="icon-sm"
-                type="button"
-                variant={isChatOpen ? 'secondary' : 'ghost'}
-                onClick={() => toggleChat()}
-              >
-                <MessageSquare />
-              </Button>
+              <ConnectionIndicator />
             </div>
 
             <div className={s.body}>
               <ParticipantsView />
             </div>
 
-            <div className={s.controls} data-lk-theme="default">
-              <ControlBar variation="minimal" />
+            <div className={s.controls}>
+              <div className={s.controlBar} data-lk-theme="default">
+                <ControlBar variation="minimal" />
+              </div>
+
+              <Button
+                aria-label={isChatOpen ? 'Hide chat' : 'Show chat'}
+                aria-pressed={isChatOpen}
+                className={s.chatButton}
+                size="icon-lg"
+                type="button"
+                variant={isChatOpen ? 'secondary' : 'ghost'}
+                onClick={() => toggleChat()}
+              >
+                <MessageSquare />
+              </Button>
             </div>
 
             <RoomAudioRenderer />

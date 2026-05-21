@@ -3,8 +3,11 @@ export const voiceRoomStyles = {
   frame: 'flex h-full flex-col overflow-hidden rounded-lg border bg-card',
   room: 'flex h-full flex-col',
   header: 'flex items-center gap-2 border-b px-4 py-3',
-  headerIcon: 'size-4 text-muted-foreground',
   headerTitle: 'flex-1 truncate font-semibold text-sm',
   body: 'flex min-h-0 flex-1 flex-col',
-  controls: 'flex justify-center border-t p-2',
+
+  // ControlBar centred; the chat toggle pinned to the right edge.
+  controls: 'relative flex items-center justify-center border-t p-2',
+  controlBar: 'flex justify-center',
+  chatButton: 'absolute right-2',
 } as const;

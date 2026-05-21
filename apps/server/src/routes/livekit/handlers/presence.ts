@@ -4,6 +4,10 @@ import { getSnapshot, subscribe } from '../presence';
 import type { Handler } from 'hono';
 import type { Env } from '../../shared/types';
 
+// Keepalive cadence. Idle HTTP/2 streams behind Caddy / the browser are
+// dropped after ~15-20s of silence, so ping well inside that window.
+const PING_INTERVAL_MS = 10_000;
+
 /**
  * Streams live room presence to the client over Server-Sent Events.
  *
@@ -30,18 +34,18 @@ export const presenceHandler: Handler<Env> = async (c) => {
     };
 
     // Hono's SSE stream wraps a single locked WritableStream writer. Two
-    // overlapping writeSSE() calls corrupt the chunked encoding (the browser
-    // then reports ERR_INCOMPLETE_CHUNKED_ENCODING). Snapshots and pings can
-    // fire concurrently, so funnel every write through one promise chain —
-    // each write waits for the previous one to finish.
+    // overlapping writes corrupt the chunked encoding (the browser then
+    // reports ERR_INCOMPLETE_CHUNKED_ENCODING / ERR_HTTP2_PROTOCOL_ERROR).
+    // Snapshots and pings can fire concurrently, so funnel every write
+    // through one promise chain — each waits for the previous to finish.
     let writeChain: Promise<void> = Promise.resolve();
 
-    const enqueueWrite = (event: string, data: string): Promise<void> => {
+    const enqueue = (write: () => Promise<void>): Promise<void> => {
       writeChain = writeChain.then(async () => {
         if (closed) return;
 
         try {
-          await stream.writeSSE({ event, data });
+          await write();
         } catch {
           // The client (or a proxy) dropped the connection. Stop here so we
           // don't leak a subscription that throws on every future emit().
@@ -52,17 +56,25 @@ export const presenceHandler: Handler<Env> = async (c) => {
       return writeChain;
     };
 
+    const sendSnapshot = (snapshot: unknown) =>
+      enqueue(() => stream.writeSSE({ event: 'snapshot', data: JSON.stringify(snapshot) }));
+
     // Push the current state immediately so the client renders without waiting.
-    await enqueueWrite('snapshot', JSON.stringify(getSnapshot()));
+    await sendSnapshot(getSnapshot());
 
     unsubscribe = subscribe((snapshot) => {
-      void enqueueWrite('snapshot', JSON.stringify(snapshot));
+      void sendSnapshot(snapshot);
     });
 
-    // Keep the connection alive through proxies that drop idle streams.
+    // Keep the connection alive through proxies and HTTP/2 idle timeouts that
+    // drop silent streams. A bare SSE comment (`: ...`) is the canonical
+    // keepalive — it counts as traffic but is ignored by EventSource, so the
+    // client never sees a spurious event.
     ping = setInterval(() => {
-      void enqueueWrite('ping', '');
-    }, 25_000);
+      void enqueue(async () => {
+        await stream.write(': keepalive\n\n');
+      });
+    }, PING_INTERVAL_MS);
 
     // streamSSE resolves the callback = closes the stream; block until the
     // client disconnects, then release the subscription and keepalive timer.
