@@ -47,12 +47,15 @@ export const useRoomsPresenceStream = (enabled: boolean) => {
           }
         });
 
-        // A proxy-dropped stream surfaces here. EventSource would retry with a
-        // stale URL, so close it and reconnect ourselves with a fresh token.
+        // EventSource fires `error` on every transient hiccup, including while
+        // it is still CONNECTING and retrying on its own. Only step in when the
+        // connection is truly CLOSED — then EventSource has given up, so we
+        // reconnect manually with a freshly minted token. Reacting to every
+        // `error` would kill a still-healthy stream and spawn duplicates.
         source.addEventListener('error', () => {
-          if (cancelled) return;
+          if (cancelled || source?.readyState !== EventSource.CLOSED) return;
 
-          source?.close();
+          source.close();
           source = null;
           clearTimeout(reconnectTimer);
           reconnectTimer = setTimeout(connect, 3_000);
