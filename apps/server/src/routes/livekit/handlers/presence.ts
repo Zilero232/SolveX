@@ -4,9 +4,10 @@ import { getSnapshot, subscribe } from '../presence';
 import type { Handler } from 'hono';
 import type { Env } from '../../shared/types';
 
-// Keepalive cadence. Idle HTTP/2 streams behind Caddy / the browser are
-// dropped after ~15-20s of silence, so ping well inside that window.
-const PING_INTERVAL_MS = 10_000;
+// Keepalive cadence. A diagnostic run with no ping confirmed the stream is
+// dropped after ~15-20s of silence (idle timeout). Ping at 8s — well inside
+// that window, with room to spare if a single ping is lost.
+const PING_INTERVAL_MS = 8_000;
 
 /**
  * Streams live room presence to the client over Server-Sent Events.
@@ -66,10 +67,9 @@ export const presenceHandler: Handler<Env> = async (c) => {
       void sendSnapshot(snapshot);
     });
 
-    // Keep the connection alive through proxies and HTTP/2 idle timeouts that
-    // drop silent streams. A bare SSE comment (`: ...`) is the canonical
-    // keepalive — it counts as traffic but is ignored by EventSource, so the
-    // client never sees a spurious event.
+    // Keep the connection alive: a silent stream is dropped by the idle
+    // timeout within ~15-20s. A bare SSE comment (`: ...`) counts as traffic
+    // but is ignored by EventSource, so the client never sees a stray event.
     ping = setInterval(() => {
       void enqueue(async () => {
         await stream.write(': keepalive\n\n');
