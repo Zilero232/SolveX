@@ -1,17 +1,23 @@
 # Chatovo production stack — runs on the Timeweb Cloud VPS.
 #
-#   web     — static Next.js client + Caddy (serves the site, proxies /api,
-#             terminates HTTPS); the only public-facing container
-#   server  — Hono API on Bun
+#   web      — static Next.js client + Caddy (serves the site, proxies /api
+#              and the LiveKit WebSocket, terminates HTTPS); the only
+#              public-facing HTTP container
+#   server   — Hono API on Bun
+#   livekit  — self-hosted LiveKit SFU (WebRTC voice/video). Uses host networking
+#              so WebRTC media ports work directly without Docker NAT.
 #
-# Both images are built on CI and pushed to the private GitHub Container
-# Registry (ghcr.io). The VPS builds nothing — it only pulls ready images.
-# The VPS must be logged in to ghcr.io once (see DEPLOY.md).
+# The web and server images are built on CI and pushed to the private GitHub
+# Container Registry (ghcr.io). LiveKit uses the official upstream image from
+# Docker Hub. The VPS builds nothing — it only pulls ready images. The VPS
+# must be logged in to ghcr.io once (see DEPLOY.md).
 #
-# The VPS does NOT have a clone of the repository. Only two files live on it,
-# side by side in one directory:
-#   docker-compose.yml  — copied here by CI on every deploy
-#   .env                — created once by hand with production values
+# The VPS does NOT have a clone of the repository. The following files live
+# in one directory, side by side:
+#   docker-compose.yml      — copied here by CI on every deploy
+#   .env                    — created once by hand with production values
+#   livekit.yaml            — created once by hand (LiveKit server config,
+#                             contains LIVEKIT_API_KEY / LIVEKIT_API_SECRET)
 #
 # Pull latest & restart: docker compose pull && docker compose up -d
 # Logs:                  docker compose logs -f
@@ -36,6 +42,11 @@ services:
       - caddy_config:/config
     networks:
       - chatovo
+    # Caddy reverse-proxies the livekit.chatovo.ru subdomain to the LiveKit
+    # container, which runs with network_mode: host (so it's reachable from
+    # this bridge-networked container only via the host gateway).
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
   server:
     # Image built and pushed by CI. Replace the owner if the GitHub account
@@ -58,6 +69,23 @@ services:
       timeout: 5s
       retries: 3
       start_period: 10s
+
+  livekit:
+    # Official upstream image — not built by CI.
+    image: livekit/livekit-server:latest
+    container_name: chatovo-livekit
+    restart: always
+    # Host networking is required for WebRTC: the SFU advertises ICE candidates
+    # with the host's real IP and binds the UDP media port range directly on
+    # the host. Behind Docker's bridge NAT, the published candidates would not
+    # be reachable and media would fail to establish.
+    network_mode: host
+    command: --config /etc/livekit.yaml
+    volumes:
+      # Sits next to this compose file on the VPS. Create it once from the
+      # infra/livekit/livekit.yaml template in the repo, filling in the
+      # generated API key / secret and the external (server) IP address.
+      - ./livekit.yaml:/etc/livekit.yaml:ro
 
 volumes:
   caddy_data:

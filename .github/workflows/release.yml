@@ -18,11 +18,10 @@ name: Release Desktop App
 #                                        already committed in tauri.conf.json).
 #                                        Generate once with: bun run signer:generate (in apps/tauri).
 #                                        Key is created without a password — see apps/tauri/package.json.
-#   NEXT_PUBLIC_API_URL_DESKTOP          Absolute API URL baked into the desktop bundle
-#                                        (e.g. https://chatovo.ru/api). The web deploy uses
-#                                        a relative `/api`, which resolves against the site's
-#                                        origin; Tauri's origin is tauri://localhost so it
-#                                        needs an absolute URL via this dedicated secret.
+#   NEXT_PUBLIC_API_URL                  Absolute API URL baked into the desktop bundle
+#                                        (e.g. https://api.chatovo.ru). Shared with the
+#                                        web deploy — both web and desktop hit the same
+#                                        cross-origin API host, allowed by server CORS.
 #   NEXT_PUBLIC_LIVEKIT_URL              LiveKit signalling URL (wss://...).
 #   NEXT_PUBLIC_SUPABASE_URL             Supabase project URL.
 #   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY Supabase publishable (anon) key.
@@ -179,9 +178,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
           # NEXT_PUBLIC_* are baked into the static export that Tauri ships.
-          # NEXT_PUBLIC_API_URL must be absolute for desktop — web's /api won't resolve
-          # against tauri://localhost. Use the dedicated *_DESKTOP secret.
-          NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL_DESKTOP }}
+          # Same NEXT_PUBLIC_API_URL secret as the web deploy — both targets point
+          # at https://api.chatovo.ru. Tauri's origin (tauri://localhost) cannot
+          # resolve a relative URL, so the value must be absolute.
+          NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
           NEXT_PUBLIC_LIVEKIT_URL: ${{ secrets.NEXT_PUBLIC_LIVEKIT_URL }}
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY }}

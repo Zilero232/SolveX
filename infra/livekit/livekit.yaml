@@ -1,0 +1,50 @@
+# Chatovo self-hosted LiveKit server config.
+#
+# This is the TEMPLATE that lives in the repository. The real file on the VPS
+# lives next to docker-compose.yml (typically /opt/chatovo/livekit.yaml) and
+# is created once by hand from this template, filling in:
+#   - keys:           one API key + secret pair (32+ char secret)
+#   - rtc.node_ip:    the VPS public IP (only if external IP auto-detection
+#                     fails; usually leave use_external_ip: true instead)
+#
+# Generate an API key/secret pair — just two random strings, the secret must
+# be at least 32 characters. See infra/livekit/README.md for ready-made
+# one-liners (openssl on bash, or pure PowerShell on Windows).
+#
+# Keep this file out of git on the VPS — it contains the API secret. The
+# server reads the same secret from its own .env (LIVEKIT_API_SECRET).
+
+# WebSocket signalling port. Caddy reverse-proxies wss://livekit.chatovo.ru
+# to this port on localhost.
+port: 7880
+
+# RTC (media) configuration.
+rtc:
+  # UDP port range for media streams. Must be open on the VPS firewall.
+  # 100 ports is plenty for dozens of concurrent voice participants.
+  port_range_start: 50000
+  port_range_end: 50100
+
+  # TCP fallback for clients that cannot use UDP (corporate firewalls etc.).
+  # Higher latency than UDP but keeps voice working. Must be open on the
+  # VPS firewall.
+  tcp_port: 7881
+
+  # Auto-detect the server's public IP and advertise it in ICE candidates.
+  # Required when LiveKit runs behind any kind of NAT — and even on a plain
+  # VPS the container would otherwise see only its own internal address.
+  use_external_ip: true
+
+# API keys. The same key + secret pair must be set in the server's .env
+# (LIVEKIT_API_KEY / LIVEKIT_API_SECRET). The client never sees the secret —
+# the Hono API mints short-lived JWTs and hands them to the browser/Tauri.
+#
+# Format: one entry per line, "<key>: <secret>". The secret must be at least
+# 32 characters. NEVER reuse the example below — generate your own.
+keys:
+  # APIxxxxxxxxxxxx: replace-with-32-plus-char-secret
+
+# Logging. "info" is fine for production; switch to "debug" temporarily when
+# diagnosing connection issues.
+logging:
+  level: info

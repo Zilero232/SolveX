@@ -1,54 +1,59 @@
 # Chatovo — Caddy config (runs on the VPS).
 #
-# One domain, one site block: chatovo.ru serves the static web client, and
-# requests under /api are reverse-proxied to the Bun API server. Because the
-# site and the API share the same origin, no CORS setup is needed for the web.
+# Three site blocks share this VPS:
+#   chatovo.ru          — static web client (no /api proxy any more)
+#   api.chatovo.ru      — Bun API server (Hono)
+#   livekit.chatovo.ru  — TLS termination for the self-hosted LiveKit SFU
+#
+# The web client and the API live on different origins, so the Hono server's
+# CORS middleware must allow https://chatovo.ru (see CORS_ORIGINS in the
+# server .env). Tauri origin (tauri://localhost) is always allowed
+# automatically.
 #
 # Caddy obtains and renews a free TLS certificate from Let's Encrypt
 # automatically — no certbot, no manual setup.
 #
 # Requirements for the auto-certificate to work:
-#   - DNS A-records for chatovo.ru and www.chatovo.ru point at this VPS
+#   - DNS A-records for chatovo.ru, www.chatovo.ru, api.chatovo.ru and
+#     livekit.chatovo.ru all point at this VPS
 #   - ports 80 and 443 are open on the VPS firewall
 #
-# To use a different domain, change the site address below.
+# To use a different domain, change the site addresses below.
 
 www.chatovo.ru {
 	# Send the www host to the bare domain (preserve scheme via Caddy default).
 	redir https://chatovo.ru{uri} permanent
 }
 
+livekit.chatovo.ru {
+	# The LiveKit container runs with network_mode: host on the VPS, so from
+	# this bridge-networked Caddy container it is reachable via host-gateway
+	# (mapped to host.docker.internal — see docker-compose.yml). Port 7880 is
+	# LiveKit's WebSocket signalling port; Caddy handles WSS upgrade natively,
+	# no extra config needed.
+	reverse_proxy host.docker.internal:7880
+}
+
+api.chatovo.ru {
+	# The Hono server mounts routes at the root (e.g. /rooms, /livekit, /health)
+	# — no path rewriting needed. The web client uses fetch('https://api.chatovo.ru/...')
+	# directly; Tauri uses the same origin.
+	reverse_proxy server:4000
+}
+
 chatovo.ru {
-	# --- API: forward /api/* to the Bun server, stripping the /api prefix ---
-	# The Hono server mounts routes without any /api prefix (e.g. /rooms,
-	# /livekit) — the prefix is purely a routing marker for Caddy. We strip it
-	# before proxying so the server sees clean paths.
-	@api path /api/*
-	handle @api {
-		uri strip_prefix /api
-		reverse_proxy server:4000
-	}
-
-	# --- Healthcheck: forwarded as-is (the server route is also /health). ---
-	@health path /health
-	handle @health {
-		reverse_proxy server:4000
-	}
-
 	# --- Web client: static Next.js export ---
-	handle {
-		# Static files are uploaded here by CI (see docker-compose volume).
-		root * /srv/www
+	# Static files are uploaded here by CI (see docker-compose volume).
+	root * /srv/www
 
-		# Cache hashed Next.js assets aggressively.
-		@assets path /_next/static/*
-		header @assets Cache-Control "public, max-age=31536000, immutable"
+	# Cache hashed Next.js assets aggressively.
+	@assets path /_next/static/*
+	header @assets Cache-Control "public, max-age=31536000, immutable"
 
-		encode gzip
+	encode gzip
 
-		# SPA / static-export routing: try the file, then `<path>.html`,
-		# then the directory index, finally fall back to the 404 page.
-		try_files {path} {path}.html {path}/index.html /404.html
-		file_server
-	}
+	# SPA / static-export routing: try the file, then `<path>.html`,
+	# then the directory index, finally fall back to the 404 page.
+	try_files {path} {path}.html {path}/index.html /404.html
+	file_server
 }
