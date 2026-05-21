@@ -2,6 +2,7 @@
 
 import { useCurrentUser } from '@/entities/user';
 import { Avatar, AvatarFallback } from '@/shared/ui';
+import { AppSettingsButton } from '@/widgets/app-settings';
 import { channelsFooterStyles as s } from './ChannelsFooter.styles';
 
 export const ChannelsFooter = () => {
@@ -16,6 +17,8 @@ export const ChannelsFooter = () => {
         <span className={s.name}>{displayName}</span>
         <span className={s.status}>online</span>
       </div>
+
+      <AppSettingsButton />
     </div>
   );
 };

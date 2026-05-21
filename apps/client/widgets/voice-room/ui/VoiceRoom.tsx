@@ -6,8 +6,9 @@ import { DisconnectReason } from 'livekit-client';
 import { MessageSquare } from 'lucide-react';
 import { useRef } from 'react';
 import { Button } from '@/shared/ui';
+import { useAppSettings } from '@/widgets/app-settings';
 import { RoomChatProvider } from '../model';
-import { ChatPanel, ConnectionIndicator, ParticipantsView } from './components';
+import { ChatPanel, ConnectionIndicator, ParticipantsView, RoomSounds } from './components';
 import { voiceRoomStyles as s } from './VoiceRoom.styles';
 import type { VoiceRoomProps } from './VoiceRoom.types';
 
@@ -28,12 +29,24 @@ export const VoiceRoom = ({
   const hasConnectedRef = useRef(false);
   const [isChatOpen, toggleChat] = useBoolean(false);
 
+  const { settings } = useAppSettings();
+
+  // Capture the audio processing flags once at mount. The `audio` prop is read
+  // only on the initial connect, so seeding it from a ref keeps later toggles
+  // (handled live by AudioSettings via setMicrophoneEnabled) from forcing a
+  // reconnect when the persisted settings change mid-call.
+  const audioCaptureRef = useRef({
+    noiseSuppression: settings.noiseSuppression,
+    echoCancellation: settings.echoCancellation,
+    autoGainControl: settings.autoGainControl,
+  });
+
   return (
     <div className={s.root}>
       <div className={s.frame}>
         <LiveKitRoom
           connect
-          audio
+          audio={audioCaptureRef.current}
           className={s.room}
           data-lk-theme="default"
           options={{ webAudioMix: true }}
@@ -54,6 +67,8 @@ export const VoiceRoom = ({
           }}
         >
           <RoomChatProvider>
+            <RoomSounds isChatOpen={isChatOpen} />
+
             <div className={s.header}>
               <span className={s.headerTitle}>{roomName}</span>
               <ConnectionIndicator />
