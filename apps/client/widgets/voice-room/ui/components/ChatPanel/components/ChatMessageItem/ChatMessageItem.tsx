@@ -2,7 +2,6 @@ import { cn } from '@/shared/lib/cn';
 import { formatMessageTime } from '@/shared/lib/format-date';
 import { getAvatarColor, getInitials } from '@/shared/lib/initials';
 import { Avatar, AvatarFallback } from '@/shared/ui';
-
 import { chatMessageItemStyles as s } from './ChatMessageItem.styles';
 import type { ChatMessageItemProps } from './ChatMessageItem.types';
 

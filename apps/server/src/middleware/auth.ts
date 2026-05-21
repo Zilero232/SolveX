@@ -1,6 +1,5 @@
+import { verifyAccessToken } from '../lib/auth';
 import type { MiddlewareHandler } from 'hono';
-
-import { supabaseAdmin } from '../lib/supabase';
 
 export type AuthVars = {
   email?: string;
@@ -12,15 +11,12 @@ export const authMiddleware: MiddlewareHandler<{ Variables: AuthVars }> = async 
 
   if (!header?.startsWith('Bearer ')) return c.json({ error: 'Unauthorized' }, 401);
 
-  const token = header.slice(7);
-  const { data, error } = await supabaseAdmin.auth.getUser(token);
+  const user = await verifyAccessToken(header.slice(7));
 
-  if (error || !data.user) return c.json({ error: 'Unauthorized' }, 401);
+  if (!user) return c.json({ error: 'Unauthorized' }, 401);
 
-  const { id, email } = data.user;
-
-  c.set('userId', id);
-  c.set('email', email);
+  c.set('userId', user.userId);
+  c.set('email', user.email);
 
   await next();
 };

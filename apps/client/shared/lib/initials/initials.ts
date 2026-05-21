@@ -1,3 +1,5 @@
+import { isEmpty } from 'remeda';
+
 const AVATAR_COLORS = [
   'bg-red-600',
   'bg-orange-600',
@@ -15,7 +17,7 @@ const AVATAR_COLORS = [
 export const getInitials = (name: string): string => {
   const words = name.trim().split(/\s+/).filter(Boolean);
 
-  if (words.length === 0) return '?';
+  if (isEmpty(words)) return '?';
 
   return words
     .slice(0, 2)

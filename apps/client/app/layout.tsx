@@ -1,9 +1,7 @@
-import type { ReactNode } from 'react';
-
 import { JsonLdScript } from '@/shared/seo';
 import { Toaster, TooltipProvider } from '@/shared/ui';
-
 import { Providers } from './providers';
+import type { ReactNode } from 'react';
 
 import '@livekit/components-styles';
 

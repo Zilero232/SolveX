@@ -2,7 +2,6 @@
 
 import { useCurrentUser } from '@/entities/user';
 import { Avatar, AvatarFallback } from '@/shared/ui';
-
 import { channelsFooterStyles as s } from './ChannelsFooter.styles';
 
 export const ChannelsFooter = () => {

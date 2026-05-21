@@ -1,5 +1,4 @@
 import { supabase } from '@/shared/api';
-
 import { POPUP_FEATURES, POPUP_POLL_MS, POPUP_TIMEOUT_MS } from './config';
 import { GoogleSignInCancelled } from './errors';
 

@@ -1,1 +1,2 @@
-export { fetchLiveKitToken, fetchRoomParticipants } from './livekit';
+export { fetchLiveKitToken } from './livekit';
+export { buildPresenceStreamUrl } from './presence';

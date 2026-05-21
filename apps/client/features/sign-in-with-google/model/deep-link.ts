@@ -1,8 +1,6 @@
 import { onOpenUrl } from '@tauri-apps/plugin-deep-link';
 import { openUrl } from '@tauri-apps/plugin-opener';
-
 import { supabase } from '@/shared/api';
-
 import { DEEP_LINK_SCHEME, DEEP_LINK_TIMEOUT_MS } from './config';
 import { GoogleSignInCancelled } from './errors';
 

@@ -1,6 +1,5 @@
-import type { Metadata } from 'next';
-
 import { SITE } from '@/shared/config';
+import type { Metadata } from 'next';
 
 type PageMetadataInput = {
   title: string;

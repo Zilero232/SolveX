@@ -1,12 +1,12 @@
 export { tokenRequestSchema } from './inputs';
 export {
   roomParticipantSchema,
-  roomParticipantsResponseSchema,
+  roomsParticipantsSnapshotSchema,
   tokenResponseSchema,
 } from './outputs';
 export type {
   RoomParticipant,
-  RoomParticipantsResponse,
+  RoomsParticipantsSnapshot,
   TokenRequest,
   TokenResponse,
 } from './types';

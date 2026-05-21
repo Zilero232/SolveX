@@ -1,5 +1,4 @@
 import { formatBytes } from '@/shared/lib/format-bytes';
-
 import { platformCardStyles as s } from './PlatformCard.styles';
 import type { PlatformCardProps } from './PlatformCard.types';
 

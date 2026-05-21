@@ -1,5 +1,4 @@
 import { Loader2 } from 'lucide-react';
-
 import { roomLoadingFallbackStyles as s } from './RoomLoadingFallback.styles';
 
 export const RoomLoadingFallback = () => (

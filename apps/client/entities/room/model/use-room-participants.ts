@@ -1,15 +1,16 @@
-import { useQuery } from '@tanstack/react-query';
+'use client';
 
-import { fetchRoomParticipants } from '@/shared/api';
-import { QUERY_KEYS } from '@/shared/constants';
+import { useRoomsPresence } from './rooms-presence';
+import type { RoomParticipant } from '@chatovo/schemas/livekit';
 
-const REFRESH_MS = 5_000;
+const EMPTY: RoomParticipant[] = [];
 
-export const useRoomParticipants = (roomId: string | null, enabled = true) =>
-  useQuery({
-    queryKey: QUERY_KEYS.roomParticipants(roomId ?? ''),
-    queryFn: () => fetchRoomParticipants(roomId as string),
-    enabled: !!roomId && enabled,
-    refetchInterval: REFRESH_MS,
-    select: ({ participants }) => participants,
-  });
+/**
+ * Live participant list for a single room, sourced from the shared presence
+ * SSE stream — no per-room polling. Must be used within RoomsPresenceProvider.
+ */
+export const useRoomParticipants = (roomId: string | null): RoomParticipant[] => {
+  const rooms = useRoomsPresence();
+
+  return (roomId && rooms[roomId]) || EMPTY;
+};

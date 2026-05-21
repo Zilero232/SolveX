@@ -2,7 +2,6 @@
 
 import { LogOut } from 'lucide-react';
 import { toast } from 'sonner';
-
 import { supabase } from '@/shared/api';
 import { Button, Tooltip, TooltipContent, TooltipTrigger } from '@/shared/ui';
 

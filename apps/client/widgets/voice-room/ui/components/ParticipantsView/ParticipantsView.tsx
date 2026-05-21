@@ -1,7 +1,6 @@
 'use client';
 
 import { useParticipants } from '@livekit/components-react';
-
 import { ParticipantCard } from '../ParticipantCard';
 import { participantsViewStyles as s } from './ParticipantsView.styles';
 

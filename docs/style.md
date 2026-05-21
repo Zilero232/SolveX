@@ -87,13 +87,13 @@ export type { VoiceRoomProps } from './ui/VoiceRoom.types';
 ```ts
 import type { DisconnectReason } from 'livekit-client';
 
-export interface VoiceRoomProps {
+export type VoiceRoomProps = {
   roomName: string;
   serverUrl: string;
   token: string;
   onConnectFailure: (reason: DisconnectReason) => void;
   onLeave: () => void;
-}
+};
 ```
 
 **`VoiceRoom.styles.ts`** — два паттерна:
@@ -192,20 +192,30 @@ export const VoiceRoom = ({ token, serverUrl }: VoiceRoomProps) => (
 
 `@/` → корень `apps/client/`. Используем для всего кроме относительных в той же папке.
 
-```ts
-// 1-я группа: внешние пакеты + node:-builtins + @chatovo/*
-import { useForm } from 'react-hook-form';
-import type { Room } from '@chatovo/schemas/rooms';
+### Порядок групп
 
-// 2-я группа: @/ алиасы и относительные ./  ../ — вместе, без пустой строки
+Biome organize-imports (`bun lint:fix`) сортирует на 4 группы в этом порядке:
+
+1. **Внешние value-импорты** — пакеты, `node:`-builtins, `@chatovo/*`.
+2. **Локальные value-импорты** — `@/`-алиасы и относительные `./` `../`.
+3. **Стили** — `*.css` / `*.scss`.
+4. **Все типы** — любой `import type`, внешний и локальный вместе.
+
+```ts
+// 1. внешние value
+import { useForm } from 'react-hook-form';
+// 2. локальные value
 import { useCurrentUser } from '@/entities/user';
-import { Button } from '@/shared/ui/button';
 import { groupMessages } from '../lib/grouping';
 import { voiceRoomStyles as s } from './VoiceRoom.styles';
+// 4. типы (внешние + локальные)
+import type { Room } from '@chatovo/schemas/rooms';
 import type { VoiceRoomProps } from './VoiceRoom.types';
 ```
 
-Biome organize-imports (`bun lint:fix`) группирует так автоматически. Не воюй — формат после `lint:fix` и есть канон.
+Конфигурация — `assist.actions.source.organizeImports.options.groups` в `biome.json`.
+Группы идут подряд **без пустых строк между ними** — biome 2.4 не вставляет
+разделители и схлопывает их при `lint:fix`. Не воюй: формат после `lint:fix` и есть канон.
 
 ### Запреты
 
@@ -251,7 +261,8 @@ Wildcard-экспорты (`export * from`) — запрещены. Только
 
 ## 8. Типы
 
-- **Props — `interface`**, остальное — `type` (unions, алиасы, DTO).
+- **Всё через `type`** — Props, unions, алиасы, DTO. `interface` запрещён: Biome
+  `useConsistentTypeDefinitions: { style: type }` (autofix через `--unsafe`).
 - Props всегда в `<Name>.types.ts` рядом с компонентом.
 - `import type { ... }` — Biome enforce (`useImportType: error`), `bun lint:fix` чинит сам.
 - `export type { ... }` — Biome enforce (`useExportType: error`).
@@ -605,6 +616,40 @@ return !roomId ? null : roomById.isLoading ? <Loading /> : !room ? <NotFound /> 
 **Когда выносить в хук:** сборка state переиспользуется в 2+ местах, либо тело логики
 настолько объёмно, что view перестаёт читаться. Иначе вариант B инлайн в view — норма.
 
+### 15.1 Одна ветка — `&&`, не `? : null`
+
+Рендер «есть/нет» (одна ветка, иначе ничего) — `cond && <X />`, не `cond ? <X /> : null`:
+
+```tsx
+// ✗ НЕ ОК — лишний : null
+{isAdmin ? <span className={s.badge}>admin</span> : null}
+{room.isPrivate ? <Lock /> : null}
+
+// ✓ ОК
+{isAdmin && <span className={s.badge}>admin</span>}
+{room.isPrivate && <Lock />}
+```
+
+Инверсия `cond ? null : <X />` → `!cond && <X />`.
+
+**Условие обязано быть `boolean`.** `&&` рендерит левый операнд как есть — для
+не-boolean falsy (`0`, `''`, `NaN`) это выведет мусор (стрелочный `0` в разметке).
+Числовые/строковые проверки сначала приводим к boolean:
+
+```tsx
+// ✗ ОПАСНО — при пустом массиве отрендерит "0"
+{participants.length && <List />}
+
+// ✓ ОК — явная boolean-проверка
+{participants.length > 0 && <List />}
+{!isEmpty(participants) && <List />}   // isEmpty из remeda
+```
+
+Безопасны как условие: boolean-флаги (`isActive`), сравнения (`x === y`),
+`!x`, `!!x`, объект/`undefined` (`errors.name`), `isEmpty()`/`isNonNullish()`.
+
+Тернарник остаётся для **двух** реальных веток (`cond ? <A /> : <B />`).
+
 ---
 
 ## 16. Drill cleanup
@@ -649,14 +694,19 @@ apps/server/src/routes/
   rooms/
     routes.ts    ← createRoute({...}) определения
     handlers.ts  ← RouteHandler<typeof route, Env>
-    index.ts     ← OpenAPIHono().openapi(route, handler)
+    index.ts     ← OpenAPIHono<Env>().openapi(route, handler)
   shared/
-    schemas.ts   ← errorSchema
+    schemas.ts   ← errorSchema и прочие общие zod-схемы
+    types.ts     ← Env (тип Hono-контекста, общий для всех роутеров)
 ```
 
 - `routes.ts` — только route definitions.
+- `handlers.ts` — только обработчики. Общий `type Env` (`{ Variables: AuthVars }`)
+  не дублируем по роутерам — он живёт в `shared/types.ts`, импортируется оттуда.
 - Validation внутри `createRoute({ request: { body: { content: { ... schema } } } })`, не отдельный `zValidator`.
 - Все ответы (включая 4xx/5xx) описаны в `responses`.
+- Стрим-роуты (SSE через `streamSSE`) не описываются `createRoute` — обычный
+  `.get()` с хендлером типа `Handler<Env>`, тело хендлера всё равно в `handlers.ts`.
 
 ---
 

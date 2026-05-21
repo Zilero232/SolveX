@@ -1,0 +1,32 @@
+# LiveKit SFU for LOCAL DEVELOPMENT.
+#
+# The production stack (docker-compose.yml) runs LiveKit with
+# network_mode: host — which does not work on Docker Desktop (Windows/macOS),
+# where the engine lives in a VM. This dev file uses a normal bridge network
+# with explicit port mappings instead, so it works on every OS.
+#
+# It also runs LiveKit ALONE — the web and server you run locally with
+# `bun dev`, not in Docker. This file just provides the SFU.
+#
+# Start:  docker compose -f docker-compose.dev.yml up
+# Stop:   docker compose -f docker-compose.dev.yml down
+#
+# Then run the API and client locally (bun dev) with the local LiveKit env —
+# see livekit.dev.yaml for the values to put in apps/server/.env.
+
+services:
+  livekit:
+    image: livekit/livekit-server:v1.12.0
+    container_name: chatovo-livekit-dev
+    command: --config /etc/livekit.yaml
+    ports:
+      - "7880:7880" # WebSocket signalling
+      - "7881:7881" # TCP fallback for WebRTC media
+      # UDP media range. Must match port_range_start/end in livekit.dev.yaml.
+      - "50000-50100:50000-50100/udp"
+    volumes:
+      - ./livekit.dev.yaml:/etc/livekit.yaml:ro
+    # Lets the container reach the API running on the host (bun dev, :4000)
+    # for webhook delivery. Implicit on Docker Desktop, explicit here for Linux.
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

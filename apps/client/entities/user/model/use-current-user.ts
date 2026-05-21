@@ -1,9 +1,8 @@
-import type { User } from '@supabase/supabase-js';
 import { useQuery } from '@tanstack/react-query';
-
+import { isNonNullish } from 'remeda';
 import { supabase } from '@/shared/api';
 import { QUERY_KEYS } from '@/shared/constants';
-
+import type { User } from '@supabase/supabase-js';
 import type { UserRole } from './types';
 
 const readRole = (user: User | null): UserRole =>
@@ -37,7 +36,7 @@ export const useCurrentUser = () => {
     isLoading,
     displayName,
     initial,
-    isAuthenticated: !!user,
+    isAuthenticated: isNonNullish(user),
     isAdmin: role === 'admin',
   };
 };

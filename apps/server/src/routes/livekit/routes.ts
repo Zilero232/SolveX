@@ -1,15 +1,6 @@
-import {
-  roomParticipantsResponseSchema,
-  tokenRequestSchema,
-  tokenResponseSchema,
-} from '@chatovo/schemas/livekit';
-import { createRoute, z } from '@hono/zod-openapi';
-
+import { tokenRequestSchema, tokenResponseSchema } from '@chatovo/schemas/livekit';
+import { createRoute } from '@hono/zod-openapi';
 import { errorSchema } from '../shared/schemas';
-
-const roomIdParamSchema = z.object({
-  roomId: z.uuid().openapi({ param: { name: 'roomId', in: 'path' } }),
-});
 
 export const tokenRoute = createRoute({
   method: 'post',
@@ -47,21 +38,8 @@ export const tokenRoute = createRoute({
   },
 });
 
-export const roomParticipantsRoute = createRoute({
-  method: 'get',
-  path: '/rooms/{roomId}/participants',
-  tags: ['livekit'],
-  summary: 'List participants currently connected to a LiveKit room',
-  security: [{ bearerAuth: [] }],
-  request: { params: roomIdParamSchema },
-  responses: {
-    200: {
-      description: 'Participants list',
-      content: { 'application/json': { schema: roomParticipantsResponseSchema } },
-    },
-    500: {
-      description: 'Server error',
-      content: { 'application/json': { schema: errorSchema } },
-    },
-  },
-});
+// The LiveKit webhook is NOT an OpenAPI route. LiveKit POSTs a signed JSON
+// body that the handler reads raw (c.req.text()) and verifies via
+// WebhookReceiver — describing it with createRoute would let zod-openapi
+// parse/validate the body and reject it before the handler runs. It is
+// registered as a plain .post() in index.ts instead, like the SSE route.

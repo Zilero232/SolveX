@@ -1,6 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-
 import { fetchLiveKitToken } from '@/shared/api';
 import { buildRoomHref } from '@/shared/constants';
 

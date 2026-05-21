@@ -2,7 +2,6 @@
 
 import { useBoolean } from '@siberiacancode/reactuse';
 import { Download } from 'lucide-react';
-
 import { DownloadAppDialog } from '@/features/download-app';
 import { Button, Tooltip, TooltipContent, TooltipTrigger } from '@/shared/ui';
 

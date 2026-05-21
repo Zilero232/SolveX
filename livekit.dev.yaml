@@ -1,0 +1,43 @@
+# Chatovo LiveKit config — LOCAL DEVELOPMENT ONLY.
+#
+# Unlike infra/livekit/livekit.yaml (the production TEMPLATE), this file is
+# committed complete and ready to run — it contains throwaway dev keys, so
+# there is no secret to protect. NEVER use these keys in production.
+#
+# Run it with the dev compose file:
+#   docker compose -f docker-compose.dev.yml up
+#
+# Then point the local API/.env at it:
+#   LIVEKIT_URL=ws://localhost:7880
+#   LIVEKIT_API_KEY=devkey
+#   LIVEKIT_API_SECRET=devsecret_devsecret_devsecret_32
+#
+# Differences from production:
+#   - use_external_ip: false  — locally the only reachable IP is 127.0.0.1;
+#     auto-detecting the LAN IP would publish ICE candidates the browser
+#     on the same host cannot use.
+#   - webhook URL points at host.docker.internal — the LiveKit container
+#     reaches the API running on the host (bun dev) through the host gateway.
+
+port: 7880
+
+rtc:
+  port_range_start: 50000
+  port_range_end: 50100
+  tcp_port: 7881
+  # Local-only: advertise 127.0.0.1, do not probe the host's LAN address.
+  use_external_ip: false
+
+# Throwaway dev credentials — fine to commit, must match the local API .env.
+keys:
+  devkey: devsecret_devsecret_devsecret_32
+
+# Webhooks delivered to the API running on the host machine (bun dev, :4000).
+# host.docker.internal resolves to the host gateway from inside the container.
+webhook:
+  api_key: devkey
+  urls:
+    - http://host.docker.internal:4000/livekit/webhook
+
+logging:
+  level: info

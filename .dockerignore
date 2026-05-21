@@ -20,8 +20,8 @@ apps/tauri/*
 !apps/tauri/package.json
 
 # docker-compose.yml runs on the VPS, not needed inside any image.
-# NOTE: deploy/Caddyfile IS needed — the client image copies it, so the
-# `deploy/` directory is intentionally NOT ignored.
+# NOTE: infra/caddy/Caddyfile IS needed — the client image copies it, so the
+# `infra/` directory is intentionally NOT ignored.
 docker-compose.yml
 
 # Secrets — env files are provided to the container at runtime, never baked in

@@ -1,5 +1,4 @@
 import { createClient } from '@supabase/supabase-js';
-
 import { env } from '@/shared/config';
 import { STORAGE_KEYS } from '@/shared/constants';
 

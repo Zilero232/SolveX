@@ -2,9 +2,7 @@
 
 import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
-
 import { Button, GoogleIcon } from '@/shared/ui';
-
 import { GoogleSignInCancelled } from '../model/errors';
 import { useSignInWithGoogle } from '../model/use-sign-in-with-google';
 import { signInWithGoogleButtonStyles as s } from './SignInWithGoogleButton.styles';

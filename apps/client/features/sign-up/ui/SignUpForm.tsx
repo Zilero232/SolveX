@@ -4,9 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
-
 import { Button, Input, Label } from '@/shared/ui';
-
 import { type SignUpValues, signUpSchema, useSignUp } from '../model/use-sign-up';
 import { signUpFormStyles as s } from './SignUpForm.styles';
 
@@ -37,13 +35,13 @@ export const SignUpForm = () => {
       <div className={s.field}>
         <Label htmlFor="signup-name">Name</Label>
         <Input autoComplete="name" id="signup-name" type="text" {...register('name')} />
-        {errors.name ? <p className={s.error}>{errors.name.message}</p> : null}
+        {errors.name && <p className={s.error}>{errors.name.message}</p>}
       </div>
 
       <div className={s.field}>
         <Label htmlFor="signup-email">Email</Label>
         <Input autoComplete="email" id="signup-email" type="email" {...register('email')} />
-        {errors.email ? <p className={s.error}>{errors.email.message}</p> : null}
+        {errors.email && <p className={s.error}>{errors.email.message}</p>}
       </div>
 
       <div className={s.field}>
@@ -54,11 +52,11 @@ export const SignUpForm = () => {
           type="password"
           {...register('password')}
         />
-        {errors.password ? <p className={s.error}>{errors.password.message}</p> : null}
+        {errors.password && <p className={s.error}>{errors.password.message}</p>}
       </div>
 
       <Button className={s.submit} disabled={isPending} type="submit">
-        {isPending ? <Loader2 className={s.submitSpinner} /> : null}
+        {isPending && <Loader2 className={s.submitSpinner} />}
         Sign up
       </Button>
     </form>

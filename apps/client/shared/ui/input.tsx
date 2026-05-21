@@ -1,6 +1,5 @@
-import type * as React from 'react';
-
 import { cn } from '@/shared/lib/cn';
+import type * as React from 'react';
 
 const Input = ({ className, type, ...props }: React.ComponentProps<'input'>) => (
   <input

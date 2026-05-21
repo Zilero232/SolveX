@@ -14,6 +14,8 @@
     "dev": "bun --filter '@chatovo/server' --filter '@chatovo/client' --parallel dev",
     "dev:client": "bun --filter @chatovo/client dev",
     "dev:server": "bun --filter @chatovo/server dev",
+    "dev:livekit": "docker compose -f docker-compose.dev.yml up",
+    "dev:full": "docker compose -f docker-compose.dev.yml up -d && bun dev",
     "build": "bun --filter @chatovo/server build && bun --filter @chatovo/client build",
     "tauri": "bun --filter @chatovo/tauri tauri",
     "tauri:dev": "bun --filter @chatovo/tauri dev",

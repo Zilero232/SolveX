@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
 import { isEmpty } from 'remeda';
-
 import { listRooms } from '@/shared/api';
 import { QUERY_KEYS } from '@/shared/constants';
 

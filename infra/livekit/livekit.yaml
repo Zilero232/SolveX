@@ -44,6 +44,19 @@ rtc:
 keys:
   # APIxxxxxxxxxxxx: replace-with-32-plus-char-secret
 
+# Webhooks. LiveKit POSTs room/participant lifecycle events to the Hono API,
+# which keeps an in-memory presence store and streams it to clients over SSE
+# (powering the live participant lists in the channels panel).
+#
+# The api_key must be one of the keys listed above — LiveKit signs each
+# webhook body with the matching secret, and the API verifies that signature.
+# The URL must point at the API's /livekit/webhook route, reachable from the
+# LiveKit container (use the public API domain — api.chatovo.ru).
+webhook:
+  api_key: # one of the keys above, e.g. APIxxxxxxxxxxxx
+  urls:
+    - https://api.chatovo.ru/livekit/webhook
+
 # Logging. "info" is fine for production; switch to "debug" temporarily when
 # diagnosing connection issues.
 logging:

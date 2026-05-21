@@ -1,9 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
-
 import { getLatestRelease } from '@/shared/api';
 import { QUERY_KEYS } from '@/shared/constants';
 import { detectAssetPlatform } from '@/shared/lib';
-
 import { EXTENSION_TO_PLATFORM } from '../config';
 import type { DesktopPlatform, DesktopRelease, DesktopReleaseAsset } from './types';
 

@@ -9,6 +9,8 @@ export const roomParticipantSchema = z.object({
   name: z.string(),
 });
 
-export const roomParticipantsResponseSchema = z.object({
-  participants: z.array(roomParticipantSchema),
+// SSE payload pushed to clients: the full participant list of every active
+// room, keyed by roomId. The client replaces its cache wholesale on each event.
+export const roomsParticipantsSnapshotSchema = z.object({
+  rooms: z.record(z.string(), z.array(roomParticipantSchema)),
 });

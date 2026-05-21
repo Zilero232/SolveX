@@ -1,11 +1,9 @@
 'use client';
 
 import { ExternalLink, Loader2 } from 'lucide-react';
-
 import { DESKTOP_PLATFORMS, useDesktopRelease } from '@/entities/desktop-release';
 import { EXTERNAL_LINKS } from '@/shared/constants';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/shared/ui';
-
 import { PlatformCard } from './components';
 import { downloadAppDialogStyles as s } from './DownloadAppDialog.styles';
 import type { DownloadAppDialogProps } from './DownloadAppDialog.types';

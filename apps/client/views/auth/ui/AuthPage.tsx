@@ -3,13 +3,11 @@
 import { useBoolean } from '@siberiacancode/reactuse';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-
 import { useCurrentUser } from '@/entities/user';
 import { SignInForm } from '@/features/sign-in';
 import { SignInWithGoogleButton } from '@/features/sign-in-with-google';
 import { SignUpForm } from '@/features/sign-up';
 import { ROUTES } from '@/shared/constants';
-
 import { authPageStyles as s } from './AuthPage.styles';
 
 export const AuthPage = () => {

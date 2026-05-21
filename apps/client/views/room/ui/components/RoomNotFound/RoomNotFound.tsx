@@ -1,10 +1,8 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-
 import { ROUTES } from '@/shared/constants';
 import { Button } from '@/shared/ui';
-
 import { roomNotFoundStyles as s } from './RoomNotFound.styles';
 
 export const RoomNotFound = () => {

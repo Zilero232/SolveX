@@ -1,10 +1,8 @@
 'use client';
 
 import { Loader2 } from 'lucide-react';
-
 import { useRooms } from '@/entities/room';
 import { ScrollArea } from '@/shared/ui';
-
 import { ChannelsRoomItem } from '../ChannelsRoomItem';
 import { channelsListStyles as s } from './ChannelsList.styles';
 
@@ -28,9 +26,9 @@ export const ChannelsList = () => {
       <div className={s.list}>
         <SectionLabel offset>Voice rooms</SectionLabel>
 
-        {isLoading ? <Loader2 className={s.loaderIcon} /> : null}
+        {isLoading && <Loader2 className={s.loaderIcon} />}
 
-        {isEmpty ? <p className={s.emptyHint}>No rooms yet</p> : null}
+        {isEmpty && <p className={s.emptyHint}>No rooms yet</p>}
 
         {rooms.map((room) => (
           <ChannelsRoomItem key={room.id} room={room} />

@@ -2,7 +2,6 @@
 
 import { Home } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-
 import { ROUTES } from '@/shared/constants';
 import { Button, Tooltip, TooltipContent, TooltipTrigger } from '@/shared/ui';
 

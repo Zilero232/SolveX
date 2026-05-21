@@ -3,11 +3,10 @@
 import { useLocalParticipant } from '@livekit/components-react';
 import { useAutoScroll } from '@siberiacancode/reactuse';
 import { isEmpty } from 'remeda';
-
 import { useRoomChat } from '../../../model';
 import { chatPanelStyles as s } from './ChatPanel.styles';
-import type { ChatPanelProps } from './ChatPanel.types';
 import { ChatComposer, ChatEmpty, ChatHeader, ChatMessageItem } from './components';
+import type { ChatPanelProps } from './ChatPanel.types';
 
 export const ChatPanel = ({ isOpen, onClose }: ChatPanelProps) => {
   const { isSending, chatMessages, send } = useRoomChat();

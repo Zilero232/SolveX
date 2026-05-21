@@ -2,11 +2,9 @@
 
 import { useTextareaAutosize } from '@siberiacancode/reactuse';
 import { SendHorizontal } from 'lucide-react';
-import type { KeyboardEvent } from 'react';
-
 import { Button } from '@/shared/ui';
-
 import { chatComposerStyles as s } from './ChatComposer.styles';
+import type { KeyboardEvent } from 'react';
 import type { ChatComposerProps } from './ChatComposer.types';
 
 export const ChatComposer = ({ isSending, onSend }: ChatComposerProps) => {

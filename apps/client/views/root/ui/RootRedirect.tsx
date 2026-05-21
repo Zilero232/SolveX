@@ -2,7 +2,6 @@
 
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-
 import { useCurrentUser } from '@/entities/user';
 import { ROUTES } from '@/shared/constants';
 

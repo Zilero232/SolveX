@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-
+import { isNonNullish } from 'remeda';
 import { fetchLiveKitToken } from '@/shared/api';
 import { QUERY_KEYS } from '@/shared/constants';
 
@@ -17,7 +17,7 @@ export const useRoomToken = (roomId: string | null, { isPrivate, password }: Opt
     queryKey: QUERY_KEYS.livekitToken(roomId),
     queryFn: () => fetchLiveKitToken({ roomId: roomId as string, password }),
     select: ({ token }) => token,
-    enabled: !!roomId && (!isPrivate || !!password),
+    enabled: isNonNullish(roomId) && (!isPrivate || isNonNullish(password)),
     retry: false,
     staleTime: 0,
   });

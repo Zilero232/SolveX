@@ -2,7 +2,6 @@ import { swaggerUI } from '@hono/swagger-ui';
 import { OpenAPIHono } from '@hono/zod-openapi';
 import { cors } from 'hono/cors';
 import { logger } from 'hono/logger';
-
 import { env } from './lib/env';
 import { authMiddleware } from './middleware/auth';
 import { livekitRouter } from './routes/livekit';
@@ -37,7 +36,15 @@ export const routes = app
   )
   .get('/health', (c) => c.json({ ok: true }))
   .use('/rooms/*', authMiddleware)
-  .use('/livekit/*', authMiddleware)
+  // The webhook is signed by LiveKit and the SSE stream authorizes via a query
+  // token (EventSource cannot send headers) — both bypass the bearer middleware.
+  .use('/livekit/*', async (c, next) => {
+    const path = c.req.path;
+
+    if (path === '/livekit/webhook' || path === '/livekit/presence') return next();
+
+    return authMiddleware(c, next);
+  })
   .route('/rooms', roomsRouter)
   .route('/livekit', livekitRouter);
 

@@ -4,9 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
-
 import { Button, Input, Label } from '@/shared/ui';
-
 import { type SignInValues, signInSchema, useSignIn } from '../model/use-sign-in';
 import { signInFormStyles as s } from './SignInForm.styles';
 
@@ -36,7 +34,7 @@ export const SignInForm = () => {
       <div className={s.field}>
         <Label htmlFor="signin-email">Email</Label>
         <Input autoComplete="email" id="signin-email" type="email" {...register('email')} />
-        {errors.email ? <p className={s.error}>{errors.email.message}</p> : null}
+        {errors.email && <p className={s.error}>{errors.email.message}</p>}
       </div>
 
       <div className={s.field}>
@@ -47,11 +45,11 @@ export const SignInForm = () => {
           type="password"
           {...register('password')}
         />
-        {errors.password ? <p className={s.error}>{errors.password.message}</p> : null}
+        {errors.password && <p className={s.error}>{errors.password.message}</p>}
       </div>
 
       <Button className={s.submit} disabled={isPending} type="submit">
-        {isPending ? <Loader2 className={s.submitSpinner} /> : null}
+        {isPending && <Loader2 className={s.submitSpinner} />}
         Sign in
       </Button>
     </form>

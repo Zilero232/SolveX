@@ -3,10 +3,9 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
-import type { z } from 'zod';
-
 import { Button, Input, Label } from '@/shared/ui';
 import { passwordSchema, roomPasswordFormStyles as s } from './RoomPasswordForm.styles';
+import type { z } from 'zod';
 import type { RoomPasswordFormProps } from './RoomPasswordForm.types';
 
 type PasswordValues = z.infer<typeof passwordSchema>;
@@ -42,10 +41,10 @@ export const RoomPasswordForm = ({
             type="password"
             {...register('password')}
           />
-          {fieldError ? <p className={s.error}>{fieldError}</p> : null}
+          {fieldError && <p className={s.error}>{fieldError}</p>}
         </div>
         <Button disabled={isSubmitting} type="submit">
-          {isSubmitting ? <Loader2 className={s.spinner} /> : null}
+          {isSubmitting && <Loader2 className={s.spinner} />}
           Join
         </Button>
       </form>

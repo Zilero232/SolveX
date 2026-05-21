@@ -13,7 +13,7 @@
     },
     "apps/client": {
       "name": "@chatovo/client",
-      "version": "0.1.0",
+      "version": "0.0.0",
       "dependencies": {
         "@chatovo/schemas": "workspace:*",
         "@chatovo/server": "workspace:*",
@@ -60,7 +60,7 @@
     },
     "apps/server": {
       "name": "@chatovo/server",
-      "version": "0.1.0",
+      "version": "0.0.0",
       "dependencies": {
         "@chatovo/schemas": "workspace:*",
         "@hono/swagger-ui": "^0.6.1",
@@ -73,6 +73,7 @@
         "hono": "^4.6.14",
         "livekit-server-sdk": "^2.15.2",
         "pg": "^8.20.0",
+        "ts-pattern": "^5.9.0",
         "zod": "^4.4.3",
       },
       "devDependencies": {
@@ -86,14 +87,14 @@
     },
     "apps/tauri": {
       "name": "@chatovo/tauri",
-      "version": "0.1.1",
+      "version": "0.0.0",
       "devDependencies": {
         "@tauri-apps/cli": "^2",
       },
     },
     "packages/schemas": {
       "name": "@chatovo/schemas",
-      "version": "0.1.0",
+      "version": "0.0.0",
       "dependencies": {
         "zod": "^4.4.3",
       },

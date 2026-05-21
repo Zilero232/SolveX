@@ -3,7 +3,6 @@
 import { useBoolean } from '@siberiacancode/reactuse';
 import { useRouter } from 'next/navigation';
 import { Suspense, useEffect } from 'react';
-
 import { useCurrentUser } from '@/entities/user';
 import { ROUTES } from '@/shared/constants';
 import { ChannelsPanel } from '@/widgets/channels-panel';

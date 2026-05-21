@@ -1,6 +1,5 @@
-import type { Metadata, Viewport } from 'next';
-
 import { SITE } from '@/shared/config';
+import type { Metadata, Viewport } from 'next';
 
 export const defaultMetadata: Metadata = {
   metadataBase: new URL(SITE.url),
@@ -69,16 +68,6 @@ export const defaultMetadata: Metadata = {
     ],
     apple: [{ url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' }],
     shortcut: '/favicon.ico',
-  },
-  manifest: '/manifest.webmanifest',
-  appleWebApp: {
-    capable: true,
-    title: SITE.name,
-    statusBarStyle: 'black-translucent',
-  },
-  other: {
-    'msapplication-TileColor': SITE.themeColor.dark,
-    'msapplication-config': '/browserconfig.xml',
   },
 };
 

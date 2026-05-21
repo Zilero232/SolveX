@@ -1,5 +1,4 @@
 import { MessageSquare } from 'lucide-react';
-
 import { chatEmptyStyles as s } from './ChatEmpty.styles';
 
 export const ChatEmpty = () => (

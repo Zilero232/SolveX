@@ -1,7 +1,5 @@
 import { MessageSquare, X } from 'lucide-react';
-
 import { Button } from '@/shared/ui';
-
 import { chatHeaderStyles as s } from './ChatHeader.styles';
 import type { ChatHeaderProps } from './ChatHeader.types';
 

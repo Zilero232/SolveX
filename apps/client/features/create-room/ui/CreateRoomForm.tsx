@@ -1,16 +1,14 @@
 'use client';
 
-import type { CreateRoomRequest } from '@chatovo/schemas/rooms';
 import { createRoomInputSchema } from '@chatovo/schemas/rooms';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
-
 import { useCreateRoom, useEnterRoom } from '@/entities/room';
 import { Button, Input, Label } from '@/shared/ui';
-
 import { createRoomFormStyles as s } from './CreateRoomForm.styles';
+import type { CreateRoomRequest } from '@chatovo/schemas/rooms';
 
 const DEFAULT_VALUES: CreateRoomRequest = { name: '', isPrivate: false };
 
@@ -58,10 +56,10 @@ export const CreateRoomForm = () => {
           placeholder="team standup"
           {...register('name')}
         />
-        {errors.name ? <p className={s.error}>{errors.name.message}</p> : null}
+        {errors.name && <p className={s.error}>{errors.name.message}</p>}
       </div>
 
-      {isPrivate ? (
+      {isPrivate && (
         <div className={s.field}>
           <Label htmlFor="create-room-password">Password</Label>
           <Input
@@ -71,9 +69,9 @@ export const CreateRoomForm = () => {
             type="password"
             {...register('password')}
           />
-          {errors.password ? <p className={s.error}>{errors.password.message}</p> : null}
+          {errors.password && <p className={s.error}>{errors.password.message}</p>}
         </div>
-      ) : null}
+      )}
 
       <label className={s.checkboxRow}>
         <input className={s.checkbox} type="checkbox" {...register('isPrivate')} />
@@ -81,7 +79,7 @@ export const CreateRoomForm = () => {
       </label>
 
       <Button disabled={isPending || !name?.trim()} type="submit" variant="secondary">
-        {isPending ? <Loader2 className={s.spinner} /> : null}
+        {isPending && <Loader2 className={s.spinner} />}
         Create room
       </Button>
     </form>

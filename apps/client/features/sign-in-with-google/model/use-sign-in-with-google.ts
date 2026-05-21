@@ -1,9 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import { isTauri } from '@tauri-apps/api/core';
-
 import { supabase } from '@/shared/api';
 import { ROUTES } from '@/shared/constants';
-
 import { DEEP_LINK_CALLBACK } from './config';
 import { signInWithGoogleViaDeepLink } from './deep-link';
 import { openPopup, waitForSignIn } from './popup';

@@ -1,5 +1,4 @@
 import { Apple, AppWindow, type LucideIcon, Terminal } from 'lucide-react';
-
 import type { DesktopPlatform } from '../model/types';
 
 export type DesktopPlatformConfig = {

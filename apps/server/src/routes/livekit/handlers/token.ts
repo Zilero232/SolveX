@@ -1,21 +1,15 @@
-import type { RoomParticipantsResponse, TokenResponse } from '@chatovo/schemas/livekit';
+import { AccessToken } from 'livekit-server-sdk';
+import { readRole } from '../../../lib/auth';
+import { env } from '../../../lib/env';
+import { verifyPassword } from '../../../lib/password';
+import { prisma } from '../../../lib/prisma';
+import { supabaseAdmin } from '../../../lib/supabase';
+import type { TokenResponse } from '@chatovo/schemas/livekit';
 import type { RouteHandler } from '@hono/zod-openapi';
+import type { Env } from '../../shared/types';
+import type { tokenRoute } from '../routes';
 
-import { AccessToken, RoomServiceClient } from 'livekit-server-sdk';
-import { env } from '../../lib/env';
-import { verifyPassword } from '../../lib/password';
-import { prisma } from '../../lib/prisma';
-import { supabaseAdmin } from '../../lib/supabase';
-import type { AuthVars } from '../../middleware/auth';
-import type { roomParticipantsRoute, tokenRoute } from './routes';
-
-type Env = {
-  Variables: AuthVars;
-};
-
-const readRole = (metadata: Record<string, unknown> | undefined): 'admin' | 'user' =>
-  metadata?.role === 'admin' ? 'admin' : 'user';
-
+/** Issues a short-lived LiveKit access token for a room, gating private rooms. */
 export const tokenHandler: RouteHandler<typeof tokenRoute, Env> = async (c) => {
   const userId = c.get('userId');
   const email = c.get('email');
@@ -38,8 +32,7 @@ export const tokenHandler: RouteHandler<typeof tokenRoute, Env> = async (c) => {
 
   if (error || !data.user) return c.json({ error: 'User lookup failed' }, 500);
 
-  const role = readRole(data.user.app_metadata);
-  const isAdmin = role === 'admin';
+  const isAdmin = readRole(data.user.app_metadata) === 'admin';
 
   // display_name is set by the user at sign-up; fall back to the email local part.
   const displayName =
@@ -70,32 +63,4 @@ export const tokenHandler: RouteHandler<typeof tokenRoute, Env> = async (c) => {
   };
 
   return c.json(payload, 200);
-};
-
-const roomService = new RoomServiceClient(
-  env.LIVEKIT_URL,
-  env.LIVEKIT_API_KEY,
-  env.LIVEKIT_API_SECRET,
-);
-
-export const roomParticipantsHandler: RouteHandler<typeof roomParticipantsRoute, Env> = async (
-  c,
-) => {
-  const { roomId } = c.req.valid('param');
-
-  try {
-    const participants = await roomService.listParticipants(roomId);
-
-    const payload: RoomParticipantsResponse = {
-      participants: participants.map((p) => ({
-        identity: p.identity,
-        name: p.name || p.identity,
-      })),
-    };
-
-    return c.json(payload, 200);
-  } catch {
-    // listParticipants throws when the room has no active session — treat as empty.
-    return c.json({ participants: [] }, 200);
-  }
 };

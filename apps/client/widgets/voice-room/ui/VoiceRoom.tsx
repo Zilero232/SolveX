@@ -5,9 +5,7 @@ import { useBoolean } from '@siberiacancode/reactuse';
 import { DisconnectReason } from 'livekit-client';
 import { MessageSquare, Volume2 } from 'lucide-react';
 import { useRef } from 'react';
-
 import { Button } from '@/shared/ui';
-
 import { RoomChatProvider } from '../model';
 import { ChatPanel, ParticipantsView } from './components';
 import { voiceRoomStyles as s } from './VoiceRoom.styles';

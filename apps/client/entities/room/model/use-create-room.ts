@@ -1,10 +1,8 @@
-import type { CreateRoomRequest, Room } from '@chatovo/schemas/rooms';
-
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { uniqueBy } from 'remeda';
-
 import { createRoom } from '@/shared/api';
 import { QUERY_KEYS } from '@/shared/constants';
+import type { CreateRoomRequest, Room } from '@chatovo/schemas/rooms';
 
 export const useCreateRoom = () => {
   const queryClient = useQueryClient();
