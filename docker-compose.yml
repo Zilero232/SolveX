@@ -71,8 +71,11 @@ services:
       start_period: 10s
 
   livekit:
-    # Official upstream image — not built by CI.
-    image: livekit/livekit-server:latest
+    # Official upstream image — not built by CI. Pinned to a specific version:
+    # `latest` re-checks the Docker Hub manifest on every deploy (and counts
+    # against the anonymous pull rate limit); a pinned tag lets `docker compose
+    # pull` short-circuit once the image is cached on the VPS. Bump deliberately.
+    image: livekit/livekit-server:v1.12.0
     container_name: chatovo-livekit
     restart: always
     # Host networking is required for WebRTC: the SFU advertises ICE candidates
