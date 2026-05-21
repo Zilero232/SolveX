@@ -34,9 +34,13 @@ export const tokenHandler: RouteHandler<typeof tokenRoute, Env> = async (c) => {
 
   const isAdmin = readRole(data.user.app_metadata) === 'admin';
 
-  // display_name is set by the user at sign-up; fall back to the email local part.
+  // display_name is set at email sign-up; Google sign-in stores the name under
+  // full_name/name instead. Fall back to the email local part as a last resort.
+  const metadata = data.user.user_metadata ?? {};
   const displayName =
-    (data.user.user_metadata?.display_name as string | undefined)?.trim() ||
+    [metadata.display_name, metadata.full_name, metadata.name]
+      .map((value) => (typeof value === 'string' ? value.trim() : ''))
+      .find(Boolean) ||
     email?.split('@')[0] ||
     userId;
 
