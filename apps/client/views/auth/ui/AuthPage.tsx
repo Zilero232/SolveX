@@ -2,6 +2,7 @@
 
 import { useBoolean } from '@siberiacancode/reactuse';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { useEffect } from 'react';
 import { useCurrentUser } from '@/entities/user';
 import { SignInForm } from '@/features/sign-in';
@@ -12,6 +13,8 @@ import { authPageStyles as s } from './AuthPage.styles';
 
 export const AuthPage = () => {
   const router = useRouter();
+  const t = useTranslations('auth');
+  const tCommon = useTranslations('common');
 
   const { session } = useCurrentUser();
   const [isSignup, toggleSignup] = useBoolean(false);
@@ -25,26 +28,24 @@ export const AuthPage = () => {
     <div className={s.root}>
       <div className={s.card}>
         <div className={s.header}>
-          <h1 className={s.title}>Chatovo</h1>
-          <p className={s.subtitle}>
-            {isSignup ? 'Create an account to join voice rooms' : 'Sign in to join voice rooms'}
-          </p>
+          <h1 className={s.title}>{t('appName')}</h1>
+          <p className={s.subtitle}>{t(isSignup ? 'subtitleSignUp' : 'subtitleSignIn')}</p>
         </div>
 
         {isSignup ? <SignUpForm /> : <SignInForm />}
 
         <div className={s.divider}>
           <span className={s.dividerLine} />
-          <span className={s.dividerText}>or</span>
+          <span className={s.dividerText}>{tCommon('or')}</span>
           <span className={s.dividerLine} />
         </div>
 
         <SignInWithGoogleButton />
 
         <p className={s.toggle}>
-          {isSignup ? 'Have an account? ' : 'No account? '}
+          {t(isSignup ? 'hasAccount' : 'noAccount')}{' '}
           <button className={s.toggleButton} onClick={() => toggleSignup()} type="button">
-            {isSignup ? 'Sign in' : 'Sign up'}
+            {t(isSignup ? 'signIn' : 'signUp')}
           </button>
         </p>
       </div>

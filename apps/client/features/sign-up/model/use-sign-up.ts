@@ -2,15 +2,18 @@ import { useMutation } from '@tanstack/react-query';
 import { z } from 'zod';
 import { supabase } from '@/shared/api';
 
+// Validation messages are i18n keys under the `auth` namespace, resolved by
+// the form via useTranslations — a zod schema is built outside React and so
+// can't translate them itself.
 export const signUpSchema = z
   .object({
-    name: z.string().trim().min(2, 'Min 2 characters').max(32, 'Max 32 characters'),
-    email: z.email('Invalid email').trim().toLowerCase(),
-    password: z.string().min(8, 'Min 8 characters'),
+    name: z.string().trim().min(2, 'validation.nameMin').max(32, 'validation.nameMax'),
+    email: z.email('validation.emailInvalid').trim().toLowerCase(),
+    password: z.string().min(8, 'validation.passwordMin'),
     confirmPassword: z.string(),
   })
   .refine((values) => values.password === values.confirmPassword, {
-    message: 'Passwords do not match',
+    message: 'validation.passwordsMismatch',
     path: ['confirmPassword'],
   });
 

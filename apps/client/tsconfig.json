@@ -27,6 +27,7 @@
   },
   "include": [
     "next-env.d.ts",
+    "messages.d.ts",
     "app/**/*.ts",
     "app/**/*.tsx",
     "entities/**/*.ts",

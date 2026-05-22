@@ -1,0 +1,38 @@
+{
+  "common": {
+    "or": "or",
+    "loading": "Loading...",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password"
+  },
+  "language": {
+    "label": "Language",
+    "en": "English",
+    "ru": "Russian"
+  },
+  "auth": {
+    "appName": "Chatovo",
+    "subtitleSignIn": "Sign in to join voice rooms",
+    "subtitleSignUp": "Create an account to join voice rooms",
+    "hasAccount": "Have an account?",
+    "noAccount": "No account?",
+    "signIn": "Sign in",
+    "signUp": "Sign up",
+    "continueWithGoogle": "Continue with Google",
+    "signedIn": "Signed in",
+    "accountCreated": "Account created",
+    "fields": {
+      "name": "Name",
+      "email": "Email",
+      "password": "Password",
+      "confirmPassword": "Confirm password"
+    },
+    "validation": {
+      "nameMin": "Min 2 characters",
+      "nameMax": "Max 32 characters",
+      "emailInvalid": "Invalid email",
+      "passwordMin": "Min 8 characters",
+      "passwordsMismatch": "Passwords do not match"
+    }
+  }
+}

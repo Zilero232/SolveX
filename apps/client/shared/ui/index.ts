@@ -1,3 +1,4 @@
+export * from './app-splash';
 export * from './avatar';
 export * from './button';
 export * from './context-menu';

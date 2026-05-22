@@ -1,0 +1,38 @@
+{
+  "common": {
+    "or": "или",
+    "loading": "Загрузка...",
+    "showPassword": "Показать пароль",
+    "hidePassword": "Скрыть пароль"
+  },
+  "language": {
+    "label": "Язык",
+    "en": "Английский",
+    "ru": "Русский"
+  },
+  "auth": {
+    "appName": "Chatovo",
+    "subtitleSignIn": "Войдите, чтобы присоединяться к голосовым комнатам",
+    "subtitleSignUp": "Создайте аккаунт, чтобы присоединяться к голосовым комнатам",
+    "hasAccount": "Уже есть аккаунт?",
+    "noAccount": "Нет аккаунта?",
+    "signIn": "Войти",
+    "signUp": "Зарегистрироваться",
+    "continueWithGoogle": "Продолжить через Google",
+    "signedIn": "Вход выполнен",
+    "accountCreated": "Аккаунт создан",
+    "fields": {
+      "name": "Имя",
+      "email": "Email",
+      "password": "Пароль",
+      "confirmPassword": "Подтвердите пароль"
+    },
+    "validation": {
+      "nameMin": "Минимум 2 символа",
+      "nameMax": "Максимум 32 символа",
+      "emailInvalid": "Некорректный email",
+      "passwordMin": "Минимум 8 символов",
+      "passwordsMismatch": "Пароли не совпадают"
+    }
+  }
+}

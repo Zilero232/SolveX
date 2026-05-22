@@ -2,6 +2,7 @@
 
 import { useBoolean } from '@siberiacancode/reactuse';
 import { Eye, EyeOff } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { cn } from '@/shared/lib/cn';
 import { Input } from './input';
 import type * as React from 'react';
@@ -17,6 +18,7 @@ const passwordInputStyles = {
 } as const;
 
 export const PasswordInput = ({ className, disabled, ...props }: PasswordInputProps) => {
+  const t = useTranslations('common');
   const [isVisible, toggleVisible] = useBoolean(false);
 
   return (
@@ -29,7 +31,7 @@ export const PasswordInput = ({ className, disabled, ...props }: PasswordInputPr
       />
 
       <button
-        aria-label={isVisible ? 'Hide password' : 'Show password'}
+        aria-label={t(isVisible ? 'hidePassword' : 'showPassword')}
         className={passwordInputStyles.toggle}
         disabled={disabled}
         onClick={() => toggleVisible()}
