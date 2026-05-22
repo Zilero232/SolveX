@@ -65,21 +65,17 @@ const useMirrorActiveDevice = (room: Room) => {
 
 // Store -> room: re-captures the mic track when the audio processing flags
 // change. Only acts while the mic is live; otherwise the next unmute picks the
-// flags up. Keyed on the serialized flags so it fires only on a real change;
-// the flags themselves are read fresh through a ref.
+// flags up. `audio` is a stable object from useLocalStorage — a fresh
+// reference only on a real change — so the effect keys on it directly.
 const useApplyAudioFlags = (room: Room) => {
   const { settings } = useAppSettings();
-
-  const audioRef = useRef(settings.audio);
-  audioRef.current = settings.audio;
-
-  const audioKey = JSON.stringify(settings.audio);
+  const { audio } = settings;
 
   useEffect(() => {
     if (room.localParticipant.isMicrophoneEnabled) {
-      void room.localParticipant.setMicrophoneEnabled(true, audioRef.current);
+      void room.localParticipant.setMicrophoneEnabled(true, audio);
     }
-  }, [room, audioKey]);
+  }, [room, audio]);
 };
 
 // Bridges the persisted app settings and the live room. The settings dialog

@@ -21,11 +21,7 @@ export const LobbyRoomCard = ({ room }: LobbyRoomCardProps) => {
   const overflow = participants.length - shown.length;
 
   return (
-    <button
-      className={s.root}
-      type="button"
-      onClick={() => router.push(buildRoomHref(room.id))}
-    >
+    <button className={s.root} type="button" onClick={() => router.push(buildRoomHref(room.id))}>
       <div className={s.header}>
         <span className={s.name}>
           {room.name}

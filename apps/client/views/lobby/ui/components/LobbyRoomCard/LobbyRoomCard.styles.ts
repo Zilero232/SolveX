@@ -9,8 +9,7 @@ export const lobbyRoomCardStyles = {
   liveBadge:
     'flex shrink-0 items-center gap-1.5 rounded-full bg-primary/10 px-2 py-0.5 font-medium text-primary text-xs',
   liveDot: 'size-1.5 animate-pulse rounded-full bg-primary',
-  idleBadge:
-    'shrink-0 rounded-full bg-muted px-2 py-0.5 font-medium text-muted-foreground text-xs',
+  idleBadge: 'shrink-0 rounded-full bg-muted px-2 py-0.5 font-medium text-muted-foreground text-xs',
 
   participants: 'flex items-center gap-2',
   avatars: 'flex items-center -space-x-2',

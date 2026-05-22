@@ -2,7 +2,6 @@
 
 import { useBoolean } from '@siberiacancode/reactuse';
 import { Plus } from 'lucide-react';
-import type { ReactNode } from 'react';
 import {
   Button,
   Dialog,
@@ -13,6 +12,7 @@ import {
   DialogTrigger,
 } from '@/shared/ui';
 import { CreateRoomForm } from './CreateRoomForm';
+import type { ReactNode } from 'react';
 
 type CreateRoomDialogProps = {
   // Custom trigger element; falls back to a default "Create room" button.
