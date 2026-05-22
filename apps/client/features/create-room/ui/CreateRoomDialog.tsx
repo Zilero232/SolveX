@@ -2,6 +2,7 @@
 
 import { useBoolean } from '@siberiacancode/reactuse';
 import { Plus } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import {
   Button,
   Dialog,
@@ -20,6 +21,7 @@ type CreateRoomDialogProps = {
 };
 
 export const CreateRoomDialog = ({ trigger }: CreateRoomDialogProps) => {
+  const t = useTranslations('createRoom');
   const [isOpen, toggleOpen] = useBoolean(false);
 
   return (
@@ -28,15 +30,15 @@ export const CreateRoomDialog = ({ trigger }: CreateRoomDialogProps) => {
         {trigger ?? (
           <Button type="button">
             <Plus />
-            Create room
+            {t('trigger')}
           </Button>
         )}
       </DialogTrigger>
 
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Create a room</DialogTitle>
-          <DialogDescription>Creates a new voice room and takes you in.</DialogDescription>
+          <DialogTitle>{t('title')}</DialogTitle>
+          <DialogDescription>{t('description')}</DialogDescription>
         </DialogHeader>
 
         <CreateRoomForm onCreated={() => toggleOpen(false)} />

@@ -2,7 +2,9 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useForm } from 'react-hook-form';
+import { useFieldError } from '@/entities/locale';
 import { Button, Input, Label } from '@/shared/ui';
 import { passwordSchema, roomPasswordFormStyles as s } from './RoomPasswordForm.styles';
 import type { z } from 'zod';
@@ -16,6 +18,9 @@ export const RoomPasswordForm = ({
   isSubmitting,
   onSubmit,
 }: RoomPasswordFormProps) => {
+  const t = useTranslations('room.password');
+  const passwordError = useFieldError('room.password');
+
   const {
     formState: { errors },
     handleSubmit,
@@ -27,14 +32,15 @@ export const RoomPasswordForm = ({
 
   const submit = handleSubmit(({ password }) => onSubmit(password));
 
-  const fieldError = errors.password?.message ?? error;
+  // The validation error is an i18n key; the server `error` is already text.
+  const fieldError = passwordError(errors.password) ?? error;
 
   return (
     <div className={s.root}>
       <form className={s.box} onSubmit={submit}>
-        <p className={s.text}>Enter password for "{displayName}"</p>
+        <p className={s.text}>{t('title', { name: displayName })}</p>
         <div className={s.field}>
-          <Label htmlFor="room-password">Password</Label>
+          <Label htmlFor="room-password">{t('label')}</Label>
           <Input
             disabled={isSubmitting}
             id="room-password"
@@ -45,7 +51,7 @@ export const RoomPasswordForm = ({
         </div>
         <Button disabled={isSubmitting} type="submit">
           {isSubmitting && <Loader2 className={s.spinner} />}
-          Join
+          {t('join')}
         </Button>
       </form>
     </div>

@@ -4,9 +4,10 @@ import type { Room } from '@chatovo/schemas/rooms';
 
 type RoomsPresenceMap = RoomsParticipantsSnapshot['rooms'];
 
+// `key` doubles as the i18n key for the section heading (room.sections.*) —
+// the heading text is resolved by the consuming component, not stored here.
 export type RoomSection = {
   key: 'private' | 'public';
-  label: string;
   rooms: Room[];
 };
 
@@ -45,16 +46,8 @@ export const groupRooms = (
 
   return (
     [
-      {
-        key: 'private',
-        label: 'Private',
-        rooms: ordered.filter((room) => room.isPrivate),
-      },
-      {
-        key: 'public',
-        label: 'Voice rooms',
-        rooms: ordered.filter((room) => !room.isPrivate),
-      },
+      { key: 'private', rooms: ordered.filter((room) => room.isPrivate) },
+      { key: 'public', rooms: ordered.filter((room) => !room.isPrivate) },
     ] satisfies RoomSection[]
   ).filter((section) => !isEmpty(section.rooms));
 };

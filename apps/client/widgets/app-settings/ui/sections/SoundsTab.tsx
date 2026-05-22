@@ -1,19 +1,17 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { Slider, Switch } from '@/shared/ui';
 import { type SoundCategory, useAppSettings } from '../../model';
 import { appSettingsStyles as s } from '../AppSettingsButton.styles';
 import { SettingRow } from '../components/SettingRow';
 
-const SOUND_ROWS: { category: SoundCategory; label: string; hint: string }[] = [
-  { category: 'join', label: 'Join', hint: 'When someone joins the room.' },
-  { category: 'leave', label: 'Leave', hint: 'When someone leaves the room.' },
-  { category: 'mute', label: 'Mute / unmute', hint: 'When you toggle your microphone.' },
-  { category: 'reconnect', label: 'Reconnect', hint: 'When your connection drops and recovers.' },
-  { category: 'message', label: 'Chat message', hint: 'A new message while the chat is closed.' },
-];
+// Per-category sound toggles. Each category's label/hint are i18n keys
+// `<category>` / `<category>Hint` under settings.sounds.
+const SOUND_CATEGORIES: SoundCategory[] = ['join', 'leave', 'mute', 'reconnect', 'message'];
 
 export const SoundsTab = () => {
+  const t = useTranslations('settings.sounds');
   const { settings, setGroup, toggleSound } = useAppSettings();
 
   const sounds = settings.sounds;
@@ -25,7 +23,7 @@ export const SoundsTab = () => {
         control={
           <div className={s.sliderRow}>
             <Slider
-              aria-label="Sound effects volume"
+              aria-label={t('volumeLabel')}
               max={1}
               min={0}
               step={0.05}
@@ -35,11 +33,11 @@ export const SoundsTab = () => {
             <span className={s.sliderValue}>{Math.round(sounds.volume * 100)}%</span>
           </div>
         }
-        hint="Loudness of all room sound effects."
-        label="Sound effects volume"
+        hint={t('volumeHint')}
+        label={t('volumeLabel')}
       />
 
-      {SOUND_ROWS.map(({ category, label, hint }) => (
+      {SOUND_CATEGORIES.map((category) => (
         <SettingRow
           key={category}
           control={
@@ -48,8 +46,8 @@ export const SoundsTab = () => {
               onCheckedChange={() => toggleSound(category)}
             />
           }
-          hint={hint}
-          label={label}
+          hint={t(`${category}Hint`)}
+          label={t(category)}
         />
       ))}
     </div>

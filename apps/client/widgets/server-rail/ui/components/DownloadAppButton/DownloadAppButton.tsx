@@ -2,10 +2,12 @@
 
 import { useBoolean } from '@siberiacancode/reactuse';
 import { Download } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { DownloadAppDialog } from '@/features/download-app';
 import { Button, Tooltip, TooltipContent, TooltipTrigger } from '@/shared/ui';
 
 export const DownloadAppButton = () => {
+  const t = useTranslations('serverRail');
   const [isOpen, toggle] = useBoolean(false);
 
   return (
@@ -13,7 +15,7 @@ export const DownloadAppButton = () => {
       <Tooltip>
         <TooltipTrigger asChild>
           <Button
-            aria-label="Download desktop app"
+            aria-label={t('downloadAppLabel')}
             size="icon"
             variant="ghost"
             onClick={() => toggle(true)}
@@ -21,7 +23,7 @@ export const DownloadAppButton = () => {
             <Download />
           </Button>
         </TooltipTrigger>
-        <TooltipContent side="right">Download app</TooltipContent>
+        <TooltipContent side="right">{t('downloadApp')}</TooltipContent>
       </Tooltip>
 
       <DownloadAppDialog open={isOpen} onOpenChange={toggle} />

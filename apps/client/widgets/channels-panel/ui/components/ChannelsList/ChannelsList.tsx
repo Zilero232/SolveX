@@ -1,6 +1,7 @@
 'use client';
 
 import { Loader2, Search } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { isEmpty as isEmptyList } from 'remeda';
 import { match } from 'ts-pattern';
@@ -22,6 +23,9 @@ const SectionLabel = ({
 );
 
 export const ChannelsList = () => {
+  const t = useTranslations('channels');
+  const tSections = useTranslations('room.sections');
+
   const { rooms, isLoading, isEmpty } = useRooms();
   const presence = useRoomsPresence();
 
@@ -36,7 +40,7 @@ export const ChannelsList = () => {
           <Search className={s.searchIcon} />
           <Input
             className={s.searchInput}
-            placeholder="Search rooms..."
+            placeholder={t('searchPlaceholder')}
             value={query}
             onChange={(event) => setQuery(event.target.value)}
           />
@@ -47,12 +51,12 @@ export const ChannelsList = () => {
         <div className={s.list}>
           {match({ isLoading, isEmpty, nothingFound: isEmptyList(sections) })
             .with({ isLoading: true }, () => <Loader2 className={s.loaderIcon} />)
-            .with({ isEmpty: true }, () => <p className={s.emptyHint}>No rooms yet</p>)
-            .with({ nothingFound: true }, () => <p className={s.emptyHint}>Nothing found</p>)
+            .with({ isEmpty: true }, () => <p className={s.emptyHint}>{t('noRoomsYet')}</p>)
+            .with({ nothingFound: true }, () => <p className={s.emptyHint}>{t('nothingFound')}</p>)
             .otherwise(() =>
               sections.map((section, index) => (
                 <div key={section.key}>
-                  <SectionLabel offset={index > 0}>{section.label}</SectionLabel>
+                  <SectionLabel offset={index > 0}>{tSections(section.key)}</SectionLabel>
 
                   {section.rooms.map((room) => (
                     <ChannelsRoomItem key={room.id} room={room} />

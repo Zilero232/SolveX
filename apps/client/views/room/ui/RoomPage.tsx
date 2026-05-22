@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { match, P } from 'ts-pattern';
@@ -13,6 +14,7 @@ import { RoomConnecting, RoomLoadingFallback, RoomNotFound, RoomPasswordForm } f
 export const RoomPage = () => {
   const router = useRouter();
   const params = useSearchParams();
+  const t = useTranslations('room');
 
   const roomId = params.get('id');
 
@@ -54,7 +56,7 @@ export const RoomPage = () => {
     .with({ roomId: P.string, room: { isPrivate: true }, token: P.nullish }, () => (
       <RoomPasswordForm
         displayName={displayName}
-        error={tokenFailed ? (tokenError?.message ?? 'Wrong password') : undefined}
+        error={tokenFailed ? (tokenError?.message ?? t('password.wrong')) : undefined}
         isSubmitting={tokenFetching}
         onSubmit={submitPassword}
       />
@@ -67,7 +69,7 @@ export const RoomPage = () => {
         serverUrl={env.NEXT_PUBLIC_LIVEKIT_URL}
         token={token}
         onConnectFailure={(reason) => {
-          toast.error('Failed to join room', { description: `LiveKit: ${reason}` });
+          toast.error(t('joinFailed'), { description: `LiveKit: ${reason}` });
 
           setPassword(undefined);
           router.replace(ROUTES.lobby);

@@ -1,6 +1,7 @@
 'use client';
 
 import { Loader2, Search } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { isEmpty as isEmptyList } from 'remeda';
 import { match } from 'ts-pattern';
@@ -11,6 +12,9 @@ import { LobbyRoomCard } from '../LobbyRoomCard';
 import { lobbyRoomsStyles as s } from './LobbyRooms.styles';
 
 export const LobbyRooms = () => {
+  const t = useTranslations('lobby');
+  const tSections = useTranslations('room.sections');
+
   const { rooms, isLoading, isEmpty } = useRooms();
   const presence = useRoomsPresence();
 
@@ -23,13 +27,13 @@ export const LobbyRooms = () => {
   return (
     <div className={s.root}>
       <div className={s.bar}>
-        <h3 className={s.heading}>Rooms</h3>
+        <h3 className={s.heading}>{t('roomsHeading')}</h3>
 
         <div className={s.searchField}>
           <Search className={s.searchIcon} />
           <Input
             className={s.searchInput}
-            placeholder="Search rooms..."
+            placeholder={t('searchPlaceholder')}
             value={query}
             onChange={(event) => setQuery(event.target.value)}
           />
@@ -44,13 +48,13 @@ export const LobbyRooms = () => {
         ))
         .with({ isEmpty: true }, () => <LobbyEmpty />)
         .with({ nothingFound: true }, () => (
-          <p className={s.nothingFound}>No rooms match "{query}"</p>
+          <p className={s.nothingFound}>{t('nothingFound', { query })}</p>
         ))
         .otherwise(() => (
           <div className={s.sections}>
             {sections.map((section) => (
               <section key={section.key} className={s.section}>
-                <h4 className={s.sectionLabel}>{section.label}</h4>
+                <h4 className={s.sectionLabel}>{tSections(section.key)}</h4>
 
                 <div className={s.grid}>
                   {section.rooms.map((room) => (

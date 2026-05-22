@@ -1,11 +1,14 @@
 'use client';
 
 import { LogOut } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
 import { supabase } from '@/shared/api';
 import { Button, Tooltip, TooltipContent, TooltipTrigger } from '@/shared/ui';
 
 export const LogoutButton = () => {
+  const t = useTranslations('serverRail');
+
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
 
@@ -15,17 +18,17 @@ export const LogoutButton = () => {
       return;
     }
 
-    toast.success('Signed out');
+    toast.success(t('signedOut'));
   };
 
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <Button aria-label="Logout" size="icon" variant="ghost" onClick={handleLogout}>
+        <Button aria-label={t('logout')} size="icon" variant="ghost" onClick={handleLogout}>
           <LogOut />
         </Button>
       </TooltipTrigger>
-      <TooltipContent side="right">Logout</TooltipContent>
+      <TooltipContent side="right">{t('logout')}</TooltipContent>
     </Tooltip>
   );
 };

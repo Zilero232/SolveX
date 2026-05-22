@@ -2,6 +2,7 @@
 
 import { Lock } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { useRoomParticipants } from '@/entities/room';
 import { buildRoomHref } from '@/shared/constants';
 import { getInitials } from '@/shared/lib';
@@ -13,6 +14,7 @@ import type { LobbyRoomCardProps } from './LobbyRoomCard.types';
 const MAX_AVATARS = 4;
 
 export const LobbyRoomCard = ({ room }: LobbyRoomCardProps) => {
+  const t = useTranslations('lobby.card');
   const router = useRouter();
   const participants = useRoomParticipants(room.id);
 
@@ -31,10 +33,10 @@ export const LobbyRoomCard = ({ room }: LobbyRoomCardProps) => {
         {isLive ? (
           <span className={s.liveBadge}>
             <span className={s.liveDot} />
-            Live
+            {t('live')}
           </span>
         ) : (
-          <span className={s.idleBadge}>Empty</span>
+          <span className={s.idleBadge}>{t('empty')}</span>
         )}
       </div>
 
@@ -50,12 +52,10 @@ export const LobbyRoomCard = ({ room }: LobbyRoomCardProps) => {
             ))}
             {overflow > 0 && <span className={s.overflow}>+{overflow}</span>}
           </div>
-          <span className={s.countLabel}>
-            {participants.length} {participants.length === 1 ? 'person' : 'people'}
-          </span>
+          <span className={s.countLabel}>{t('people', { count: participants.length })}</span>
         </div>
       ) : (
-        <span className={s.emptyHint}>No one here yet — be the first</span>
+        <span className={s.emptyHint}>{t('emptyHint')}</span>
       )}
     </button>
   );

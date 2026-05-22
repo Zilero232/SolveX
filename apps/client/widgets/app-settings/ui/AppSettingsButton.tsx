@@ -2,6 +2,7 @@
 
 import { useBoolean } from '@siberiacancode/reactuse';
 import { Mic, Settings, Video, Volume2 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import {
   Button,
   Dialog,
@@ -26,6 +27,7 @@ import { VideoTab } from './sections/VideoTab';
 // it is self-contained and owns its open state. Each tab reads useAppSettings
 // itself; reactuse keeps the shared localStorage entry in sync across them.
 export const AppSettingsButton = () => {
+  const t = useTranslations('settings');
   const [isOpen, toggleOpen] = useBoolean(false);
 
   return (
@@ -33,7 +35,7 @@ export const AppSettingsButton = () => {
       <Tooltip>
         <TooltipTrigger asChild>
           <Button
-            aria-label="Open settings"
+            aria-label={t('open')}
             size="icon"
             type="button"
             variant="ghost"
@@ -42,31 +44,29 @@ export const AppSettingsButton = () => {
             <Settings />
           </Button>
         </TooltipTrigger>
-        <TooltipContent>Settings</TooltipContent>
+        <TooltipContent>{t('title')}</TooltipContent>
       </Tooltip>
 
       <Dialog open={isOpen} onOpenChange={toggleOpen}>
         <DialogContent className={s.content}>
           <DialogHeader>
-            <DialogTitle>Settings</DialogTitle>
-            <DialogDescription>
-              Devices and sound preferences. Saved on this device.
-            </DialogDescription>
+            <DialogTitle>{t('title')}</DialogTitle>
+            <DialogDescription>{t('description')}</DialogDescription>
           </DialogHeader>
 
           <Tabs className={s.tabs} defaultValue="audio">
             <TabsList className={s.tabsList}>
               <TabsTrigger value="audio">
                 <Mic />
-                Audio
+                {t('tabs.audio')}
               </TabsTrigger>
               <TabsTrigger value="video">
                 <Video />
-                Video
+                {t('tabs.video')}
               </TabsTrigger>
               <TabsTrigger value="sounds">
                 <Volume2 />
-                Sounds
+                {t('tabs.sounds')}
               </TabsTrigger>
             </TabsList>
 

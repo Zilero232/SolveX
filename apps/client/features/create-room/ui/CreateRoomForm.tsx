@@ -3,6 +3,7 @@
 import { createRoomInputSchema } from '@chatovo/schemas/rooms';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { useCreateRoom, useEnterRoom } from '@/entities/room';
@@ -18,6 +19,7 @@ type CreateRoomFormProps = {
 };
 
 export const CreateRoomForm = ({ onCreated }: CreateRoomFormProps) => {
+  const t = useTranslations('createRoom');
   const createMutation = useCreateRoom();
   const enterMutation = useEnterRoom();
 
@@ -40,7 +42,7 @@ export const CreateRoomForm = ({ onCreated }: CreateRoomFormProps) => {
   const onSubmit = handleSubmit((values) => {
     createMutation.mutate(values, {
       onSuccess: (room) => {
-        toast.success('Room created', { description: `"${room.name}"` });
+        toast.success(t('created'), { description: `"${room.name}"` });
         reset(DEFAULT_VALUES);
         onCreated?.();
         enterMutation.mutate(
@@ -55,11 +57,11 @@ export const CreateRoomForm = ({ onCreated }: CreateRoomFormProps) => {
   return (
     <form className={s.form} onSubmit={onSubmit}>
       <div className={s.field}>
-        <Label htmlFor="create-room-name">New room name</Label>
+        <Label htmlFor="create-room-name">{t('nameLabel')}</Label>
         <Input
           autoComplete="off"
           id="create-room-name"
-          placeholder="team standup"
+          placeholder={t('namePlaceholder')}
           {...register('name')}
         />
         {errors.name && <p className={s.error}>{errors.name.message}</p>}
@@ -67,11 +69,11 @@ export const CreateRoomForm = ({ onCreated }: CreateRoomFormProps) => {
 
       {isPrivate && (
         <div className={s.field}>
-          <Label htmlFor="create-room-password">Password</Label>
+          <Label htmlFor="create-room-password">{t('passwordLabel')}</Label>
           <Input
             autoComplete="new-password"
             id="create-room-password"
-            placeholder="Min 4 chars"
+            placeholder={t('passwordPlaceholder')}
             type="password"
             {...register('password')}
           />
@@ -81,12 +83,12 @@ export const CreateRoomForm = ({ onCreated }: CreateRoomFormProps) => {
 
       <label className={s.checkboxRow}>
         <input className={s.checkbox} type="checkbox" {...register('isPrivate')} />
-        <span>Private (password required to join)</span>
+        <span>{t('privateLabel')}</span>
       </label>
 
       <Button disabled={isPending || !name?.trim()} type="submit" variant="secondary">
         {isPending && <Loader2 className={s.spinner} />}
-        Create room
+        {t('submit')}
       </Button>
     </form>
   );

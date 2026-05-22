@@ -1,6 +1,7 @@
 'use client';
 
 import { ExternalLink, Loader2 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { DESKTOP_PLATFORMS, useDesktopRelease } from '@/entities/desktop-release';
 import { EXTERNAL_LINKS } from '@/shared/constants';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/shared/ui';
@@ -9,30 +10,29 @@ import { downloadAppDialogStyles as s } from './DownloadAppDialog.styles';
 import type { DownloadAppDialogProps } from './DownloadAppDialog.types';
 
 export const DownloadAppDialog = ({ open, onOpenChange }: DownloadAppDialogProps) => {
+  const t = useTranslations('downloadApp');
   const { isLoading, isError, data: release } = useDesktopRelease(open);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Download Chatovo</DialogTitle>
-          <DialogDescription className={s.description}>
-            Native desktop client with auto-updates. Pick your platform.
-          </DialogDescription>
+          <DialogTitle>{t('title')}</DialogTitle>
+          <DialogDescription className={s.description}>{t('description')}</DialogDescription>
         </DialogHeader>
 
         {isLoading && <Loader2 className={s.spinner} />}
 
         {isError && (
           <div className={s.fallback}>
-            Couldn't load the latest release.{' '}
+            {t('loadFailed')}{' '}
             <a
               className={s.fallbackLink}
               href={EXTERNAL_LINKS.desktopReleases}
               rel="noopener noreferrer"
               target="_blank"
             >
-              Open releases on GitHub
+              {t('openReleases')}
             </a>
           </div>
         )}
@@ -46,14 +46,14 @@ export const DownloadAppDialog = ({ open, onOpenChange }: DownloadAppDialogProps
             </div>
 
             <div className={s.meta}>
-              <span>Version {release.version}</span>
+              <span>{t('version', { version: release.version })}</span>
               <a
                 className={s.metaLink}
                 href={release.htmlUrl}
                 rel="noopener noreferrer"
                 target="_blank"
               >
-                Release notes <ExternalLink className={s.metaLinkIcon} />
+                {t('releaseNotes')} <ExternalLink className={s.metaLinkIcon} />
               </a>
             </div>
           </>

@@ -2,6 +2,7 @@
 
 import { AudioLines, Lightbulb, Radio, Users } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { sortBy, sumBy, values } from 'remeda';
 import { useRooms, useRoomsPresence } from '@/entities/room';
 import { CreateRoomDialog } from '@/features/create-room';
@@ -13,6 +14,7 @@ import { channelsLobbyBannerStyles as s } from './ChannelsLobbyBanner.styles';
 // laid out on the page itself, so this slot becomes a hub: live stats, a
 // one-click jump into the busiest room, and a create-room CTA.
 export const ChannelsLobbyBanner = () => {
+  const t = useTranslations('channels.banner');
   const router = useRouter();
   const { rooms } = useRooms();
   const presence = useRoomsPresence();
@@ -33,14 +35,14 @@ export const ChannelsLobbyBanner = () => {
         </div>
 
         <div className={s.text}>
-          <p className={s.title}>You're in the lobby</p>
-          <p className={s.hint}>Pick a room from the page, or start a new one.</p>
+          <p className={s.title}>{t('title')}</p>
+          <p className={s.hint}>{t('hint')}</p>
         </div>
 
         <CreateRoomDialog
           trigger={
             <Button className={s.cta} type="button">
-              Create a room
+              {t('createRoom')}
             </Button>
           }
         />
@@ -50,12 +52,12 @@ export const ChannelsLobbyBanner = () => {
         <div className={s.stat}>
           <Users className={s.statIcon} />
           <span className={s.statValue}>{rooms.length}</span>
-          <span className={s.statLabel}>{rooms.length === 1 ? 'room' : 'rooms'}</span>
+          <span className={s.statLabel}>{t('rooms', { count: rooms.length })}</span>
         </div>
         <div className={s.stat}>
           <Radio className={peopleOnline > 0 ? s.statIconLive : s.statIcon} />
           <span className={s.statValue}>{peopleOnline}</span>
-          <span className={s.statLabel}>online</span>
+          <span className={s.statLabel}>{t('online')}</span>
         </div>
       </div>
 
@@ -67,16 +69,16 @@ export const ChannelsLobbyBanner = () => {
         >
           <span className={s.quickJoinDot} />
           <span className={s.quickJoinText}>
-            <span className={s.quickJoinLabel}>Busiest now</span>
+            <span className={s.quickJoinLabel}>{t('busiestNow')}</span>
             <span className={s.quickJoinName}>{busiest.name}</span>
           </span>
-          <span className={s.quickJoinAction}>Join</span>
+          <span className={s.quickJoinAction}>{t('join')}</span>
         </button>
       )}
 
       <div className={s.tip}>
         <Lightbulb className={s.tipIcon} />
-        <span>Private rooms need a password to join.</span>
+        <span>{t('tip')}</span>
       </div>
     </div>
   );

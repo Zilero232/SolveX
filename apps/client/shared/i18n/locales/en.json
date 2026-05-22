@@ -34,5 +34,125 @@
       "passwordMin": "Min 8 characters",
       "passwordsMismatch": "Passwords do not match"
     }
+  },
+  "lobby": {
+    "welcome": "Welcome back, {name}",
+    "subtitle": "Jump into a voice room or start your own",
+    "roomsHeading": "Rooms",
+    "searchPlaceholder": "Search rooms...",
+    "nothingFound": "No rooms match \"{query}\"",
+    "empty": {
+      "title": "No rooms yet",
+      "text": "Create the first voice room and invite people to join."
+    },
+    "card": {
+      "live": "Live",
+      "empty": "Empty",
+      "emptyHint": "No one here yet — be the first",
+      "people": "{count, plural, one {# person} other {# people}}"
+    }
+  },
+  "room": {
+    "sections": {
+      "public": "Voice rooms",
+      "private": "Private"
+    },
+    "loading": "Loading room...",
+    "connecting": "Connecting to \"{name}\"...",
+    "reconnecting": "Reconnecting to \"{name}\"...",
+    "notFound": "Room not found",
+    "backToLobby": "Back to lobby",
+    "joinFailed": "Failed to join room",
+    "password": {
+      "title": "Enter password for \"{name}\"",
+      "label": "Password",
+      "required": "Password required",
+      "wrong": "Wrong password",
+      "join": "Join"
+    }
+  },
+  "chat": {
+    "title": "Chat",
+    "close": "Close chat",
+    "messagePlaceholder": "Message…",
+    "send": "Send message"
+  },
+  "participant": {
+    "muteForMe": "Mute for me",
+    "unmuteForMe": "Unmute for me",
+    "volume": "Volume",
+    "volumeFor": "Volume for {name}",
+    "copyName": "Copy name",
+    "nameCopied": "Name copied"
+  },
+  "channels": {
+    "searchPlaceholder": "Search rooms...",
+    "noRoomsYet": "No rooms yet",
+    "nothingFound": "Nothing found",
+    "banner": {
+      "title": "You're in the lobby",
+      "hint": "Pick a room from the page, or start a new one.",
+      "createRoom": "Create a room",
+      "rooms": "{count, plural, one {room} other {rooms}}",
+      "online": "online",
+      "busiestNow": "Busiest now",
+      "join": "Join",
+      "tip": "Private rooms need a password to join."
+    }
+  },
+  "serverRail": {
+    "lobby": "Lobby",
+    "downloadApp": "Download app",
+    "downloadAppLabel": "Download desktop app",
+    "logout": "Logout",
+    "signedOut": "Signed out",
+    "showChannels": "Show channels",
+    "hideChannels": "Hide channels",
+    "toggleChannels": "Toggle channels"
+  },
+  "settings": {
+    "title": "Settings",
+    "open": "Open settings",
+    "description": "Devices and sound preferences. Saved on this device.",
+    "tabs": {
+      "audio": "Audio",
+      "video": "Video",
+      "sounds": "Sounds"
+    },
+    "sounds": {
+      "volumeLabel": "Sound effects volume",
+      "volumeHint": "Loudness of all room sound effects.",
+      "join": "Join",
+      "joinHint": "When someone joins the room.",
+      "leave": "Leave",
+      "leaveHint": "When someone leaves the room.",
+      "mute": "Mute / unmute",
+      "muteHint": "When you toggle your microphone.",
+      "reconnect": "Reconnect",
+      "reconnectHint": "When your connection drops and recovers.",
+      "message": "Chat message",
+      "messageHint": "A new message while the chat is closed."
+    }
+  },
+  "createRoom": {
+    "trigger": "Create room",
+    "title": "Create a room",
+    "description": "Creates a new voice room and takes you in.",
+    "nameLabel": "New room name",
+    "namePlaceholder": "team standup",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "Min 4 chars",
+    "privateLabel": "Private (password required to join)",
+    "submit": "Create room",
+    "created": "Room created"
+  },
+  "downloadApp": {
+    "title": "Download Chatovo",
+    "description": "Native desktop client with auto-updates. Pick your platform.",
+    "loadFailed": "Couldn't load the latest release.",
+    "openReleases": "Open releases on GitHub",
+    "version": "Version {version}",
+    "releaseNotes": "Release notes",
+    "notAvailable": "Not available yet"
   }
 }

@@ -2,12 +2,14 @@
 
 import { useTextareaAutosize } from '@siberiacancode/reactuse';
 import { SendHorizontal } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/shared/ui';
 import { chatComposerStyles as s } from './ChatComposer.styles';
 import type { KeyboardEvent } from 'react';
 import type { ChatComposerProps } from './ChatComposer.types';
 
 export const ChatComposer = ({ isSending, onSend }: ChatComposerProps) => {
+  const t = useTranslations('chat');
   const { ref, value: draft, set, clear } = useTextareaAutosize<HTMLTextAreaElement>('');
 
   const submit = async () => {
@@ -43,13 +45,13 @@ export const ChatComposer = ({ isSending, onSend }: ChatComposerProps) => {
         ref={ref}
         className={s.input}
         disabled={isSending}
-        placeholder="Message…"
+        placeholder={t('messagePlaceholder')}
         rows={1}
         value={draft}
         onChange={(event) => set(event.target.value)}
         onKeyDown={onKeyDown}
       />
-      <Button aria-label="Send message" disabled={!canSend} size="icon-sm" type="submit">
+      <Button aria-label={t('send')} disabled={!canSend} size="icon-sm" type="submit">
         <SendHorizontal />
       </Button>
     </form>
