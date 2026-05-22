@@ -1,7 +1,7 @@
 'use client';
 
 import { useBoolean } from '@siberiacancode/reactuse';
-import { Mic, Settings, Video, Volume2 } from 'lucide-react';
+import { Mic, Settings, User, Video, Volume2 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import {
   Button,
@@ -20,6 +20,7 @@ import {
 } from '@/shared/ui';
 import { appSettingsStyles as s } from './AppSettingsButton.styles';
 import { AudioTab } from './sections/AudioTab';
+import { ProfileTab } from './sections/ProfileTab';
 import { SoundsTab } from './sections/SoundsTab';
 import { VideoTab } from './sections/VideoTab';
 
@@ -54,8 +55,12 @@ export const AppSettingsButton = () => {
             <DialogDescription>{t('description')}</DialogDescription>
           </DialogHeader>
 
-          <Tabs className={s.tabs} defaultValue="audio">
+          <Tabs className={s.tabs} defaultValue="profile">
             <TabsList className={s.tabsList}>
+              <TabsTrigger value="profile">
+                <User />
+                {t('tabs.profile')}
+              </TabsTrigger>
               <TabsTrigger value="audio">
                 <Mic />
                 {t('tabs.audio')}
@@ -69,6 +74,10 @@ export const AppSettingsButton = () => {
                 {t('tabs.sounds')}
               </TabsTrigger>
             </TabsList>
+
+            <TabsContent value="profile">
+              <ProfileTab />
+            </TabsContent>
 
             <TabsContent value="audio">
               <AudioTab />

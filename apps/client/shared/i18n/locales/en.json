@@ -63,6 +63,10 @@
     "notFound": "Room not found",
     "backToLobby": "Back to lobby",
     "joinFailed": "Failed to join room",
+    "connection": {
+      "measuring": "Measuring connection…",
+      "ping": "Connection: {ms} ms"
+    },
     "password": {
       "title": "Enter password for \"{name}\"",
       "label": "Password",
@@ -74,6 +78,8 @@
   "chat": {
     "title": "Chat",
     "close": "Close chat",
+    "open": "Show chat",
+    "hide": "Hide chat",
     "messagePlaceholder": "Message…",
     "send": "Send message"
   },
@@ -115,9 +121,46 @@
     "open": "Open settings",
     "description": "Devices and sound preferences. Saved on this device.",
     "tabs": {
+      "profile": "Profile",
       "audio": "Audio",
       "video": "Video",
       "sounds": "Sounds"
+    },
+    "profile": {
+      "displayNameLabel": "Display name",
+      "displayNameHint": "The name other people see in voice rooms.",
+      "save": "Save",
+      "saved": "Display name updated",
+      "emailSoon": "Email — coming soon",
+      "passwordSoon": "Password — coming soon"
+    },
+    "devices": {
+      "systemDefault": "System default",
+      "noDevices": "No devices found",
+      "unknownDevice": "Unknown device"
+    },
+    "audio": {
+      "microphone": "Microphone",
+      "microphoneHint": "The microphone used to capture your voice.",
+      "speakers": "Speakers",
+      "speakersHint": "Where room audio is played back.",
+      "testMic": "Test microphone",
+      "testMicHint": "Speak to see the level; press to hear yourself.",
+      "stopTestMic": "Stop microphone test",
+      "noiseSuppression": "Noise suppression",
+      "noiseSuppressionHint": "Filters out steady background noise.",
+      "echoCancellation": "Echo cancellation",
+      "echoCancellationHint": "Removes echo from your speakers.",
+      "autoGainControl": "Auto gain control",
+      "autoGainControlHint": "Evens out your microphone loudness. Turn off for music.",
+      "voiceIsolation": "Voice isolation",
+      "voiceIsolationHint": "Experimental — stronger voice isolation. Browser support varies."
+    },
+    "video": {
+      "camera": "Camera",
+      "cameraHint": "The camera used when you turn on video.",
+      "mirror": "Mirror my video",
+      "mirrorHint": "Flips your own preview. Other participants always see you unmirrored."
     },
     "sounds": {
       "volumeLabel": "Sound effects volume",

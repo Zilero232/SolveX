@@ -4,6 +4,7 @@ import { ControlBar, LiveKitRoom, RoomAudioRenderer } from '@livekit/components-
 import { useBoolean } from '@siberiacancode/reactuse';
 import { DisconnectReason } from 'livekit-client';
 import { MessageSquare } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useRef } from 'react';
 import { Button } from '@/shared/ui';
 import { useAppSettings } from '@/widgets/app-settings';
@@ -33,6 +34,7 @@ export const VoiceRoom = ({
   onLeave,
   onConnectFailure,
 }: VoiceRoomProps) => {
+  const t = useTranslations('chat');
   const hasConnectedRef = useRef(false);
   const [isChatOpen, toggleChat] = useBoolean(false);
 
@@ -87,7 +89,7 @@ export const VoiceRoom = ({
               </div>
 
               <Button
-                aria-label={isChatOpen ? 'Hide chat' : 'Show chat'}
+                aria-label={isChatOpen ? t('hide') : t('open')}
                 aria-pressed={isChatOpen}
                 className={s.chatButton}
                 size="icon-lg"

@@ -3,6 +3,7 @@
 import { useConnectionState } from '@livekit/components-react';
 import { ConnectionState } from 'livekit-client';
 import { Loader2 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { match } from 'ts-pattern';
 import { connectingOverlayStyles as s } from './ConnectingOverlay.styles';
 
@@ -16,20 +17,17 @@ type ConnectingOverlayProps = {
 // the local card against an unconnected room. Rendered inside LiveKitRoom so
 // it can read the live connection state.
 export const ConnectingOverlay = ({ roomName }: ConnectingOverlayProps) => {
+  const t = useTranslations('room');
   const state = useConnectionState();
 
   // `null` once connected — the overlay clears and the grid shows through.
   const text = match(state)
     .with(ConnectionState.Connected, () => null)
-    .with(
-      ConnectionState.Reconnecting,
-      ConnectionState.SignalReconnecting,
-      () => `Reconnecting to "${roomName}"...`,
+    .with(ConnectionState.Reconnecting, ConnectionState.SignalReconnecting, () =>
+      t('reconnecting', { name: roomName }),
     )
-    .with(
-      ConnectionState.Connecting,
-      ConnectionState.Disconnected,
-      () => `Connecting to "${roomName}"...`,
+    .with(ConnectionState.Connecting, ConnectionState.Disconnected, () =>
+      t('connecting', { name: roomName }),
     )
     .exhaustive();
 

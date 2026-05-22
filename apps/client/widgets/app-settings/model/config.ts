@@ -18,7 +18,7 @@ export const DEFAULT_APP_SETTINGS: AppSettings = {
     voiceIsolation: false,
   },
   video: {
-    mirrorVideo: true,
+    mirrorVideo: false,
   },
   devices: {
     // Empty string = follow the system default device.

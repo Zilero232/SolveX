@@ -2,6 +2,7 @@
 
 import { useMediaDeviceSelect } from '@livekit/components-react';
 import { ChevronDownIcon } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { isEmpty } from 'remeda';
 import {
   DropdownMenu,
@@ -20,7 +21,8 @@ type DeviceSelectProps = {
   emptyLabel?: string;
 };
 
-export const DeviceSelect = ({ kind, emptyLabel = 'No devices found' }: DeviceSelectProps) => {
+export const DeviceSelect = ({ kind, emptyLabel }: DeviceSelectProps) => {
+  const t = useTranslations('settings.devices');
   const { settings, setGroup } = useAppSettings();
 
   const slot = KIND_TO_SLOT[kind];
@@ -37,7 +39,7 @@ export const DeviceSelect = ({ kind, emptyLabel = 'No devices found' }: DeviceSe
 
   // Prefer the selected device's label, fall back to the first device, then to
   // the empty-state text when nothing is enumerated.
-  const triggerLabel = active?.label || devices[0]?.label || emptyLabel;
+  const triggerLabel = active?.label || devices[0]?.label || emptyLabel || t('noDevices');
 
   const selectDevice = (deviceId: string) => {
     setGroup('devices', { [slot]: deviceId });
@@ -54,7 +56,7 @@ export const DeviceSelect = ({ kind, emptyLabel = 'No devices found' }: DeviceSe
         <DropdownMenuRadioGroup value={selectedId} onValueChange={selectDevice}>
           {devices.map((device) => (
             <DropdownMenuRadioItem key={device.deviceId} value={device.deviceId}>
-              {device.label || 'Unknown device'}
+              {device.label || t('unknownDevice')}
             </DropdownMenuRadioItem>
           ))}
         </DropdownMenuRadioGroup>

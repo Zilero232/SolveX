@@ -1,7 +1,12 @@
 'use client';
 
-import { useConnectionQualityIndicator, useLocalParticipant } from '@livekit/components-react';
-import { ConnectionQuality } from 'livekit-client';
+import {
+  useConnectionQualityIndicator,
+  useConnectionState,
+  useLocalParticipant,
+} from '@livekit/components-react';
+import { ConnectionQuality, ConnectionState } from 'livekit-client';
+import { useTranslations } from 'next-intl';
 import { isNonNullish } from 'remeda';
 import { match } from 'ts-pattern';
 import { cn } from '@/shared/lib';
@@ -30,18 +35,25 @@ const barsFromQuality = (quality: ConnectionQuality): number =>
     .otherwise(() => 0);
 
 export const ConnectionIndicator = () => {
+  const t = useTranslations('room.connection');
+
   // The indicator lives in the room header, outside any ParticipantContext,
   // so the local participant must be passed to the quality hook explicitly.
   const { localParticipant } = useLocalParticipant();
   const { quality } = useConnectionQualityIndicator({ participant: localParticipant });
+  const connectionState = useConnectionState();
   const rtt = useConnectionRtt();
+
+  // Quality and RTT are meaningless until connected — the ConnectingOverlay
+  // covers the room then, so the header shows nothing rather than fake bars.
+  if (connectionState !== ConnectionState.Connected) return null;
 
   const hasRtt = isNonNullish(rtt);
   const bars = hasRtt ? barsFromRtt(rtt) : barsFromQuality(quality);
 
   // Bar colour reflects strength: green / amber / red.
   const tone = bars >= 4 ? 'good' : bars >= 2 ? 'fair' : 'poor';
-  const label = !hasRtt ? 'Measuring connection…' : `Connection: ${rtt} ms`;
+  const label = hasRtt ? t('ping', { ms: rtt }) : t('measuring');
 
   return (
     <div aria-label={label} className={s.root} role="img" title={label}>

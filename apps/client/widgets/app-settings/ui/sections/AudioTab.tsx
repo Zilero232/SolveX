@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { Switch } from '@/shared/ui';
 import { type AudioSettings, useAppSettings } from '../../model';
 import { appSettingsStyles as s } from '../AppSettingsButton.styles';
@@ -8,6 +9,9 @@ import { MicTest } from '../components/MicTest';
 import { SettingRow } from '../components/SettingRow';
 
 export const AudioTab = () => {
+  const t = useTranslations('settings.audio');
+  const tDevices = useTranslations('settings.devices');
+
   const { settings, setGroup } = useAppSettings();
 
   const audio = settings.audio;
@@ -24,22 +28,22 @@ export const AudioTab = () => {
       <SettingRow
         stacked
         control={<DeviceSelect kind="audioinput" />}
-        hint="The microphone used to capture your voice."
-        label="Microphone"
+        hint={t('microphoneHint')}
+        label={t('microphone')}
       />
 
       <SettingRow
         stacked
-        control={<DeviceSelect emptyLabel="System default" kind="audiooutput" />}
-        hint="Where room audio is played back."
-        label="Speakers"
+        control={<DeviceSelect emptyLabel={tDevices('systemDefault')} kind="audiooutput" />}
+        hint={t('speakersHint')}
+        label={t('speakers')}
       />
 
       <SettingRow
         stacked
         control={<MicTest audio={audio} deviceId={settings.devices.audioInput} />}
-        hint="Speak to see the level; press to hear yourself."
-        label="Test microphone"
+        hint={t('testMicHint')}
+        label={t('testMic')}
       />
 
       <SettingRow
@@ -49,8 +53,8 @@ export const AudioTab = () => {
             onCheckedChange={(value) => setFlag('noiseSuppression', value)}
           />
         }
-        hint="Filters out steady background noise."
-        label="Noise suppression"
+        hint={t('noiseSuppressionHint')}
+        label={t('noiseSuppression')}
       />
 
       <SettingRow
@@ -60,8 +64,8 @@ export const AudioTab = () => {
             onCheckedChange={(value) => setFlag('echoCancellation', value)}
           />
         }
-        hint="Removes echo from your speakers."
-        label="Echo cancellation"
+        hint={t('echoCancellationHint')}
+        label={t('echoCancellation')}
       />
 
       <SettingRow
@@ -71,8 +75,8 @@ export const AudioTab = () => {
             onCheckedChange={(value) => setFlag('autoGainControl', value)}
           />
         }
-        hint="Evens out your microphone loudness. Turn off for music."
-        label="Auto gain control"
+        hint={t('autoGainControlHint')}
+        label={t('autoGainControl')}
       />
 
       <SettingRow
@@ -82,8 +86,8 @@ export const AudioTab = () => {
             onCheckedChange={(value) => setFlag('voiceIsolation', value)}
           />
         }
-        hint="Experimental — stronger voice isolation. Browser support varies."
-        label="Voice isolation"
+        hint={t('voiceIsolationHint')}
+        label={t('voiceIsolation')}
       />
     </div>
   );

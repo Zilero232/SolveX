@@ -1,6 +1,7 @@
 'use client';
 
 import { Mic, MicOff } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/shared/ui';
 import { type AudioSettings, useMicTest } from '../../model';
 import { appSettingsStyles as s } from '../AppSettingsButton.styles';
@@ -11,6 +12,7 @@ type MicTestProps = {
 };
 
 export const MicTest = ({ deviceId, audio }: MicTestProps) => {
+  const t = useTranslations('settings.audio');
   const { level, isLoopback, toggleLoopback, error } = useMicTest({ deviceId, audio });
 
   return (
@@ -21,7 +23,7 @@ export const MicTest = ({ deviceId, audio }: MicTestProps) => {
       </div>
 
       <Button
-        aria-label={isLoopback ? 'Stop microphone test' : 'Test microphone'}
+        aria-label={isLoopback ? t('stopTestMic') : t('testMic')}
         aria-pressed={isLoopback}
         disabled={error}
         size="icon"
