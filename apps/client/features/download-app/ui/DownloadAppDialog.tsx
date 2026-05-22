@@ -9,7 +9,7 @@ import { downloadAppDialogStyles as s } from './DownloadAppDialog.styles';
 import type { DownloadAppDialogProps } from './DownloadAppDialog.types';
 
 export const DownloadAppDialog = ({ open, onOpenChange }: DownloadAppDialogProps) => {
-  const { isLoading, isError, data: release } = useDesktopRelease();
+  const { isLoading, isError, data: release } = useDesktopRelease(open);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

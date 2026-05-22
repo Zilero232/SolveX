@@ -10,6 +10,7 @@ import { useAppSettings } from '@/widgets/app-settings';
 import { RoomChatProvider } from '../model';
 import {
   ChatPanel,
+  ConnectingOverlay,
   ConnectionIndicator,
   ParticipantsView,
   RoomDeviceSync,
@@ -77,6 +78,7 @@ export const VoiceRoom = ({
 
             <div className={s.body}>
               <ParticipantsView />
+              <ConnectingOverlay roomName={roomName} />
             </div>
 
             <div className={s.controls}>

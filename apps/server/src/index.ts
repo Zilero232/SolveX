@@ -3,6 +3,7 @@ import { OpenAPIHono } from '@hono/zod-openapi';
 import { cors } from 'hono/cors';
 import { logger } from 'hono/logger';
 import { env } from './lib/env';
+import { ConflictError, NotFoundError } from './lib/errors';
 import { authMiddleware } from './middleware/auth';
 import { livekitRouter } from './routes/livekit';
 import { roomsRouter } from './routes/rooms';
@@ -47,6 +48,23 @@ export const routes = app
   })
   .route('/rooms', roomsRouter)
   .route('/livekit', livekitRouter);
+
+// Single place that turns thrown errors into HTTP responses. Domain errors
+// map to their status; anything else is an unexpected failure -> 500, without
+// leaking a stack trace to the client.
+app.onError((error, c) => {
+  if (error instanceof ConflictError) {
+    return c.json({ error: error.message }, 409);
+  }
+
+  if (error instanceof NotFoundError) {
+    return c.json({ error: error.message }, 404);
+  }
+
+  console.error(error);
+
+  return c.json({ error: 'Internal server error' }, 500);
+});
 
 app.doc('/openapi.json', {
   openapi: '3.0.0',

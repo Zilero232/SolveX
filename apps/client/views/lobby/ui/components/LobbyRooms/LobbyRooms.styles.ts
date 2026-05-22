@@ -10,6 +10,11 @@ export const lobbyRoomsStyles = {
     'pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground',
   searchInput: 'pl-8',
 
+  // Rooms split into Public / Private sections, each with a heading.
+  sections: 'flex flex-col gap-6',
+  section: 'flex flex-col gap-3',
+  sectionLabel: 'font-semibold text-muted-foreground text-xs uppercase tracking-wide',
+
   grid: 'grid gap-3 sm:grid-cols-2 lg:grid-cols-3',
 
   loader: 'flex justify-center py-12',

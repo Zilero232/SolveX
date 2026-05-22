@@ -56,5 +56,9 @@ export const createRoomRoute = createRoute({
       description: 'Created',
       content: { 'application/json': { schema: roomSchema } },
     },
+    409: {
+      description: 'A room with this name already exists',
+      content: { 'application/json': { schema: errorSchema } },
+    },
   },
 });

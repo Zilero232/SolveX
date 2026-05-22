@@ -2,9 +2,9 @@
 
 import { Loader2, Search } from 'lucide-react';
 import { useState } from 'react';
-import { isEmpty as isEmptyList, sortBy } from 'remeda';
+import { isEmpty as isEmptyList } from 'remeda';
 import { match } from 'ts-pattern';
-import { useRooms, useRoomsPresence } from '@/entities/room';
+import { groupRooms, useRooms, useRoomsPresence } from '@/entities/room';
 import { Input } from '@/shared/ui';
 import { LobbyEmpty } from '../LobbyEmpty';
 import { LobbyRoomCard } from '../LobbyRoomCard';
@@ -16,17 +16,9 @@ export const LobbyRooms = () => {
 
   const [query, setQuery] = useState('');
 
-  // Busiest rooms first, then alphabetical — the lobby surfaces activity.
-  const ordered = sortBy(
-    rooms,
-    [(room) => presence[room.id]?.length ?? 0, 'desc'],
-    [(room) => room.name.toLowerCase(), 'asc'],
-  );
-
-  const normalized = query.trim().toLowerCase();
-  const filtered = normalized
-    ? ordered.filter((room) => room.name.toLowerCase().includes(normalized))
-    : ordered;
+  // Public / Private sections, each ordered busiest-first then alphabetical —
+  // the same grouping the channels sidebar uses.
+  const sections = groupRooms(rooms, presence, query);
 
   return (
     <div className={s.root}>
@@ -44,7 +36,7 @@ export const LobbyRooms = () => {
         </div>
       </div>
 
-      {match({ isLoading, isEmpty, nothingFound: isEmptyList(filtered) })
+      {match({ isLoading, isEmpty, nothingFound: isEmptyList(sections) })
         .with({ isLoading: true }, () => (
           <div className={s.loader}>
             <Loader2 className={s.loaderIcon} />
@@ -55,9 +47,17 @@ export const LobbyRooms = () => {
           <p className={s.nothingFound}>No rooms match "{query}"</p>
         ))
         .otherwise(() => (
-          <div className={s.grid}>
-            {filtered.map((room) => (
-              <LobbyRoomCard key={room.id} room={room} />
+          <div className={s.sections}>
+            {sections.map((section) => (
+              <section key={section.key} className={s.section}>
+                <h4 className={s.sectionLabel}>{section.label}</h4>
+
+                <div className={s.grid}>
+                  {section.rooms.map((room) => (
+                    <LobbyRoomCard key={room.id} room={room} />
+                  ))}
+                </div>
+              </section>
             ))}
           </div>
         ))}

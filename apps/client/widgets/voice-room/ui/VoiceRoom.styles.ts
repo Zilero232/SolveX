@@ -4,7 +4,9 @@ export const voiceRoomStyles = {
   room: 'flex h-full flex-col',
   header: 'flex items-center gap-2 border-b px-4 py-3',
   headerTitle: 'flex-1 truncate font-semibold text-sm',
-  body: 'flex min-h-0 flex-1 flex-col',
+  // `relative` anchors the ConnectingOverlay, which covers the grid until the
+  // LiveKit connection is established.
+  body: 'relative flex min-h-0 flex-1 flex-col',
 
   // ControlBar centred; the chat toggle pinned to the right edge.
   controls: 'relative flex items-center justify-center border-t p-2',

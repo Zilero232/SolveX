@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
-import { Button, Input, Label } from '@/shared/ui';
+import { Button, Input, Label, PasswordInput } from '@/shared/ui';
 import { type SignInValues, signInSchema, useSignIn } from '../model/use-sign-in';
 import { signInFormStyles as s } from './SignInForm.styles';
 
@@ -39,10 +39,9 @@ export const SignInForm = () => {
 
       <div className={s.field}>
         <Label htmlFor="signin-password">Password</Label>
-        <Input
+        <PasswordInput
           autoComplete="current-password"
           id="signin-password"
-          type="password"
           {...register('password')}
         />
         {errors.password && <p className={s.error}>{errors.password.message}</p>}

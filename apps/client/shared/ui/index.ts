@@ -6,6 +6,7 @@ export * from './dropdown-menu';
 export * from './icons';
 export * from './input';
 export * from './label';
+export * from './password-input';
 export * from './popover';
 export * from './scroll-area';
 export * from './separator';

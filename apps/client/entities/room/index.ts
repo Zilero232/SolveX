@@ -1,3 +1,4 @@
+export { filterAndOrderRooms, groupRooms, type RoomSection } from './model/group-rooms';
 export { LeaveSoundProvider, useLeaveSound } from './model/leave-sound';
 export { RoomsPresenceProvider, useRoomsPresence } from './model/rooms-presence';
 export { useCreateRoom } from './model/use-create-room';

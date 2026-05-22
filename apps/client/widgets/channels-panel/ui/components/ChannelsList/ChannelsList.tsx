@@ -4,9 +4,8 @@ import { Loader2, Search } from 'lucide-react';
 import { useState } from 'react';
 import { isEmpty as isEmptyList } from 'remeda';
 import { match } from 'ts-pattern';
-import { useRooms, useRoomsPresence } from '@/entities/room';
+import { groupRooms, useRooms, useRoomsPresence } from '@/entities/room';
 import { Input, ScrollArea } from '@/shared/ui';
-import { groupRooms } from '../../../model';
 import { ChannelsRoomItem } from '../ChannelsRoomItem';
 import { channelsListStyles as s } from './ChannelsList.styles';
 

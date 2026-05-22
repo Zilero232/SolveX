@@ -4,11 +4,16 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
-import { Button, Input, Label } from '@/shared/ui';
+import { Button, Input, Label, PasswordInput } from '@/shared/ui';
 import { type SignUpValues, signUpSchema, useSignUp } from '../model/use-sign-up';
 import { signUpFormStyles as s } from './SignUpForm.styles';
 
-const DEFAULT_VALUES: SignUpValues = { name: '', email: '', password: '' };
+const DEFAULT_VALUES: SignUpValues = {
+  name: '',
+  email: '',
+  password: '',
+  confirmPassword: '',
+};
 
 export const SignUpForm = () => {
   const { isPending, mutate } = useSignUp();
@@ -24,8 +29,7 @@ export const SignUpForm = () => {
 
   const onSubmit = handleSubmit((values) => {
     mutate(values, {
-      onSuccess: () =>
-        toast.success('Account created', { description: 'Check email if confirmation is on.' }),
+      onSuccess: () => toast.success('Account created'),
       onError: (err: Error) => toast.error(err.message),
     });
   });
@@ -46,13 +50,22 @@ export const SignUpForm = () => {
 
       <div className={s.field}>
         <Label htmlFor="signup-password">Password</Label>
-        <Input
+        <PasswordInput
           autoComplete="new-password"
           id="signup-password"
-          type="password"
           {...register('password')}
         />
         {errors.password && <p className={s.error}>{errors.password.message}</p>}
+      </div>
+
+      <div className={s.field}>
+        <Label htmlFor="signup-confirm-password">Confirm password</Label>
+        <PasswordInput
+          autoComplete="new-password"
+          id="signup-confirm-password"
+          {...register('confirmPassword')}
+        />
+        {errors.confirmPassword && <p className={s.error}>{errors.confirmPassword.message}</p>}
       </div>
 
       <Button className={s.submit} disabled={isPending} type="submit">

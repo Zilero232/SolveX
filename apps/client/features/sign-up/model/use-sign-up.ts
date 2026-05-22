@@ -2,11 +2,17 @@ import { useMutation } from '@tanstack/react-query';
 import { z } from 'zod';
 import { supabase } from '@/shared/api';
 
-export const signUpSchema = z.object({
-  name: z.string().trim().min(2, 'Min 2 characters').max(32, 'Max 32 characters'),
-  email: z.email('Invalid email'),
-  password: z.string().min(6, 'Min 6 characters'),
-});
+export const signUpSchema = z
+  .object({
+    name: z.string().trim().min(2, 'Min 2 characters').max(32, 'Max 32 characters'),
+    email: z.email('Invalid email').trim().toLowerCase(),
+    password: z.string().min(8, 'Min 8 characters'),
+    confirmPassword: z.string(),
+  })
+  .refine((values) => values.password === values.confirmPassword, {
+    message: 'Passwords do not match',
+    path: ['confirmPassword'],
+  });
 
 export type SignUpValues = z.infer<typeof signUpSchema>;
 
