@@ -12,7 +12,12 @@ import type { CreateRoomRequest } from '@chatovo/schemas/rooms';
 
 const DEFAULT_VALUES: CreateRoomRequest = { name: '', isPrivate: false };
 
-export const CreateRoomForm = () => {
+type CreateRoomFormProps = {
+  // Fired once the room is created — lets a host dialog close itself.
+  onCreated?: () => void;
+};
+
+export const CreateRoomForm = ({ onCreated }: CreateRoomFormProps) => {
   const createMutation = useCreateRoom();
   const enterMutation = useEnterRoom();
 
@@ -37,6 +42,7 @@ export const CreateRoomForm = () => {
       onSuccess: (room) => {
         toast.success('Room created', { description: `"${room.name}"` });
         reset(DEFAULT_VALUES);
+        onCreated?.();
         enterMutation.mutate(
           { roomId: room.id, password: values.isPrivate ? values.password : undefined },
           { onError: (err: Error) => toast.error(err.message) },

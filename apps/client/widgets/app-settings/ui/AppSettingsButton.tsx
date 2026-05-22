@@ -17,17 +17,16 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@/shared/ui';
-import { useAppSettings } from '../model';
 import { appSettingsStyles as s } from './AppSettingsButton.styles';
-import { AudioSettings } from './sections/AudioSettings';
-import { SoundsSettings } from './sections/SoundsSettings';
-import { VideoSettings } from './sections/VideoSettings';
+import { AudioTab } from './sections/AudioTab';
+import { SoundsTab } from './sections/SoundsTab';
+import { VideoTab } from './sections/VideoTab';
 
 // A gear button that opens the app-wide settings dialog. Drop it anywhere —
-// it is self-contained and owns its open state.
+// it is self-contained and owns its open state. Each tab reads useAppSettings
+// itself; reactuse keeps the shared localStorage entry in sync across them.
 export const AppSettingsButton = () => {
   const [isOpen, toggleOpen] = useBoolean(false);
-  const { settings, setSetting, toggleSound } = useAppSettings();
 
   return (
     <>
@@ -55,7 +54,7 @@ export const AppSettingsButton = () => {
             </DialogDescription>
           </DialogHeader>
 
-          <Tabs defaultValue="audio">
+          <Tabs className={s.tabs} defaultValue="audio">
             <TabsList className={s.tabsList}>
               <TabsTrigger value="audio">
                 <Mic />
@@ -72,19 +71,15 @@ export const AppSettingsButton = () => {
             </TabsList>
 
             <TabsContent value="audio">
-              <AudioSettings setSetting={setSetting} settings={settings} />
+              <AudioTab />
             </TabsContent>
 
             <TabsContent value="video">
-              <VideoSettings setSetting={setSetting} settings={settings} />
+              <VideoTab />
             </TabsContent>
 
             <TabsContent value="sounds">
-              <SoundsSettings
-                setSetting={setSetting}
-                settings={settings}
-                toggleSound={toggleSound}
-              />
+              <SoundsTab />
             </TabsContent>
           </Tabs>
         </DialogContent>

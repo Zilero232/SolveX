@@ -38,9 +38,9 @@ export const useVoiceRoomSounds = (isChatOpen: boolean) => {
   const messageAudio = useAudio('/audios/notification.mp3', { interrupt: true });
 
   // Sound settings change at runtime; the event-listener effects below capture
-  // their callbacks once, so the latest settings are read through a ref.
-  const settingsRef = useRef(settings);
-  settingsRef.current = settings;
+  // their callbacks once, so the latest values are read through a ref.
+  const soundsRef = useRef(settings.sounds);
+  soundsRef.current = settings.sounds;
 
   // useAudio's `play`/`setVolume` are fresh functions each render but always
   // drive the same internal audio element. The ref is refreshed every render
@@ -63,18 +63,18 @@ export const useVoiceRoomSounds = (isChatOpen: boolean) => {
   // mute/unmute share one toggle; the leave clip lives at the app root, so it
   // has no useAudio element here — its volume is governed by useLeaveSound.
   const guardedPlay = (category: SoundCategory, key: keyof typeof audioRef.current) => () => {
-    const { sounds, soundsVolume } = settingsRef.current;
-    if (!sounds[category]) return;
+    const { enabled, volume } = soundsRef.current;
+    if (!enabled[category]) return;
 
     const audio = audioRef.current[key];
-    audio.setVolume(soundsVolume);
+    audio.setVolume(volume);
     void audio.play();
   };
 
   const playRef = useRef({
     join: guardedPlay('join', 'join'),
     leave: () => {
-      if (settingsRef.current.sounds.leave) playLeave();
+      if (soundsRef.current.enabled.leave) playLeave();
     },
     reconnect: guardedPlay('reconnect', 'reconnect'),
     mute: guardedPlay('mute', 'mute'),

@@ -8,7 +8,13 @@ import { useRef } from 'react';
 import { Button } from '@/shared/ui';
 import { useAppSettings } from '@/widgets/app-settings';
 import { RoomChatProvider } from '../model';
-import { ChatPanel, ConnectionIndicator, ParticipantsView, RoomSounds } from './components';
+import {
+  ChatPanel,
+  ConnectionIndicator,
+  ParticipantsView,
+  RoomDeviceSync,
+  RoomSounds,
+} from './components';
 import { voiceRoomStyles as s } from './VoiceRoom.styles';
 import type { VoiceRoomProps } from './VoiceRoom.types';
 
@@ -31,15 +37,12 @@ export const VoiceRoom = ({
 
   const { settings } = useAppSettings();
 
-  // Capture the audio processing flags once at mount. The `audio` prop is read
-  // only on the initial connect, so seeding it from a ref keeps later toggles
-  // (handled live by AudioSettings via setMicrophoneEnabled) from forcing a
-  // reconnect when the persisted settings change mid-call.
-  const audioCaptureRef = useRef({
-    noiseSuppression: settings.noiseSuppression,
-    echoCancellation: settings.echoCancellation,
-    autoGainControl: settings.autoGainControl,
-  });
+  // Seed the mic's processing flags for the initial capture. The `audio` prop
+  // is read only on the first connect, so a ref freezes it — later changes are
+  // applied live by useDeviceSync (processing flags and device alike), which
+  // also owns picking the actual input device. Keeping deviceId out of here
+  // leaves useDeviceSync as the single path that selects devices.
+  const audioCaptureRef = useRef(settings.audio);
 
   return (
     <div className={s.root}>
@@ -67,8 +70,6 @@ export const VoiceRoom = ({
           }}
         >
           <RoomChatProvider>
-            <RoomSounds isChatOpen={isChatOpen} />
-
             <div className={s.header}>
               <span className={s.headerTitle}>{roomName}</span>
               <ConnectionIndicator />
@@ -96,9 +97,11 @@ export const VoiceRoom = ({
               </Button>
             </div>
 
-            <RoomAudioRenderer />
-
             <ChatPanel isOpen={isChatOpen} onClose={() => toggleChat(false)} />
+
+            <RoomDeviceSync />
+            <RoomAudioRenderer />
+            <RoomSounds isChatOpen={isChatOpen} />
           </RoomChatProvider>
         </LiveKitRoom>
       </div>

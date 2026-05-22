@@ -1,8 +1,4 @@
 export const lobbyPageStyles = {
   root: 'h-full',
-  container: 'mx-auto max-w-3xl px-6 py-10',
-  header: 'mb-6 flex flex-col gap-1',
-  title: 'font-semibold text-2xl',
-  subtitle: 'text-muted-foreground text-sm',
-  grid: 'grid gap-4 md:grid-cols-2',
+  container: 'mx-auto flex max-w-4xl flex-col gap-8 px-6 py-10',
 } as const;

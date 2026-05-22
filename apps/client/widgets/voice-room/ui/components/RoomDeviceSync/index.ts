@@ -1,0 +1,1 @@
+export { RoomDeviceSync } from './RoomDeviceSync';

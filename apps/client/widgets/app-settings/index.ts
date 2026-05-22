@@ -1,3 +1,10 @@
-export { useAppSettings } from './model';
+export { KIND_TO_SLOT, useAppSettings } from './model';
 export { AppSettingsButton } from './ui/AppSettingsButton';
-export type { AppSettings, SoundCategory } from './model';
+export type {
+  AppSettings,
+  AudioSettings,
+  DeviceSettings,
+  SoundCategory,
+  SoundSettings,
+  VideoSettings,
+} from './model';

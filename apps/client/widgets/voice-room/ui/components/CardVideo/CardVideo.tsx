@@ -19,7 +19,7 @@ export const CardVideo = ({ trackRef }: CardVideoProps) => {
 
   // Mirror applies only to the local participant's own preview — remote
   // participants are always shown unmirrored, as they really appear.
-  const isMirrored = trackRef.participant.isLocal && settings.mirrorVideo;
+  const isMirrored = trackRef.participant.isLocal && settings.video.mirrorVideo;
 
   const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
     if (e.key === 'Enter' || e.key === ' ') {
