@@ -1,9 +1,10 @@
 'use client';
 
 import { useCheckAppUpdate } from '../model/use-check-app-update';
+import { UpdateDialog } from './UpdateDialog';
 
 export const AppUpdater = () => {
-  useCheckAppUpdate();
+  const { install, dismiss, ...info } = useCheckAppUpdate();
 
-  return null;
+  return <UpdateDialog {...info} onInstall={install} onDismiss={dismiss} />;
 };

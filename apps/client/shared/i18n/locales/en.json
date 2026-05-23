@@ -204,5 +204,15 @@
     "version": "Version {version}",
     "releaseNotes": "Release notes",
     "notAvailable": "Not available yet"
+  },
+  "update": {
+    "title": "Update available",
+    "description": "Version {version} is ready to install",
+    "releasedOn": "Released {date}",
+    "later": "Later",
+    "install": "Update",
+    "downloading": "Downloading… {percent}%",
+    "installing": "Installing…",
+    "failed": "Update failed. Try again later."
   }
 }

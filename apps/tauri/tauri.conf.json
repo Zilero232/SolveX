@@ -57,7 +57,7 @@
       "endpoints": ["https://github.com/Zilero232/Chatovo/releases/latest/download/latest.json"],
       "dialog": true,
       "windows": {
-        "installMode": "passive"
+        "installMode": "quiet"
       }
     }
   }

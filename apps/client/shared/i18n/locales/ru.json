@@ -204,5 +204,15 @@
     "version": "Версия {version}",
     "releaseNotes": "Список изменений",
     "notAvailable": "Пока недоступно"
+  },
+  "update": {
+    "title": "Доступно обновление",
+    "description": "Версия {version} готова к установке",
+    "releasedOn": "Выпущено {date}",
+    "later": "Позже",
+    "install": "Обновить",
+    "downloading": "Загрузка… {percent}%",
+    "installing": "Установка…",
+    "failed": "Не удалось обновить. Попробуйте позже."
   }
 }
