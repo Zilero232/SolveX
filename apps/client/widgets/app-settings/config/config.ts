@@ -25,7 +25,7 @@ export const DEFAULT_APP_SETTINGS: AppSettings = {
     videoInput: '',
   },
   sounds: {
-    volume: 1,
+    volume: 0.5,
     enabled: {
       join: true,
       leave: true,
