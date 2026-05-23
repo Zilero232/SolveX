@@ -31,7 +31,11 @@ export const UpdateDialog = ({
   const dateLocale = useDateLocale();
 
   const isBusy = status === 'downloading' || status === 'installing';
-  const open = status !== 'idle';
+  const open =
+    status === 'available' ||
+    status === 'downloading' ||
+    status === 'installing' ||
+    status === 'error';
 
   const parsedDate = parseTauriDate(date);
 

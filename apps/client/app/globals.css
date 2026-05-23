@@ -109,6 +109,6 @@
   }
   html,
   body {
-    @apply h-full bg-background text-foreground antialiased;
+    @apply h-full overflow-hidden bg-background text-foreground antialiased;
   }
 }

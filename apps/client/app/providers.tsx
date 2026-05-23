@@ -4,8 +4,9 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { setLogLevel } from 'livekit-client';
 import { LeaveSoundProvider, RoomsPresenceProvider } from '@/entities/room';
-import { AppUpdater } from '@/features/check-app-update';
+import { UpdateBootstrap } from '@/features/check-app-update';
 import { queryClient } from '@/shared/api';
+import { TitleBar } from '@/widgets/title-bar';
 import { AuthBootstrap, I18nProvider } from './providers/index';
 import type { ReactNode } from 'react';
 
@@ -19,12 +20,19 @@ setLogLevel('error');
 export const Providers = ({ children }: { children: ReactNode }) => (
   <QueryClientProvider client={queryClient}>
     <I18nProvider>
-      <AppUpdater />
-      <RoomsPresenceProvider>
-        <LeaveSoundProvider>
-          <AuthBootstrap>{children}</AuthBootstrap>
-        </LeaveSoundProvider>
-      </RoomsPresenceProvider>
+      <div className="flex h-full flex-col">
+        <TitleBar />
+
+        <div className="min-h-0 flex-1">
+          <UpdateBootstrap>
+            <RoomsPresenceProvider>
+              <LeaveSoundProvider>
+                <AuthBootstrap>{children}</AuthBootstrap>
+              </LeaveSoundProvider>
+            </RoomsPresenceProvider>
+          </UpdateBootstrap>
+        </div>
+      </div>
 
       {process.env.NODE_ENV === 'development' && (
         <ReactQueryDevtools buttonPosition="bottom-right" />

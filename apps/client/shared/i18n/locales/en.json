@@ -211,8 +211,18 @@
     "releasedOn": "Released {date}",
     "later": "Later",
     "install": "Update",
+    "checking": "Checking for updates…",
     "downloading": "Downloading… {percent}%",
     "installing": "Installing…",
     "failed": "Update failed. Try again later."
+  },
+  "splash": {
+    "signingIn": "Signing you in…"
+  },
+  "window": {
+    "minimize": "Minimize",
+    "maximize": "Maximize",
+    "restore": "Restore",
+    "close": "Close"
   }
 }

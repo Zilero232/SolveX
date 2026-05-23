@@ -19,7 +19,10 @@
         "center": true,
         "minWidth": 940,
         "minHeight": 560,
-        "backgroundColor": "#09090b"
+        "backgroundColor": "#09090b",
+        "decorations": false,
+        "titleBarStyle": "Overlay",
+        "hiddenTitle": true
       }
     ],
     "security": {
@@ -55,7 +58,7 @@
       "active": true,
       "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDUwMkFBMTlERDREODY3NzEKUldSeFo5alVuYUVxVUpXSDZKQWJQcHBRM0p2Mk5MTzU1UGNyY3grQzVaR2RablBEdDFuV3I0MXcK",
       "endpoints": ["https://github.com/Zilero232/Chatovo/releases/latest/download/latest.json"],
-      "dialog": true,
+      "dialog": false,
       "windows": {
         "installMode": "quiet"
       }

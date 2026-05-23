@@ -211,8 +211,18 @@
     "releasedOn": "Выпущено {date}",
     "later": "Позже",
     "install": "Обновить",
+    "checking": "Проверка обновлений…",
     "downloading": "Загрузка… {percent}%",
     "installing": "Установка…",
     "failed": "Не удалось обновить. Попробуйте позже."
+  },
+  "splash": {
+    "signingIn": "Выполняется вход…"
+  },
+  "window": {
+    "minimize": "Свернуть",
+    "maximize": "Развернуть",
+    "restore": "Восстановить",
+    "close": "Закрыть"
   }
 }

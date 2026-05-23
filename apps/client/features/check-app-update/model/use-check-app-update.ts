@@ -6,12 +6,16 @@ import { check } from '@tauri-apps/plugin-updater';
 import { useEffect, useState } from 'react';
 import { clamp } from 'remeda';
 import { match } from 'ts-pattern';
+import { raceWithTimeout } from '@/shared/lib';
+import { APP_UPDATE_CONFIG } from '../config/config';
 import type { Update } from '@tauri-apps/plugin-updater';
 import type { UpdateInfo } from './types';
 
 export const useCheckAppUpdate = () => {
   const [update, setUpdate] = useState<Update | null>(null);
-  const [status, setStatus] = useState<UpdateInfo['status']>('installing');
+  const [status, setStatus] = useState<UpdateInfo['status']>(() =>
+    isTauri() ? 'checking' : 'idle',
+  );
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
@@ -21,14 +25,20 @@ export const useCheckAppUpdate = () => {
 
     const run = async () => {
       try {
-        const result = await check();
+        const result = await raceWithTimeout(check(), APP_UPDATE_CONFIG.checkTimeoutMs);
 
-        if (cancelled || !result) return;
+        if (cancelled) return;
 
-        setUpdate(result);
+        if (!result.ok || !result.value) {
+          return setStatus('unavailable');
+        }
+
+        setUpdate(result.value);
         setStatus('available');
       } catch (err) {
         console.error('Update check failed', err);
+
+        if (!cancelled) setStatus('unavailable');
       }
     };
 
@@ -76,7 +86,7 @@ export const useCheckAppUpdate = () => {
   };
 
   const dismiss = () => {
-    setStatus('idle');
+    setStatus('unavailable');
     setUpdate(null);
   };
 
