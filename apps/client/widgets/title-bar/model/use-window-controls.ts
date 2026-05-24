@@ -1,28 +1,32 @@
 'use client';
 
 import { isTauri } from '@tauri-apps/api/core';
-import { getCurrentWindow } from '@tauri-apps/api/window';
 import { useEffect, useState } from 'react';
+import {
+  closeMainWindow,
+  hideMainWindow,
+  isMainWindowMaximized,
+  minimizeMainWindow,
+  onMainWindowResized,
+  toggleMaximizeMainWindow,
+} from '@/shared/lib';
+import { useAppSettings } from '@/widgets/app-settings';
 
 export const useWindowControls = () => {
+  const { settings } = useAppSettings();
   const [isMaximized, setIsMaximized] = useState(false);
 
   useEffect(() => {
     if (!isTauri()) return;
 
-    const win = getCurrentWindow();
     let unlisten: (() => void) | undefined;
 
     const setup = async () => {
-      try {
-        setIsMaximized(await win.isMaximized());
+      setIsMaximized(await isMainWindowMaximized());
 
-        unlisten = await win.onResized(async () => {
-          setIsMaximized(await win.isMaximized());
-        });
-      } catch (err) {
-        console.error('Window controls setup failed', err);
-      }
+      unlisten = await onMainWindowResized(async () => {
+        setIsMaximized(await isMainWindowMaximized());
+      });
     };
 
     setup();
@@ -32,29 +36,21 @@ export const useWindowControls = () => {
     };
   }, []);
 
-  const minimize = async () => {
-    try {
-      await getCurrentWindow().minimize();
-    } catch (err) {
-      console.error('Window minimize failed', err);
-    }
-  };
-
-  const toggleMaximize = async () => {
-    try {
-      await getCurrentWindow().toggleMaximize();
-    } catch (err) {
-      console.error('Window toggleMaximize failed', err);
-    }
-  };
-
+  // Branches on the user's close-to-tray preference: hide if on (the OS-level
+  // onCloseRequested race makes that interception unreliable for the custom X),
+  // close otherwise.
   const close = async () => {
-    try {
-      await getCurrentWindow().close();
-    } catch (err) {
-      console.error('Window close failed', err);
+    if (settings.tray.closeToTray) {
+      return await hideMainWindow();
     }
+
+    await closeMainWindow();
   };
 
-  return { isMaximized, minimize, toggleMaximize, close };
+  return {
+    isMaximized,
+    minimize: minimizeMainWindow,
+    toggleMaximize: toggleMaximizeMainWindow,
+    close,
+  };
 };

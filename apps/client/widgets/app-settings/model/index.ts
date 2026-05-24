@@ -8,6 +8,7 @@ export type {
   SettingsGroup,
   SoundCategory,
   SoundSettings,
+  TraySettings,
   UseAppSettings,
   VideoSettings,
 } from './types';

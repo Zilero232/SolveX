@@ -16,6 +16,7 @@ import {
   ParticipantsView,
   RoomDeviceSync,
   RoomSounds,
+  RoomTraySync,
 } from './components';
 import { voiceRoomStyles as s } from './VoiceRoom.styles';
 import type { VoiceRoomProps } from './VoiceRoom.types';
@@ -104,6 +105,7 @@ export const VoiceRoom = ({
             <ChatPanel isOpen={isChatOpen} onClose={() => toggleChat(false)} />
 
             <RoomDeviceSync />
+            <RoomTraySync />
             <RoomAudioRenderer />
             <RoomSounds isChatOpen={isChatOpen} />
           </RoomChatProvider>

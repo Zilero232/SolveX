@@ -6,5 +6,6 @@ export type {
   DeviceSettings,
   SoundCategory,
   SoundSettings,
+  TraySettings,
   VideoSettings,
 } from './model';

@@ -6,3 +6,4 @@ export { ParticipantCard } from './ParticipantCard';
 export { ParticipantsView } from './ParticipantsView';
 export { RoomDeviceSync } from './RoomDeviceSync';
 export { RoomSounds } from './RoomSounds';
+export { RoomTraySync } from './RoomTraySync';

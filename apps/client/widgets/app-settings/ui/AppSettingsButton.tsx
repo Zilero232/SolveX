@@ -1,7 +1,8 @@
 'use client';
 
 import { useBoolean } from '@siberiacancode/reactuse';
-import { Mic, Settings, User, Video, Volume2 } from 'lucide-react';
+import { isTauri } from '@tauri-apps/api/core';
+import { LayoutGrid, Mic, Settings, User, Video, Volume2 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import {
   Button,
@@ -22,6 +23,7 @@ import { appSettingsStyles as s } from './AppSettingsButton.styles';
 import { AudioTab } from './sections/AudioTab';
 import { ProfileTab } from './sections/ProfileTab';
 import { SoundsTab } from './sections/SoundsTab';
+import { TrayTab } from './sections/TrayTab';
 import { VideoTab } from './sections/VideoTab';
 
 // A gear button that opens the app-wide settings dialog. Drop it anywhere —
@@ -30,6 +32,7 @@ import { VideoTab } from './sections/VideoTab';
 export const AppSettingsButton = () => {
   const t = useTranslations('settings');
   const [isOpen, toggleOpen] = useBoolean(false);
+  const showTrayTab = isTauri();
 
   return (
     <>
@@ -73,6 +76,12 @@ export const AppSettingsButton = () => {
                 <Volume2 />
                 {t('tabs.sounds')}
               </TabsTrigger>
+              {showTrayTab && (
+                <TabsTrigger value="tray">
+                  <LayoutGrid />
+                  {t('tabs.tray')}
+                </TabsTrigger>
+              )}
             </TabsList>
 
             <TabsContent value="profile">
@@ -90,6 +99,12 @@ export const AppSettingsButton = () => {
             <TabsContent value="sounds">
               <SoundsTab />
             </TabsContent>
+
+            {showTrayTab && (
+              <TabsContent value="tray">
+                <TrayTab />
+              </TabsContent>
+            )}
           </Tabs>
         </DialogContent>
       </Dialog>

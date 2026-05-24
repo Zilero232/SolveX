@@ -34,4 +34,7 @@ export const DEFAULT_APP_SETTINGS: AppSettings = {
       message: true,
     },
   },
+  tray: {
+    closeToTray: true,
+  },
 };

@@ -7,7 +7,7 @@ import { LeaveSoundProvider, RoomsPresenceProvider } from '@/entities/room';
 import { UpdateBootstrap } from '@/features/check-app-update';
 import { queryClient } from '@/shared/api';
 import { TitleBar } from '@/widgets/title-bar';
-import { AuthBootstrap, I18nProvider } from './providers/index';
+import { AuthBootstrap, I18nProvider, TrayMenuProvider } from './providers/index';
 import type { ReactNode } from 'react';
 
 // LiveKit's client logs connection/track lifecycle to the console at info level
@@ -24,13 +24,15 @@ export const Providers = ({ children }: { children: ReactNode }) => (
         <TitleBar />
 
         <div className="min-h-0 flex-1">
-          <UpdateBootstrap>
-            <RoomsPresenceProvider>
-              <LeaveSoundProvider>
-                <AuthBootstrap>{children}</AuthBootstrap>
-              </LeaveSoundProvider>
-            </RoomsPresenceProvider>
-          </UpdateBootstrap>
+          <TrayMenuProvider>
+            <UpdateBootstrap>
+              <RoomsPresenceProvider>
+                <LeaveSoundProvider>
+                  <AuthBootstrap>{children}</AuthBootstrap>
+                </LeaveSoundProvider>
+              </RoomsPresenceProvider>
+            </UpdateBootstrap>
+          </TrayMenuProvider>
         </div>
       </div>
 

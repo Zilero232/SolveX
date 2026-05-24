@@ -7,9 +7,6 @@ import { useCheckAppUpdate } from '../model/use-check-app-update';
 import { UpdateDialog } from './UpdateDialog';
 import type { ReactNode } from 'react';
 
-// Holds the app behind the splash while we check for updates, and gates the
-// rest of the bootstrap on the user's decision. In a browser context the hook
-// resolves to status:'idle' immediately, so children render straight away.
 export const UpdateBootstrap = ({ children }: { children: ReactNode }) => {
   const t = useTranslations('update');
   const { install, dismiss, ...info } = useCheckAppUpdate();
@@ -20,7 +17,7 @@ export const UpdateBootstrap = ({ children }: { children: ReactNode }) => {
     .with('checking', () => <AppSplash message={t('checking')} />)
     .with('available', 'downloading', 'installing', 'error', () => (
       <>
-        <AppSplash message={t('checking')} />
+        {children}
         <UpdateDialog {...info} onDismiss={dismiss} onInstall={install} />
       </>
     ))

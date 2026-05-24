@@ -130,7 +130,8 @@
       "profile": "Profile",
       "audio": "Audio",
       "video": "Video",
-      "sounds": "Sounds"
+      "sounds": "Sounds",
+      "tray": "Tray"
     },
     "profile": {
       "displayNameLabel": "Display name",
@@ -184,7 +185,18 @@
       "reconnectHint": "When your connection drops and recovers.",
       "message": "Chat message",
       "messageHint": "A new message while the chat is closed."
+    },
+    "tray": {
+      "closeToTray": "Minimize to tray on close",
+      "closeToTrayHint": "Close button hides the app to the system tray. Turn off to quit on close. The tray's Quit menu always exits."
     }
+  },
+  "tray": {
+    "tooltip": "Chatovo",
+    "header": "Chatovo",
+    "mute": "Mute microphone",
+    "checkUpdates": "Check for Updates…",
+    "quit": "Quit Chatovo"
   },
   "createRoom": {
     "trigger": "Create room",

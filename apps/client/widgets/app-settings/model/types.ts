@@ -43,6 +43,17 @@ export type SoundSettings = {
   enabled: Record<SoundCategory, boolean>;
 };
 
+// --- Tray ----------------------------------------------------------------
+
+// Desktop-only behaviour for the close button and the system tray. Read on
+// the web too (with defaults) so the type stays uniform; the Tray tab is only
+// shown when running under Tauri.
+export type TraySettings = {
+  // When true, the window close button hides the app to the tray instead of
+  // quitting. The native Quit menu item still exits regardless.
+  closeToTray: boolean;
+};
+
 // --- Root ----------------------------------------------------------------
 
 export type AppSettings = {
@@ -50,6 +61,7 @@ export type AppSettings = {
   video: VideoSettings;
   devices: DeviceSettings;
   sounds: SoundSettings;
+  tray: TraySettings;
 };
 
 // A settings group — the top-level keys of AppSettings (`audio`, `video`, ...).

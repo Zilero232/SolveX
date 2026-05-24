@@ -1,11 +1,13 @@
 'use client';
 
+import { useCounter } from '@siberiacancode/reactuse';
 import { isTauri } from '@tauri-apps/api/core';
 import { relaunch } from '@tauri-apps/plugin-process';
 import { check } from '@tauri-apps/plugin-updater';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { clamp } from 'remeda';
 import { match } from 'ts-pattern';
+import { APP_EVENTS } from '@/shared/constants';
 import { raceWithTimeout } from '@/shared/lib';
 import { APP_UPDATE_CONFIG } from '../config/config';
 import type { Update } from '@tauri-apps/plugin-updater';
@@ -17,17 +19,26 @@ export const useCheckAppUpdate = () => {
     isTauri() ? 'checking' : 'idle',
   );
   const [progress, setProgress] = useState(0);
+  const recheckTick = useCounter(0);
+  const hasCheckedOnceRef = useRef(false);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: recheckTick.value is the manual re-trigger; bumping it must re-run the effect
   useEffect(() => {
     if (!isTauri()) return;
 
     let cancelled = false;
 
     const run = async () => {
+      // Only flash the splash on first check; later manual rechecks stay in
+      // the background so the rest of the app keeps rendering.
+      if (!hasCheckedOnceRef.current) setStatus('checking');
+
       try {
         const result = await raceWithTimeout(check(), APP_UPDATE_CONFIG.checkTimeoutMs);
 
         if (cancelled) return;
+
+        hasCheckedOnceRef.current = true;
 
         if (!result.ok || !result.value) {
           return setStatus('unavailable');
@@ -38,7 +49,10 @@ export const useCheckAppUpdate = () => {
       } catch (err) {
         console.error('Update check failed', err);
 
-        if (!cancelled) setStatus('unavailable');
+        if (!cancelled) {
+          hasCheckedOnceRef.current = true;
+          setStatus('unavailable');
+        }
       }
     };
 
@@ -47,7 +61,17 @@ export const useCheckAppUpdate = () => {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [recheckTick.value]);
+
+  useEffect(() => {
+    if (!isTauri()) return;
+
+    const onRecheck = () => recheckTick.inc();
+
+    window.addEventListener(APP_EVENTS.recheckUpdate, onRecheck);
+
+    return () => window.removeEventListener(APP_EVENTS.recheckUpdate, onRecheck);
+  }, [recheckTick.inc]);
 
   const install = async () => {
     if (!update) return;
