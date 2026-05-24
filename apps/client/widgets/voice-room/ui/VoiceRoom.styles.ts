@@ -11,5 +11,8 @@ export const voiceRoomStyles = {
   // ControlBar centred; the chat toggle pinned to the right edge.
   controls: 'relative flex items-center justify-center border-t p-2',
   controlBar: 'flex justify-center',
+  // In PTT mode the LiveKit mic toggle would let the user manually unmute,
+  // contradicting the "only on key-hold" contract — hide it.
+  controlBarPttHideMic: '[&_button[data-lk-source="microphone"]]:hidden',
   chatButton: 'absolute right-2',
 } as const;

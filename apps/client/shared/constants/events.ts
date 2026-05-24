@@ -11,3 +11,12 @@ export const TAURI_EVENTS = {
 export const APP_EVENTS = {
   recheckUpdate: 'chatovo:recheck-update',
 } as const;
+
+// DOM CustomEvents fired by the shortcuts bridge — listened to by feature
+// consumers (voice-room, etc). Names stay stable across releases.
+export const ACTION_EVENTS = {
+  muteToggle: 'chatovo:action:mute.toggle',
+  pttHold: 'chatovo:action:ptt.hold',
+} as const;
+
+export type PttEventDetail = { phase: 'pressed' | 'released' };

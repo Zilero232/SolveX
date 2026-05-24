@@ -15,6 +15,7 @@ export const DEFAULT_APP_SETTINGS: AppSettings = {
     autoGainControl: true,
     // Experimental and unevenly supported across browsers — opt-in only.
     voiceIsolation: false,
+    activationMode: 'voiceActivity',
   },
   video: {
     mirrorVideo: false,
@@ -34,7 +35,13 @@ export const DEFAULT_APP_SETTINGS: AppSettings = {
       message: true,
     },
   },
-  tray: {
-    closeToTray: true,
+  system: {
+    tray: {
+      closeToTray: true,
+    },
+  },
+  shortcuts: {
+    muteToggle: 'Ctrl+Shift+M',
+    pttHold: 'Alt+L',
   },
 };

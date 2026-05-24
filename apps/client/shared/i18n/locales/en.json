@@ -131,7 +131,8 @@
       "audio": "Audio",
       "video": "Video",
       "sounds": "Sounds",
-      "tray": "Tray"
+      "system": "System",
+      "shortcuts": "Hotkeys"
     },
     "profile": {
       "displayNameLabel": "Display name",
@@ -150,6 +151,11 @@
       "unknownDevice": "Unknown device"
     },
     "audio": {
+      "activation": "Microphone activation",
+      "activationHint": "When to transmit your voice.",
+      "activationVoice": "Voice activity",
+      "activationPtt": "Push-to-talk",
+      "activationPttNoBinding": "Assign a key in the Hotkeys tab to use this mode.",
       "microphone": "Microphone",
       "microphoneHint": "The microphone used to capture your voice.",
       "speakers": "Speakers",
@@ -186,9 +192,24 @@
       "message": "Chat message",
       "messageHint": "A new message while the chat is closed."
     },
-    "tray": {
+    "system": {
       "closeToTray": "Minimize to tray on close",
       "closeToTrayHint": "Close button hides the app to the system tray. Turn off to quit on close. The tray's Quit menu always exits."
+    },
+    "shortcuts": {
+      "webNotice": "Custom hotkeys are not supported in the browser yet. To use custom hotkeys, <link>download</link> the desktop app.",
+      "actions": {
+        "muteToggle": "Toggle microphone",
+        "pttHold": "Push-to-talk (hold)"
+      },
+      "unassigned": "Not assigned",
+      "recording": "Press a combination… (Esc to cancel)",
+      "clear": "Clear",
+      "errors": {
+        "duplicate": "This combination is already used by: {action}",
+        "needsModifier": "Use a combination with Ctrl/Shift/Alt or F1-F12 keys",
+        "systemTaken": "This combination is reserved by another application"
+      }
     }
   },
   "tray": {

@@ -2,7 +2,7 @@
 
 import { useBoolean } from '@siberiacancode/reactuse';
 import { isTauri } from '@tauri-apps/api/core';
-import { LayoutGrid, Mic, Settings, User, Video, Volume2 } from 'lucide-react';
+import { Keyboard, Mic, Settings, Settings2, User, Video, Volume2 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import {
   Button,
@@ -22,8 +22,9 @@ import {
 import { appSettingsStyles as s } from './AppSettingsButton.styles';
 import { AudioTab } from './sections/AudioTab';
 import { ProfileTab } from './sections/ProfileTab';
+import { ShortcutsTab } from './sections/ShortcutsTab';
 import { SoundsTab } from './sections/SoundsTab';
-import { TrayTab } from './sections/TrayTab';
+import { SystemTab } from './sections/SystemTab';
 import { VideoTab } from './sections/VideoTab';
 
 // A gear button that opens the app-wide settings dialog. Drop it anywhere —
@@ -31,8 +32,10 @@ import { VideoTab } from './sections/VideoTab';
 // itself; reactuse keeps the shared localStorage entry in sync across them.
 export const AppSettingsButton = () => {
   const t = useTranslations('settings');
+
   const [isOpen, toggleOpen] = useBoolean(false);
-  const showTrayTab = isTauri();
+
+  const showSystemTab = isTauri();
 
   return (
     <>
@@ -58,53 +61,61 @@ export const AppSettingsButton = () => {
             <DialogDescription>{t('description')}</DialogDescription>
           </DialogHeader>
 
-          <Tabs className={s.tabs} defaultValue="profile">
+          <Tabs className={s.tabs} defaultValue="profile" orientation="vertical">
             <TabsList className={s.tabsList}>
-              <TabsTrigger value="profile">
+              <TabsTrigger className={s.tabsTrigger} value="profile">
                 <User />
                 {t('tabs.profile')}
               </TabsTrigger>
-              <TabsTrigger value="audio">
+              <TabsTrigger className={s.tabsTrigger} value="audio">
                 <Mic />
                 {t('tabs.audio')}
               </TabsTrigger>
-              <TabsTrigger value="video">
+              <TabsTrigger className={s.tabsTrigger} value="video">
                 <Video />
                 {t('tabs.video')}
               </TabsTrigger>
-              <TabsTrigger value="sounds">
+              <TabsTrigger className={s.tabsTrigger} value="sounds">
                 <Volume2 />
                 {t('tabs.sounds')}
               </TabsTrigger>
-              {showTrayTab && (
-                <TabsTrigger value="tray">
-                  <LayoutGrid />
-                  {t('tabs.tray')}
+              {showSystemTab && (
+                <TabsTrigger className={s.tabsTrigger} value="system">
+                  <Settings2 />
+                  {t('tabs.system')}
                 </TabsTrigger>
               )}
+              <TabsTrigger className={s.tabsTrigger} value="shortcuts">
+                <Keyboard />
+                {t('tabs.shortcuts')}
+              </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="profile">
+            <TabsContent className={s.tabsContent} value="profile">
               <ProfileTab />
             </TabsContent>
 
-            <TabsContent value="audio">
+            <TabsContent className={s.tabsContent} value="audio">
               <AudioTab />
             </TabsContent>
 
-            <TabsContent value="video">
+            <TabsContent className={s.tabsContent} value="video">
               <VideoTab />
             </TabsContent>
 
-            <TabsContent value="sounds">
+            <TabsContent className={s.tabsContent} value="sounds">
               <SoundsTab />
             </TabsContent>
 
-            {showTrayTab && (
-              <TabsContent value="tray">
-                <TrayTab />
+            {showSystemTab && (
+              <TabsContent className={s.tabsContent} value="system">
+                <SystemTab />
               </TabsContent>
             )}
+
+            <TabsContent className={s.tabsContent} value="shortcuts">
+              <ShortcutsTab />
+            </TabsContent>
           </Tabs>
         </DialogContent>
       </Dialog>

@@ -7,19 +7,31 @@ import { useEffect } from 'react';
 import { isNullish } from 'remeda';
 import { useTrayMenuItem } from '@/features/system-tray';
 import { TAURI_EVENTS } from '@/shared/constants';
-import { useSubscription } from '@/shared/lib';
+import { useSubscription } from '@/shared/hooks';
+import { useAppSettings } from '@/widgets/app-settings';
 
 export const RoomTraySync = () => {
   const { localParticipant, isMicrophoneEnabled } = useLocalParticipant();
   const muteItem = useTrayMenuItem('mute');
+  const { settings } = useAppSettings();
+
+  const isPtt = settings.audio.activationMode === 'pushToTalk';
 
   useEffect(() => {
     if (isNullish(muteItem)) return;
 
-    muteItem.setChecked(!isMicrophoneEnabled).catch((err) => {
-      console.error('tray mute setChecked failed', err);
-    });
-  }, [muteItem, isMicrophoneEnabled]);
+    // PTT: the mic state is transient (key-hold) — keep the tray checkbox
+    // pinned to unchecked instead of flickering with every press.
+    const next = isPtt ? false : !isMicrophoneEnabled;
+
+    (async () => {
+      try {
+        await muteItem.setChecked(next);
+      } catch (err) {
+        console.error('tray mute setChecked failed', err);
+      }
+    })();
+  }, [muteItem, isMicrophoneEnabled, isPtt]);
 
   useSubscription(
     () =>
@@ -31,7 +43,7 @@ export const RoomTraySync = () => {
         }
       }),
     [localParticipant],
-    isTauri() && !isNullish(localParticipant),
+    isTauri() && !isNullish(localParticipant) && !isPtt,
   );
 
   return null;

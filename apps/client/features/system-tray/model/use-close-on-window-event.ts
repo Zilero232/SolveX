@@ -3,14 +3,15 @@
 import { isTauri } from '@tauri-apps/api/core';
 import { getCurrentWindow } from '@tauri-apps/api/window';
 import { useRef } from 'react';
-import { hideMainWindow, useSubscription } from '@/shared/lib';
+import { useSubscription } from '@/shared/hooks';
+import { hideMainWindow } from '@/shared/lib';
 import { useAppSettings } from '@/widgets/app-settings';
 
 export const useCloseOnWindowEvent = () => {
   const { settings } = useAppSettings();
 
-  const closeToTrayRef = useRef(settings.tray.closeToTray);
-  closeToTrayRef.current = settings.tray.closeToTray;
+  const closeToTrayRef = useRef(settings.system.tray.closeToTray);
+  closeToTrayRef.current = settings.system.tray.closeToTray;
 
   useSubscription(
     () =>

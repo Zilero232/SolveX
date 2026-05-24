@@ -1,0 +1,1 @@
+export { ShortcutActionsSync } from './ShortcutActionsSync';

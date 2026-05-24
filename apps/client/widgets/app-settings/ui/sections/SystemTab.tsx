@@ -6,11 +6,11 @@ import { useAppSettings } from '../../model';
 import { appSettingsStyles as s } from '../AppSettingsButton.styles';
 import { SettingRow } from '../components/SettingRow';
 
-export const TrayTab = () => {
-  const t = useTranslations('settings.tray');
+export const SystemTab = () => {
+  const t = useTranslations('settings.system');
   const { settings, setGroup } = useAppSettings();
 
-  const tray = settings.tray;
+  const { tray } = settings.system;
 
   return (
     <div className={s.tabPanel}>
@@ -20,7 +20,9 @@ export const TrayTab = () => {
         control={
           <Switch
             checked={tray.closeToTray}
-            onCheckedChange={(value) => setGroup('tray', { closeToTray: value })}
+            onCheckedChange={(value) =>
+              setGroup('system', { tray: { ...tray, closeToTray: value } })
+            }
           />
         }
       />

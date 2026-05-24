@@ -14,6 +14,7 @@ import { useAppSettings } from '@/widgets/app-settings';
 
 export const useWindowControls = () => {
   const { settings } = useAppSettings();
+
   const [isMaximized, setIsMaximized] = useState(false);
 
   useEffect(() => {
@@ -40,7 +41,7 @@ export const useWindowControls = () => {
   // onCloseRequested race makes that interception unreliable for the custom X),
   // close otherwise.
   const close = async () => {
-    if (settings.tray.closeToTray) {
+    if (settings.system.tray.closeToTray) {
       return await hideMainWindow();
     }
 

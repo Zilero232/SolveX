@@ -6,6 +6,7 @@ import { DisconnectReason } from 'livekit-client';
 import { MessageSquare } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useRef } from 'react';
+import { cn } from '@/shared/lib';
 import { Button } from '@/shared/ui';
 import { useAppSettings } from '@/widgets/app-settings';
 import { RoomChatProvider } from '../model';
@@ -13,10 +14,12 @@ import {
   ChatPanel,
   ConnectingOverlay,
   ConnectionIndicator,
+  MicActivationSync,
   ParticipantsView,
   RoomDeviceSync,
   RoomSounds,
   RoomTraySync,
+  ShortcutActionsSync,
 } from './components';
 import { voiceRoomStyles as s } from './VoiceRoom.styles';
 import type { VoiceRoomProps } from './VoiceRoom.types';
@@ -36,17 +39,19 @@ export const VoiceRoom = ({
   onLeave,
 }: VoiceRoomProps) => {
   const t = useTranslations('chat');
-  const hasConnectedRef = useRef(false);
-  const [isChatOpen, toggleChat] = useBoolean(false);
-
   const { settings } = useAppSettings();
 
+  const [isChatOpen, toggleChat] = useBoolean(false);
+
+  const hasConnectedRef = useRef(false);
   // Seed the mic's processing flags for the initial capture. The `audio` prop
   // is read only on the first connect, so a ref freezes it — later changes are
   // applied live by useDeviceSync (processing flags and device alike), which
   // also owns picking the actual input device. Keeping deviceId out of here
   // leaves useDeviceSync as the single path that selects devices.
   const audioCaptureRef = useRef(settings.audio);
+
+  const isPtt = settings.audio.activationMode === 'pushToTalk';
 
   return (
     <div className={s.root}>
@@ -85,7 +90,10 @@ export const VoiceRoom = ({
             </div>
 
             <div className={s.controls}>
-              <div className={s.controlBar} data-lk-theme="default">
+              <div
+                className={cn(s.controlBar, isPtt && s.controlBarPttHideMic)}
+                data-lk-theme="default"
+              >
                 <ControlBar variation="minimal" />
               </div>
 
@@ -106,6 +114,8 @@ export const VoiceRoom = ({
 
             <RoomDeviceSync />
             <RoomTraySync />
+            <ShortcutActionsSync />
+            <MicActivationSync />
             <RoomAudioRenderer />
             <RoomSounds isChatOpen={isChatOpen} />
           </RoomChatProvider>

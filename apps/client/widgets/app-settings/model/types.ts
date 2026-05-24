@@ -5,15 +5,23 @@ export type SoundCategory = 'join' | 'leave' | 'mute' | 'reconnect' | 'message';
 
 // --- Audio ---------------------------------------------------------------
 
+// How the microphone gets unmuted. 'voiceActivity' = always live, user
+// toggles mute manually. 'pushToTalk' = mic forced off, only unmutes while
+// the pttHold shortcut is held.
+export type MicActivationMode = 'voiceActivity' | 'pushToTalk';
+
 // The mic capture flags we expose, sourced from LiveKit so the field names
 // stay in sync with AudioCaptureOptions. LiveKit types these as ConstrainBoolean
 // (a MediaTrackConstraint); a plain boolean is all a toggle needs, so they are
-// narrowed and made required here.
+// narrowed and made required here. Augmented with project-specific flags
+// (activation mode) that LiveKit does not own.
 export type AudioSettings = {
   [K in keyof Pick<
     AudioCaptureOptions,
     'noiseSuppression' | 'echoCancellation' | 'autoGainControl' | 'voiceIsolation'
   >]-?: boolean;
+} & {
+  activationMode: MicActivationMode;
 };
 
 // --- Video ---------------------------------------------------------------
@@ -43,16 +51,34 @@ export type SoundSettings = {
   enabled: Record<SoundCategory, boolean>;
 };
 
-// --- Tray ----------------------------------------------------------------
+// --- System --------------------------------------------------------------
 
 // Desktop-only behaviour for the close button and the system tray. Read on
-// the web too (with defaults) so the type stays uniform; the Tray tab is only
-// shown when running under Tauri.
+// the web too (with defaults) so the type stays uniform; the System tab is
+// only shown when running under Tauri.
 export type TraySettings = {
   // When true, the window close button hides the app to the tray instead of
   // quitting. The native Quit menu item still exits regardless.
   closeToTray: boolean;
 };
+
+// System-level desktop settings. Grouped together so the System tab can grow
+// (autostart, hardware acceleration, etc.) without flattening unrelated knobs.
+export type SystemSettings = {
+  tray: TraySettings;
+};
+
+// --- Shortcuts -----------------------------------------------------------
+
+// Stable IDs for user-bindable actions. Add new entries here when expanding
+// the shortcut surface; the bridge and consumers stay generic.
+export type ShortcutActionId = 'muteToggle' | 'pttHold';
+
+// Tauri accelerator string ('Ctrl+Shift+M', 'F8') or null when the user has
+// not assigned anything to the action.
+export type ShortcutBinding = string | null;
+
+export type ShortcutSettings = Record<ShortcutActionId, ShortcutBinding>;
 
 // --- Root ----------------------------------------------------------------
 
@@ -61,7 +87,8 @@ export type AppSettings = {
   video: VideoSettings;
   devices: DeviceSettings;
   sounds: SoundSettings;
-  tray: TraySettings;
+  system: SystemSettings;
+  shortcuts: ShortcutSettings;
 };
 
 // A settings group — the top-level keys of AppSettings (`audio`, `video`, ...).

@@ -1,11 +1,16 @@
 export const appSettingsStyles = {
-  // A flex column capped at viewport height: the header and tab list stay
-  // fixed while the active panel scrolls.
-  content: 'flex max-h-[calc(100vh-4rem)] flex-col gap-4',
+  // A flex column capped at viewport height: the header stays fixed while the
+  // sidebar + active panel split the remaining space. Wider than the default
+  // dialog (`sm:max-w-lg`) so the vertical tab sidebar fits comfortably.
+  content: 'flex max-h-[calc(100vh-4rem)] flex-col gap-4 sm:max-w-3xl',
 
-  // Fills the space left by the header and owns the inner scroll.
-  tabs: 'flex min-h-0 flex-1 flex-col',
-  tabsList: 'w-full',
+  // Fills the space left by the header. Two columns: vertical tabs sidebar
+  // on the left, scrollable panel on the right.
+  tabs: 'flex min-h-0 flex-1 flex-row gap-4',
+  tabsList:
+    'flex h-auto w-44 shrink-0 flex-col items-stretch gap-1 self-start rounded-lg bg-muted p-1',
+  tabsTrigger: 'w-full flex-none justify-start gap-2 px-3 py-1.5',
+  tabsContent: 'min-w-0 flex-1',
 
   // The scrollable panel; -mr/pr keeps the scrollbar off the content edge.
   tabPanel: '-mr-2 flex max-h-[24rem] flex-col gap-1 overflow-y-auto pr-2 pt-1',

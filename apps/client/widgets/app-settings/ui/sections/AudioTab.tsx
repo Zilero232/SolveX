@@ -1,8 +1,11 @@
 'use client';
 
+import { isTauri } from '@tauri-apps/api/core';
 import { useTranslations } from 'next-intl';
-import { Switch } from '@/shared/ui';
-import { type AudioSettings, useAppSettings } from '../../model';
+import { useId } from 'react';
+import { isNullish } from 'remeda';
+import { RadioGroup, RadioGroupItem, Switch } from '@/shared/ui';
+import { type AudioSettings, type MicActivationMode, useAppSettings } from '../../model';
 import { appSettingsStyles as s } from '../AppSettingsButton.styles';
 import { DeviceSelect } from '../components/DeviceSelect';
 import { MicTest } from '../components/MicTest';
@@ -11,10 +14,15 @@ import { SettingRow } from '../components/SettingRow';
 export const AudioTab = () => {
   const t = useTranslations('settings.audio');
   const tDevices = useTranslations('settings.devices');
-
   const { settings, setGroup } = useAppSettings();
 
+  const voiceId = useId();
+  const pttId = useId();
+
   const audio = settings.audio;
+  const showPttOption = isTauri();
+  const pttBindingMissing =
+    audio.activationMode === 'pushToTalk' && isNullish(settings.shortcuts.pttHold);
 
   // Only persist here — this dialog opens from the sidebar, outside LiveKitRoom,
   // so it has no room to apply to. useDeviceSync, which runs inside the room,
@@ -25,6 +33,33 @@ export const AudioTab = () => {
 
   return (
     <div className={s.tabPanel}>
+      <SettingRow
+        label={t('activation')}
+        hint={t('activationHint')}
+        control={
+          <RadioGroup
+            className="flex flex-row flex-wrap items-center gap-x-5 gap-y-2"
+            value={audio.activationMode}
+            onValueChange={(value) =>
+              setGroup('audio', { activationMode: value as MicActivationMode })
+            }
+          >
+            <label className="flex items-center gap-2 text-sm" htmlFor={voiceId}>
+              <RadioGroupItem id={voiceId} value="voiceActivity" />
+              {t('activationVoice')}
+            </label>
+            {showPttOption && (
+              <label className="flex items-center gap-2 text-sm" htmlFor={pttId}>
+                <RadioGroupItem id={pttId} value="pushToTalk" />
+                {t('activationPtt')}
+              </label>
+            )}
+          </RadioGroup>
+        }
+      />
+      {pttBindingMissing && (
+        <span className={`${s.rowHint} -mt-1`}>{t('activationPttNoBinding')}</span>
+      )}
       <SettingRow
         label={t('microphone')}
         hint={t('microphoneHint')}

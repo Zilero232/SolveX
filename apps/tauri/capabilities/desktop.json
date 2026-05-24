@@ -7,15 +7,22 @@
     "core:default",
     "updater:default",
     "process:default",
-    "core:window:allow-hide",
+
     "core:window:allow-show",
+    "core:window:allow-hide",
+    "core:window:allow-minimize",
+    "core:window:allow-unminimize",
+    "core:window:allow-toggle-maximize",
+    "core:window:allow-set-focus",
+    "core:window:allow-start-dragging",
     "core:window:allow-close",
     "core:window:allow-destroy",
-    "core:window:allow-minimize",
-    "core:window:allow-set-focus",
-    "core:window:allow-unminimize",
-    "core:window:allow-start-dragging",
-    "core:window:allow-toggle-maximize",
-    "core:app:allow-default-window-icon"
+
+    "core:app:allow-default-window-icon",
+
+    "global-shortcut:allow-register",
+    "global-shortcut:allow-unregister",
+    "global-shortcut:allow-unregister-all",
+    "global-shortcut:allow-is-registered"
   ]
 }
