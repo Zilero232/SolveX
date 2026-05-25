@@ -1,7 +1,7 @@
 'use client';
 
-import { useLocalStorage } from '@siberiacancode/reactuse';
-import { useEffect, useState } from 'react';
+import { useLocalStorage, useMount } from '@siberiacancode/reactuse';
+import { useState } from 'react';
 import { STORAGE_KEYS } from '@/shared/constants';
 import { DEFAULT_LOCALE, type Locale, resolveLocale } from '@/shared/i18n';
 
@@ -18,9 +18,7 @@ export const useLocale = (): UseLocale => {
 
   const [isReady, setIsReady] = useState(false);
 
-  useEffect(() => {
-    setIsReady(true);
-  }, []);
+  useMount(() => setIsReady(true));
 
   // A stale or hand-edited value is narrowed back to a supported locale.
   return { isReady, locale: resolveLocale(value), setLocale: set };

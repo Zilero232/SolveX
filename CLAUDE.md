@@ -64,6 +64,44 @@ Full guide in [docs/style.md](docs/style.md). Highlights:
 - **i18n**: all user-facing strings via `useTranslations('namespace')` from `next-intl`. Keys live in `messages.d.ts` + JSON locale files.
 - **shadcn**: components live in `shared/ui/` (per `components.json`). `style: new-york`, `baseColor: neutral`, `iconLibrary: lucide`.
 
+## Reuse over reinvention
+
+**Rule**: before writing a helper / hook / util by hand, check if the installed libs already have it. Hand-rolled code only when nothing fits. This avoids duplicating bug-fixed, tested logic and keeps bundle predictable.
+
+**Checklist before writing custom code:**
+
+1. Generic React hooks (debounce, throttle, copy, mount, idle, intersection, media query, local storage, event listener, click outside, hover, boolean toggle, previous, timeout, interval, etc.) → check **`@siberiacancode/reactuse`** first. It's already a dep. Examples: `useBoolean`, `useCounter`, `useDebounceValue`, `useEventListener`, `useClickOutside`, `useLocalStorage`, `useMediaQuery`, `createContextHook`.
+2. Array / object / data manipulation (groupBy, sortBy, pick, omit, partition, unique, mapValues, entries, isNullish, etc.) → use **`remeda`**. Already imported across the codebase.
+3. Conditional rendering / pattern matching / discriminated unions → use **`ts-pattern`** (`match`, `.with`, `.exhaustive`, `P.*` patterns). No hand-rolled if/else ladders for typed branching.
+4. Form state + validation → **`react-hook-form`** + **`@hookform/resolvers/zod`** + Zod schemas from `@chatovo/schemas`. No useState-driven forms.
+5. Server state, caching, mutations, query keys → **`@tanstack/react-query`** (`useQuery`, `useMutation`, `QueryClient`). All query keys live in `shared/constants/query-keys.ts`. No `useEffect + fetch` patterns.
+6. Date / time → **`date-fns`** (already in deps). No `Date` arithmetic by hand.
+7. Class composition → **`clsx`** + **`class-variance-authority`** (cva). No string concatenation.
+8. Validation schemas → **Zod 4** via `@chatovo/schemas`. Schema is source of truth, infer types with `z.infer`.
+9. UI primitives (dialog, dropdown, tooltip, popover, slot, select, tabs, switch, etc.) → **Radix UI** primitives wrapped via shadcn in `shared/ui/`. Never reimplement accessibility / focus trap / aria from scratch.
+10. Icons → **`lucide-react`**. No custom SVG inline unless brand-specific.
+11. Toasts → **`sonner`** (`toast.success` / `toast.error`). No custom notification system.
+12. LiveKit room state, participants, tracks, chat → **`@livekit/components-react`** hooks (`useChat`, `useParticipants`, `useTracks`, `useConnectionState`). No raw `Room` event listeners unless the hook genuinely doesn't cover it.
+13. Tauri APIs (window, fs, deep-link, updater, global-shortcut, opener, os, process) → **`@tauri-apps/api`** + plugin packages. Always gate with `isTauri()`.
+14. Internationalization → **`next-intl`** (`useTranslations`, `useFormatter`, `useLocale`). No string maps.
+
+**When to roll your own:**
+
+- Project-specific glue that no lib reasonably covers.
+- Domain logic (`entities/`, `features/` business rules).
+- Thin wrappers over lib APIs to enforce project conventions (e.g. a typed `useEventListener` for a specific custom event name).
+- Lib has a real gotcha that hurts the call site. Document known ones:
+  - `useBoolean` from `@siberiacancode/reactuse` returns a **new toggle function every render** — using it as a setter inside `useEffect` deps triggers `useExhaustiveDeps` warnings and re-runs the effect on each render. Use plain `useState(false)` when the setter is passed into effects, callbacks, or refs. `useBoolean` is fine for inline `<button onClick={() => toggle()}>`.
+  - `useEventListener` from reactuse types `event` as `keyof WindowEventMap` — custom event names need a cast or module augmentation. For one-off custom events, plain `addEventListener` + cleanup is shorter.
+  - `Intl.NumberFormat` with `style: 'unit', unit: 'byte', notation: 'compact'` produces inconsistent output (`1.5kB` vs `1.5K B`) across `unitDisplay` values. Hand-rolled byte formatter is fine.
+
+**Process when adding a feature:**
+
+1. Identify what category the new code falls into (state, side-effect, data, UI primitive, validation, ...).
+2. Search the existing dep tree (`package.json` + `bun.lock`) for a fitting helper.
+3. If nothing fits — check whether a lib **already used elsewhere in the codebase** has it (grep for similar patterns).
+4. Only then write custom — and put it in `shared/lib/` or `shared/hooks/` if reusable, otherwise in the slice's `lib/` segment.
+
 ## Common commands
 
 ```bash

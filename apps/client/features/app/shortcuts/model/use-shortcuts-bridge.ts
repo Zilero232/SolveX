@@ -24,6 +24,18 @@ const dispatch = (actionId: ShortcutActionId, state: 'Pressed' | 'Released') =>
     })
     .otherwise(() => {});
 
+// Module-level queue serializes register/unregister calls across effect
+// double-fires (React StrictMode, fast settings changes). Without it,
+// effect#2's register can race against cleanup#1's unregister and throw
+// "HotKey already registered" for accelerators we still own.
+let queue: Promise<unknown> = Promise.resolve();
+
+const enqueue = <T>(task: () => Promise<T>): Promise<T> => {
+  const next = queue.then(task, task);
+  queue = next.catch(() => {});
+  return next;
+};
+
 export const useShortcutsBridge = () => {
   const { settings } = useAppSettings();
 
@@ -34,7 +46,7 @@ export const useShortcutsBridge = () => {
 
     let cancelled = false;
 
-    const apply = async () => {
+    enqueue(async () => {
       try {
         await unregisterAll();
       } catch (err) {
@@ -44,29 +56,41 @@ export const useShortcutsBridge = () => {
 
       if (cancelled) return;
 
-      await Promise.all(
-        entries(bindings).map(async ([actionId, accelerator]) => {
-          if (isNullish(accelerator)) return;
-          try {
-            await register(accelerator, (event) => dispatch(actionId, event.state));
-          } catch (err) {
-            console.error(`shortcuts: register failed for ${actionId} (${accelerator})`, err);
-          }
-        }),
-      );
-    };
+      // Dedupe by accelerator — plugin rejects the same accelerator
+      // registered twice. When two actions share a binding, fan-out happens
+      // in the dispatch callback instead.
+      const byAccelerator = new Map<string, ShortcutActionId[]>();
+      for (const [actionId, accelerator] of entries(bindings)) {
+        if (isNullish(accelerator)) continue;
+        const list = byAccelerator.get(accelerator) ?? [];
+        list.push(actionId);
+        byAccelerator.set(accelerator, list);
+      }
 
-    apply();
+      for (const [accelerator, actionIds] of byAccelerator) {
+        if (cancelled) return;
+        try {
+          await register(accelerator, (event) => {
+            for (const id of actionIds) dispatch(id, event.state);
+          });
+        } catch (err) {
+          console.error(
+            `shortcuts: register failed for ${actionIds.join('+')} (${accelerator})`,
+            err,
+          );
+        }
+      }
+    });
 
     return () => {
       cancelled = true;
-      (async () => {
+      enqueue(async () => {
         try {
           await unregisterAll();
         } catch (err) {
           console.error('shortcuts: cleanup unregisterAll failed', err);
         }
-      })();
+      });
     };
   }, [bindings]);
 };

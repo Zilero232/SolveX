@@ -1,6 +1,6 @@
 'use client';
 
-import { register, unregister } from '@tauri-apps/plugin-global-shortcut';
+import { isRegistered, register, unregister } from '@tauri-apps/plugin-global-shortcut';
 import { X } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
@@ -56,13 +56,19 @@ export const ShortcutRow = ({
         return;
       }
 
-      try {
-        await register(accelerator, () => {});
-        await unregister(accelerator);
-      } catch {
-        toast.error(t('errors.systemTaken'));
-        setRecording(false);
-        return;
+      // Skip OS-availability probe if our own bridge already owns this
+      // accelerator — register() would throw "HotKey already registered"
+      // for ourselves and we'd misreport it as systemTaken.
+      const ownedByUs = await isRegistered(accelerator).catch(() => false);
+      if (!ownedByUs) {
+        try {
+          await register(accelerator, () => {});
+          await unregister(accelerator);
+        } catch {
+          toast.error(t('errors.systemTaken'));
+          setRecording(false);
+          return;
+        }
       }
 
       onChange(accelerator);

@@ -3,7 +3,7 @@
 import { useDebounceCallback, useLocalStorage } from '@siberiacancode/reactuse';
 import { type Participant, RemoteParticipant } from 'livekit-client';
 import { useEffect, useRef, useState } from 'react';
-import { defaultTo } from 'remeda';
+import { clamp, defaultTo } from 'remeda';
 import { STORAGE_KEYS } from '@/shared/constants';
 
 // Volume range applied locally: 0 (muted) .. 2 (200%).
@@ -27,9 +27,7 @@ type ParticipantVolume = {
   setVolume: (next: number) => void;
 };
 
-const clampVolume = (value: number) => {
-  return Math.min(Math.max(value, 0), MAX_VOLUME);
-};
+const clampVolume = (value: number) => clamp(value, { min: 0, max: MAX_VOLUME });
 
 export const useParticipantVolume = (participant: Participant): ParticipantVolume => {
   const isControllable = participant instanceof RemoteParticipant;
