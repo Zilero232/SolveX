@@ -2,7 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import { useEffect } from 'react';
-import { subscribeAuth, useCurrentUser } from '@/entities/user';
+import { subscribeAuth, useCurrentUser } from '@/entities/auth/user';
 import { AppSplash } from '@/shared/ui';
 import type { ReactNode } from 'react';
 

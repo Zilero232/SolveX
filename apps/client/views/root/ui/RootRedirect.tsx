@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import { useCurrentUser } from '@/entities/user';
+import { useCurrentUser } from '@/entities/auth/user';
 import { ROUTES } from '@/shared/constants';
 
 export const RootRedirect = () => {

@@ -1,7 +1,7 @@
 'use client';
 
 import { NextIntlClientProvider } from 'next-intl';
-import { useLocale } from '@/entities/locale';
+import { useLocale } from '@/entities/app/locale';
 import en from '@/shared/i18n/locales/en.json';
 import ru from '@/shared/i18n/locales/ru.json';
 import { AppSplash } from '@/shared/ui';

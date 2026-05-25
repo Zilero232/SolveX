@@ -3,8 +3,8 @@
 import { Lock } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { useRoomParticipants } from '@/entities/room';
-import { UserAvatar } from '@/entities/user';
+import { useRoomParticipants } from '@/entities/room/room';
+import { UserAvatar } from '@/entities/auth/user';
 import { buildRoomHref } from '@/shared/constants';
 import { lobbyRoomCardStyles as s } from './LobbyRoomCard.styles';
 import type { LobbyRoomCardProps } from './LobbyRoomCard.types';

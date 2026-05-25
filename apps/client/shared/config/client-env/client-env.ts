@@ -18,6 +18,7 @@ const parsed = clientSchema.safeParse({
 
 if (!parsed.success) {
   console.error('Invalid client env:', z.treeifyError(parsed.error));
+  
   throw new Error('Missing or invalid client env. See .env.example.');
 }
 

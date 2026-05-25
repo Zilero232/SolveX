@@ -36,17 +36,22 @@ apps/client/            # (канон: src/)
 ├── views/              # Слой Views (канон: pages/)
 │   └── <view-name>/
 ├── widgets/            # Слой Widgets
-│   └── <widget-name>/
+│   └── <domain>/       # auth | room | app | layout
+│       └── <widget-name>/
 ├── features/           # Слой Features
-│   └── <feature-name>/
+│   └── <domain>/       # auth | room | app
+│       └── <feature-name>/
 ├── entities/           # Слой Entities
-│   └── <entity-name>/
+│   └── <domain>/       # auth | room | app
+│       └── <entity-name>/
 └── shared/             # Слой Shared (без слайсов — только сегменты)
     ├── api/
     ├── ui/
     ├── lib/
     └── config/
 ```
+
+> **Доменная группировка слайсов.** В Chatovo слайсы внутри `features/`, `entities/`, `widgets/` сгруппированы по бизнес-домену (`auth`, `room`, `app`, `layout`). Это надстройка поверх FSD-канона (`<layer>/<slice>/`). Импорты: `@/features/auth/sign-in`, `@/entities/room/room`, `@/widgets/layout/authed-shell`. Группа `app` — кросс-доменная инфраструктура приложения (release, locale, tray, shortcuts, update). Группа `layout` — корневой shell.
 
 ---
 
@@ -78,6 +83,15 @@ App → Views → Widgets → Features → Entities → Shared
 - Связанные слайсы можно группировать в подпапки, но они остаются независимыми.
 - Имена слайсов — kebab-case.
 
+**Доменные группы (Chatovo):** слои `features/`, `entities/`, `widgets/` группируют слайсы по бизнес-домену:
+
+- `auth/` — авторизация (sign-in, sign-up, google, user)
+- `room/` — комнаты, голос, чат, presence
+- `app/` — инфраструктура приложения (release, locale, system-tray, shortcuts, check-app-update)
+- `layout/` (только widgets) — корневой shell
+
+Доменная папка — организационный контейнер, **не публичный API**. Импорт всегда до уровня слайса: `@/features/room/create`, не `@/features/room`.
+
 ---
 
 ## 4. Сегменты
@@ -102,18 +116,17 @@ App → Views → Widgets → Features → Entities → Shared
 У каждого слайса — `index.ts` в корне, реэкспортирующий публичный интерфейс.
 
 ```ts
-// features/auth/index.ts
+// features/auth/sign-in/index.ts
 export { SignInForm } from './ui/SignInForm';
-export { SignUpForm } from './ui/SignUpForm';
-export { useAuth } from './model/useAuth';
-export type { AuthState } from './model/types';
+export { useSignIn } from './model/use-sign-in';
 ```
 
 **Правила:**
 
 - **Без wildcard-экспортов** — `export * from './ui/Foo'` запрещён. Явно.
 - **Минимальная поверхность** — экспортируй только то, что реально нужно другим слоям.
-- **Внешние импорты — только через index** — никогда `@/features/auth/ui/SignInForm` напрямую. Всегда `@/features/auth`.
+- **Внешние импорты — только через index слайса** — никогда `@/features/auth/sign-in/ui/SignInForm` напрямую. Всегда `@/features/auth/sign-in`.
+- **Группа домена — не публичный API** — `@/features/auth` не существует, импортируется конкретный слайс. Доменная папка только организует файлы.
 - **Без циклических импортов** — не импортируй из собственного `index.ts` внутри слайса. Внутри — относительные пути.
 - **Исключение `shared/ui`** — для tree-shaking `shared/ui/` может использовать per-component index-файлы (`shared/ui/button/index.ts`) вместо одного barrel.
 
@@ -201,7 +214,7 @@ Feature
 |---|---|
 | Feature импортит из другого Feature | Вынести общую логику в Entities или Shared |
 | View содержит бизнес-логику напрямую | Вынести в Feature, скомпоновать во View |
-| `shared/hooks/useAuth.ts` | Auth — бизнес-домен → `features/auth/model/useAuth.ts` |
+| `shared/hooks/useSignIn.ts` | Auth — бизнес-домен → `features/auth/sign-in/model/use-sign-in.ts` |
 | Widget импортит из View | Инвертировать: View импортит Widget |
 | Слайс экспортит всё через `export *` | Явные именованные реэкспорты |
 | Папка `components/` в корне слоя | Классифицировать: это Widget, Feature, Entity или Shared UI? |

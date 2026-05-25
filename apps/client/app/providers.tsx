@@ -3,10 +3,10 @@
 import { QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { setLogLevel } from 'livekit-client';
-import { LeaveSoundProvider, RoomsPresenceProvider } from '@/entities/room';
-import { UpdateBootstrap } from '@/features/check-app-update';
+import { LeaveSoundProvider, RoomsPresenceProvider } from '@/entities/room/room';
+import { UpdateBootstrap } from '@/features/app/check-app-update';
 import { queryClient } from '@/shared/api';
-import { TitleBar } from '@/widgets/title-bar';
+import { TitleBar } from '@/widgets/app/title-bar';
 import {
   AuthBootstrap,
   I18nProvider,
