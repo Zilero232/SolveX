@@ -3,10 +3,10 @@
 import { isTauri } from '@tauri-apps/api/core';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
-import { buildTrayMenu } from '../lib/build-tray-menu';
-import { setupTray } from '../lib/setup-tray';
+import { buildTrayMenu } from '../../lib/build-tray-menu';
+import { setupTray } from '../../lib/setup-tray';
 import type { Menu } from '@tauri-apps/api/menu';
-import type { TrayItems } from '../lib/build-tray-menu';
+import type { TrayItems } from '../../lib/build-tray-menu';
 
 export type TrayMenuValue = { menu: Menu; items: TrayItems };
 

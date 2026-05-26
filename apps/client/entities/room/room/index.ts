@@ -1,10 +1,10 @@
 export { filterAndOrderRooms, groupRooms, type RoomSection } from './lib/group-rooms';
 export { readParticipantMeta } from './lib/participant-meta';
+export { useCreateRoom } from './model/hooks/use-create-room';
+export { useEnterRoom } from './model/hooks/use-enter-room';
+export { useRoomById } from './model/hooks/use-room-by-id';
+export { useRoomParticipants } from './model/hooks/use-room-participants';
+export { useRoomToken } from './model/hooks/use-room-token';
+export { useRooms } from './model/hooks/use-rooms';
 export { LeaveSoundProvider, useLeaveSound } from './model/leave-sound';
 export { RoomsPresenceProvider, useRoomsPresence } from './model/rooms-presence';
-export { useCreateRoom } from './model/use-create-room';
-export { useEnterRoom } from './model/use-enter-room';
-export { useRoomById } from './model/use-room-by-id';
-export { useRoomParticipants } from './model/use-room-participants';
-export { useRoomToken } from './model/use-room-token';
-export { useRooms } from './model/use-rooms';

@@ -3,7 +3,7 @@
 import { useInterval } from '@siberiacancode/reactuse';
 import { createAudioAnalyser, LocalAudioTrack } from 'livekit-client';
 import { useEffect, useRef, useState } from 'react';
-import type { AudioSettings } from './types';
+import type { AudioSettings } from '../types';
 
 // Polling rate of the level meter — 60ms keeps the bar lively without spamming
 // React renders.

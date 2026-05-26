@@ -1,3 +1,3 @@
-export { useDateLocale } from './model/use-date-locale';
-export { useFieldError } from './model/use-field-error';
-export { useLocale } from './model/use-locale';
+export { useDateLocale } from './model/hooks/use-date-locale';
+export { useFieldError } from './model/hooks/use-field-error';
+export { useLocale } from './model/hooks/use-locale';

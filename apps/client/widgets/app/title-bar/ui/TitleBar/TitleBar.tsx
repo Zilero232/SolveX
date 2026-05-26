@@ -1,7 +1,7 @@
 'use client';
 
-import { useWindowControls } from '../../model/use-window-controls';
-import { useWindowPlatform } from '../../model/use-window-platform';
+import { useWindowControls } from '../../model/hooks/use-window-controls';
+import { useWindowPlatform } from '../../model/hooks/use-window-platform';
 import { TitleBarControls } from './components';
 import { titleBarStyles as s } from './TitleBar.styles';
 

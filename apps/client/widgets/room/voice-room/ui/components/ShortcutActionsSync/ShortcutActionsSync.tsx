@@ -1,6 +1,6 @@
 'use client';
 
-import { useShortcutActions } from '../../../model/use-shortcut-actions';
+import { useShortcutActions } from '../../../model/hooks/use-shortcut-actions';
 
 export const ShortcutActionsSync = () => {
   useShortcutActions();

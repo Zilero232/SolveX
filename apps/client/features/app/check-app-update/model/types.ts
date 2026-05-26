@@ -13,6 +13,7 @@ export type UpdateInfo = {
   version: string | null;
   date: string | null;
   progress: number;
+  silent: boolean;
   install: () => void;
   dismiss: () => void;
 };

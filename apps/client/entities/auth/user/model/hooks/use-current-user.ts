@@ -3,7 +3,7 @@ import { filter, first, isNonNullish, isString, map, pipe } from 'remeda';
 import { supabase } from '@/shared/api';
 import { QUERY_KEYS } from '@/shared/constants';
 import type { User } from '@supabase/supabase-js';
-import type { UserRole } from './types';
+import type { UserRole } from '../types';
 
 const firstNonEmptyString = (values: unknown[]): string | null => {
   return (

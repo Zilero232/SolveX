@@ -15,67 +15,17 @@ import type { UpdateInfo } from './types';
 
 export const useCheckAppUpdate = () => {
   const [update, setUpdate] = useState<Update | null>(null);
-  const [status, setStatus] = useState<UpdateInfo['status']>(() =>
-    isTauri() ? 'checking' : 'idle',
-  );
+  const [status, setStatus] = useState<UpdateInfo['status']>(() => {
+    return isTauri() ? 'checking' : 'idle';
+  });
   const [progress, setProgress] = useState(0);
+  const [silent, setSilent] = useState(true);
+
   const recheckTick = useCounter(0);
   const hasCheckedOnceRef = useRef(false);
+  const isManualRef = useRef(false);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: recheckTick.value is the manual re-trigger; bumping it must re-run the effect
-  useEffect(() => {
-    if (!isTauri()) return;
-
-    let cancelled = false;
-
-    const run = async () => {
-      // Only flash the splash on first check; later manual rechecks stay in
-      // the background so the rest of the app keeps rendering.
-      if (!hasCheckedOnceRef.current) setStatus('checking');
-
-      try {
-        const result = await raceWithTimeout(check(), APP_UPDATE_CONFIG.checkTimeoutMs);
-
-        if (cancelled) return;
-
-        hasCheckedOnceRef.current = true;
-
-        if (!result.ok || !result.value) {
-          return setStatus('unavailable');
-        }
-
-        setUpdate(result.value);
-        setStatus('available');
-      } catch (err) {
-        console.error('Update check failed', err);
-
-        if (!cancelled) {
-          hasCheckedOnceRef.current = true;
-          setStatus('unavailable');
-        }
-      }
-    };
-
-    run();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [recheckTick.value]);
-
-  useEffect(() => {
-    if (!isTauri()) return;
-
-    const onRecheck = () => recheckTick.inc();
-
-    window.addEventListener(APP_EVENTS.recheckUpdate, onRecheck);
-
-    return () => window.removeEventListener(APP_EVENTS.recheckUpdate, onRecheck);
-  }, [recheckTick.inc]);
-
-  const install = async () => {
-    if (!update) return;
-
+  const runInstall = async (target: Update) => {
     setStatus('downloading');
     setProgress(0);
 
@@ -83,7 +33,7 @@ export const useCheckAppUpdate = () => {
     let total = 0;
 
     try {
-      await update.downloadAndInstall((event) => {
+      await target.downloadAndInstall((event) => {
         match(event)
           .with({ event: 'Started' }, ({ data }) => {
             total = data.contentLength ?? 0;
@@ -109,6 +59,75 @@ export const useCheckAppUpdate = () => {
     }
   };
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: recheckTick.value is the manual re-trigger; bumping it must re-run the effect
+  useEffect(() => {
+    if (!isTauri()) return;
+
+    let cancelled = false;
+
+    const run = async () => {
+      const isManual = isManualRef.current;
+
+      setSilent(!isManual);
+
+      if (!hasCheckedOnceRef.current) setStatus('checking');
+
+      try {
+        const result = await raceWithTimeout(check(), APP_UPDATE_CONFIG.checkTimeoutMs);
+
+        if (cancelled) return;
+
+        hasCheckedOnceRef.current = true;
+
+        if (!result.ok || !result.value) {
+          return setStatus('unavailable');
+        }
+
+        setUpdate(result.value);
+
+        if (isManual) {
+          setStatus('available');
+        } else {
+          await runInstall(result.value);
+        }
+      } catch (err) {
+        console.error('Update check failed', err);
+
+        if (!cancelled) {
+          hasCheckedOnceRef.current = true;
+          setStatus('unavailable');
+        }
+      } finally {
+        isManualRef.current = false;
+      }
+    };
+
+    run();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [recheckTick.value]);
+
+  useEffect(() => {
+    if (!isTauri()) return;
+
+    const onRecheck = () => {
+      isManualRef.current = true;
+      recheckTick.inc();
+    };
+
+    window.addEventListener(APP_EVENTS.recheckUpdate, onRecheck);
+
+    return () => window.removeEventListener(APP_EVENTS.recheckUpdate, onRecheck);
+  }, [recheckTick.inc]);
+
+  const install = async () => {
+    if (!update) return;
+
+    await runInstall(update);
+  };
+
   const dismiss = () => {
     setStatus('unavailable');
     setUpdate(null);
@@ -120,6 +139,7 @@ export const useCheckAppUpdate = () => {
     version: update?.version ?? null,
     date: update?.date ?? null,
     progress,
+    silent,
     install,
     dismiss,
   };
