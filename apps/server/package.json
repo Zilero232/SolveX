@@ -5,6 +5,7 @@
   "private": true,
   "main": "src/index.ts",
   "scripts": {
+    "predev": "node ./scripts/kill-port.mjs",
     "dev": "bun --hot --cwd ../.. --env-file apps/server/.env apps/server/src/index.ts",
     "start": "bun src/index.ts",
     "build": "bun build src/index.ts --target=bun --outdir=dist",

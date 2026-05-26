@@ -1,1 +1,0 @@
-export { RoomDeviceSync } from './RoomDeviceSync';

@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "tauri": "tauri",
+    "predev": "node ./scripts/kill-stale.mjs",
     "dev": "tauri dev",
     "build": "tauri build",
     "build:debug": "tauri build --debug",

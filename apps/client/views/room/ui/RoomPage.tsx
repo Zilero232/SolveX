@@ -6,10 +6,10 @@ import { useEffect, useState } from 'react';
 import { isNonNullish } from 'remeda';
 import { toast } from 'sonner';
 import { match, P } from 'ts-pattern';
-import { useRoomById, useRoomToken } from '@/entities/room';
+import { useRoomById, useRoomToken } from '@/entities/room/room';
 import { env } from '@/shared/config';
 import { ROUTES } from '@/shared/constants';
-import { VoiceRoom } from '@/widgets/voice-room';
+import { VoiceRoom } from '@/widgets/room/voice-room';
 import { RoomConnecting, RoomLoadingFallback, RoomNotFound, RoomPasswordForm } from './components';
 
 export const RoomPage = () => {

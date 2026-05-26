@@ -3,8 +3,8 @@
 import { useTime } from '@siberiacancode/reactuse';
 import { format } from 'date-fns';
 import { useTranslations } from 'next-intl';
-import { useDateLocale } from '@/entities/locale';
-import { useCurrentUser } from '@/entities/user';
+import { useDateLocale } from '@/entities/app/locale';
+import { useCurrentUser } from '@/entities/auth/user';
 import { lobbyHeaderStyles as s } from './LobbyHeader.styles';
 
 export const LobbyHeader = () => {

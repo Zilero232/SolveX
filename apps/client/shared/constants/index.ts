@@ -1,4 +1,3 @@
-export { APP_EVENTS, TAURI_EVENTS } from './events';
 export { EXTERNAL_LINKS } from './external-links';
 export { QUERY_KEYS } from './query-keys';
 export { buildRoomHref, ROUTES } from './routes';

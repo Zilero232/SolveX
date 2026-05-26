@@ -1,1 +1,0 @@
-export { RoomTraySync } from './RoomTraySync';

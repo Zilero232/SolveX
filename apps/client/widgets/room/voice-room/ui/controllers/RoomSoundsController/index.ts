@@ -1,0 +1,1 @@
+export { RoomSoundsController } from './RoomSoundsController';

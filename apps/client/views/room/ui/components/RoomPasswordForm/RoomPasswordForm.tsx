@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useForm } from 'react-hook-form';
-import { useFieldError } from '@/entities/locale';
+import { useFieldError } from '@/entities/app/locale';
 import { Button, Input, Label } from '@/shared/ui';
 import { passwordSchema, roomPasswordFormStyles as s } from './RoomPasswordForm.styles';
 import type { z } from 'zod';

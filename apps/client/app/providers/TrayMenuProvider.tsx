@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
-import { trayMenuContext, useCloseOnWindowEvent, useTraySetup } from '@/features/system-tray';
+import { trayMenuContext, useCloseOnWindowEvent, useTraySetup } from '@/features/app/system-tray';
 import type { ReactNode } from 'react';
 
 export const TrayMenuProvider = ({ children }: { children: ReactNode }) => {

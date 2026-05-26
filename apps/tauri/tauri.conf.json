@@ -5,9 +5,7 @@
   "identifier": "ru.chatovo.desktop",
   "build": {
     "frontendDist": "../client/out",
-    "devUrl": "http://localhost:3000",
-    "beforeDevCommand": "bun --filter @chatovo/client dev",
-    "beforeBuildCommand": "bun --filter @chatovo/client build"
+    "devUrl": "http://localhost:3000"
   },
   "app": {
     "windows": [

@@ -1,0 +1,1 @@
+export { RoomTrayController } from './RoomTrayController';

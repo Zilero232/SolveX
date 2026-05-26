@@ -8,6 +8,7 @@ pub fn run() {
         use tauri_plugin_deep_link::DeepLinkExt;
 
         builder = builder
+            .plugin(tauri_plugin_global_shortcut::Builder::new().build())
             .plugin(tauri_plugin_updater::Builder::new().build())
             .plugin(tauri_plugin_os::init())
             .plugin(tauri_plugin_single_instance::init(|app, args, _cwd| {

@@ -1,4 +1,4 @@
-import { AuthedShell } from '@/widgets/authed-shell';
+import { AuthedShell } from '@/widgets/layout/authed-shell';
 import type { ReactNode } from 'react';
 
 const AuthedLayout = ({ children }: { children: ReactNode }) => (

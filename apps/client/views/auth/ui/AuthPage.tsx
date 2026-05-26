@@ -4,10 +4,10 @@ import { useBoolean } from '@siberiacancode/reactuse';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useEffect } from 'react';
-import { useCurrentUser } from '@/entities/user';
-import { SignInForm } from '@/features/sign-in';
-import { SignInWithGoogleButton } from '@/features/sign-in-with-google';
-import { SignUpForm } from '@/features/sign-up';
+import { useCurrentUser } from '@/entities/auth/user';
+import { GoogleAuthButton } from '@/features/auth/google';
+import { SignInForm } from '@/features/auth/sign-in';
+import { SignUpForm } from '@/features/auth/sign-up';
 import { ROUTES } from '@/shared/constants';
 import { authPageStyles as s } from './AuthPage.styles';
 
@@ -40,7 +40,7 @@ export const AuthPage = () => {
           <span className={s.dividerLine} />
         </div>
 
-        <SignInWithGoogleButton />
+        <GoogleAuthButton />
 
         <p className={s.toggle}>
           {t(isSignup ? 'hasAccount' : 'noAccount')}{' '}
