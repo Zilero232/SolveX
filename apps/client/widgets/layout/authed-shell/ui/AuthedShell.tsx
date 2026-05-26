@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Suspense, useEffect } from 'react';
 import { useCurrentUser } from '@/entities/auth/user';
 import { ROUTES } from '@/shared/constants';
-import { ServerRail } from '@/widgets/app/server-rail';
+import { AppSidebar } from '@/widgets/app/app-sidebar';
 import { ChannelsPanel } from '@/widgets/room/channels-panel';
 import { authedShellStyles as s } from './AuthedShell.styles';
 import type { AuthedShellProps } from './AuthedShell.types';
@@ -26,7 +26,7 @@ export const AuthedShell = ({ children }: AuthedShellProps) => {
 
   return (
     <div className={s.root}>
-      <ServerRail channelsOpened={channelsOpened} onToggleChannels={() => toggleChannels()} />
+      <AppSidebar channelsOpened={channelsOpened} onToggleChannels={() => toggleChannels()} />
 
       {channelsOpened ? (
         <Suspense fallback={null}>

@@ -113,10 +113,12 @@
       "tip": "Private rooms need a password to join."
     }
   },
-  "serverRail": {
+  "appSidebar": {
     "lobby": "Lobby",
     "downloadApp": "Download app",
     "downloadAppLabel": "Download desktop app",
+    "checkUpdate": "Check for updates",
+    "checkUpdateLabel": "Check for app updates",
     "github": "GitHub",
     "githubLabel": "Open project on GitHub",
     "logout": "Logout",
@@ -251,7 +253,9 @@
     "checking": "Checking for updates…",
     "downloading": "Downloading… {percent}%",
     "installing": "Installing…",
-    "failed": "Update failed. Try again later."
+    "failed": "Update failed. Try again later.",
+    "upToDate": "You're on the latest version",
+    "checkFailed": "Couldn't check for updates"
   },
   "splash": {
     "signingIn": "Signing you in…"

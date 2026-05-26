@@ -4,8 +4,10 @@ import { useCounter } from '@siberiacancode/reactuse';
 import { isTauri } from '@tauri-apps/api/core';
 import { relaunch } from '@tauri-apps/plugin-process';
 import { check } from '@tauri-apps/plugin-updater';
+import { useTranslations } from 'next-intl';
 import { useEffect, useRef, useState } from 'react';
 import { clamp } from 'remeda';
+import { toast } from 'sonner';
 import { match } from 'ts-pattern';
 import { appBus, raceWithTimeout } from '@/shared/lib';
 import { APP_UPDATE_CONFIG } from '../config/config';
@@ -13,6 +15,8 @@ import type { Update } from '@tauri-apps/plugin-updater';
 import type { UpdateInfo } from './types';
 
 export const useCheckAppUpdate = () => {
+  const t = useTranslations('update');
+
   const [update, setUpdate] = useState<Update | null>(null);
   const [status, setStatus] = useState<UpdateInfo['status']>(() => {
     return isTauri() ? 'checking' : 'idle';
@@ -79,6 +83,8 @@ export const useCheckAppUpdate = () => {
         hasCheckedOnceRef.current = true;
 
         if (!result.ok || !result.value) {
+          if (isManual) toast.success(t('upToDate'));
+
           return setStatus('unavailable');
         }
 
@@ -95,6 +101,8 @@ export const useCheckAppUpdate = () => {
         if (!cancelled) {
           hasCheckedOnceRef.current = true;
           setStatus('unavailable');
+
+          if (isManualRef.current) toast.error(t('checkFailed'));
         }
       } finally {
         isManualRef.current = false;

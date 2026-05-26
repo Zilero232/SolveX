@@ -1,4 +1,4 @@
-export type ServerRailProps = {
+export type AppSidebarProps = {
   channelsOpened: boolean;
   onToggleChannels: () => void;
 };

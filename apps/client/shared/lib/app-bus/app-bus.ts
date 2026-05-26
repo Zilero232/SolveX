@@ -9,12 +9,7 @@ type AppBusEvents = {
   recheckUpdate: undefined;
   trayMuteToggle: undefined;
   muteToggle: undefined;
-  // Low-level: raw shortcut key edge from the OS-side global-shortcut bridge.
-  // Subscribers shouldn't act on this unless they're orchestrating PTT (see
-  // useShortcutActions). UI/sound subscribers listen to `pttHold` instead.
   pttKey: { phase: 'pressed' | 'released' };
-  // High-level: PTT transmission edge after policy checks (mute gate, mode).
-  // This is the signal UI and sound subscribers should follow.
   pttHold: { phase: 'pressed' | 'released' };
 };
 

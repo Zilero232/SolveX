@@ -7,7 +7,7 @@ import { ROUTES } from '@/shared/constants';
 import { Button, Tooltip, TooltipContent, TooltipTrigger } from '@/shared/ui';
 
 export const LobbyButton = () => {
-  const t = useTranslations('serverRail');
+  const t = useTranslations('appSidebar');
   const router = useRouter();
 
   return (

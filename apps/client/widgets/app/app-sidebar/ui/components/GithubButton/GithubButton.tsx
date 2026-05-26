@@ -5,7 +5,7 @@ import { EXTERNAL_LINKS } from '@/shared/constants';
 import { Button, GithubIcon, Tooltip, TooltipContent, TooltipTrigger } from '@/shared/ui';
 
 export const GithubButton = () => {
-  const t = useTranslations('serverRail');
+  const t = useTranslations('appSidebar');
 
   return (
     <Tooltip>

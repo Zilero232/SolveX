@@ -7,7 +7,7 @@ import { DownloadAppDialog } from '@/features/app/download-app';
 import { Button, Tooltip, TooltipContent, TooltipTrigger } from '@/shared/ui';
 
 export const DownloadAppButton = () => {
-  const t = useTranslations('serverRail');
+  const t = useTranslations('appSidebar');
   const [isOpen, toggle] = useBoolean(false);
 
   return (

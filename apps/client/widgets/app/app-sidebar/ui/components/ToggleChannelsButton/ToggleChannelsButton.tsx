@@ -6,7 +6,7 @@ import { Button, Tooltip, TooltipContent, TooltipTrigger } from '@/shared/ui';
 import type { ToggleChannelsButtonProps } from './ToggleChannelsButton.types';
 
 export const ToggleChannelsButton = ({ opened, onToggle }: ToggleChannelsButtonProps) => {
-  const t = useTranslations('serverRail');
+  const t = useTranslations('appSidebar');
 
   return (
     <Tooltip>

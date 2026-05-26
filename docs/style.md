@@ -808,7 +808,7 @@ const ChannelsList = () => {
 **Оставляем props когда:**
 
 - Данные приходят из `.map` (`<ChannelsRoomItem room={room} />`).
-- UI state оркестратора (`channelsOpened` в `ServerRail`).
+- UI state оркестратора (`channelsOpened` в `AppSidebar`).
 - Колбэк требует контекст родителя.
 
 ---

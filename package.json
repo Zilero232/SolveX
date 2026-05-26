@@ -18,7 +18,7 @@
     "dev:full": "docker compose -f docker-compose.dev.yml up -d && bun dev",
     "build": "bun --filter @chatovo/server build && bun --filter @chatovo/client build",
     "tauri": "bun --filter @chatovo/tauri tauri",
-    "tauri:dev": "bun --filter '@chatovo/client' --filter '@chatovo/server' --filter '@chatovo/tauri' --parallel dev",
+    "tauri:dev": "bun --filter '@chatovo/server' --filter '@chatovo/tauri' --parallel dev",
     "tauri:build": "bun --filter @chatovo/client build && bun --filter @chatovo/tauri build"
   },
   "dependencies": {

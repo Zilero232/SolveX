@@ -7,7 +7,7 @@ import { supabase } from '@/shared/api';
 import { Button, Tooltip, TooltipContent, TooltipTrigger } from '@/shared/ui';
 
 export const LogoutButton = () => {
-  const t = useTranslations('serverRail');
+  const t = useTranslations('appSidebar');
 
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
