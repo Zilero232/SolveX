@@ -1,5 +1,5 @@
 import { match, P } from 'ts-pattern';
-import { prettyAccelerator } from '@/shared/lib';
+import { prettyHotkey } from '@/shared/lib';
 import type { ShortcutBinding } from '../model/types';
 
 type Labels = {
@@ -10,7 +10,7 @@ type Labels = {
 // Picks the text shown inside the row's combo button:
 //   "press a combination…" while recording,
 //   "not assigned" when the action has no binding,
-//   the pretty-formatted accelerator otherwise.
+//   the pretty-formatted hotkey otherwise.
 export const formatBindingDisplay = (
   recording: boolean,
   binding: ShortcutBinding,
@@ -19,5 +19,5 @@ export const formatBindingDisplay = (
   return match({ recording, binding })
     .with({ recording: true }, () => labels.recording)
     .with({ binding: P.nullish }, () => labels.unassigned)
-    .otherwise(({ binding: b }) => prettyAccelerator(b as string));
+    .otherwise(({ binding: b }) => prettyHotkey(b as string));
 };

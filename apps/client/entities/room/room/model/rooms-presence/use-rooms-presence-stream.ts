@@ -2,7 +2,7 @@
 
 import { roomsParticipantsSnapshotSchema, safeJsonParse } from '@chatovo/schemas';
 import { useEventSource } from '@siberiacancode/reactuse';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { isString } from 'remeda';
 import { buildPresenceStreamUrl } from '@/shared/api';
 import type { RoomsParticipantsSnapshot } from '@chatovo/schemas';
@@ -37,11 +37,10 @@ export const useRoomsPresenceStream = (enabled: boolean) => {
     retry: true,
   });
 
-  return useMemo<RoomsParticipantsSnapshot['rooms']>(() => {
-    if (!isString(data)) return EMPTY;
+  // reactCompiler memoizes the parse against `data`.
+  if (!isString(data)) return EMPTY;
 
-    const parsed = roomsParticipantsSnapshotSchema.safeParse(safeJsonParse(data));
+  const parsed = roomsParticipantsSnapshotSchema.safeParse(safeJsonParse(data));
 
-    return parsed.success ? parsed.data.rooms : EMPTY;
-  }, [data]);
+  return parsed.success ? parsed.data.rooms : EMPTY;
 };

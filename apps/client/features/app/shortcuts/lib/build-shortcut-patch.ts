@@ -1,28 +1,35 @@
-import { entries, values } from 'remeda';
 import type { ShortcutActionId, ShortcutSettings } from '@/entities/app/shortcut';
 
-// Resolves a recorded accelerator into a settings patch. If another action
-// already holds the same combo, it gets cleared in the same patch so two
-// actions never share a binding silently.
+// Resolves a recorded hotkey into a settings patch. If another action already
+// holds the same combo, it gets cleared in the same patch so two actions never
+// share a binding silently.
 export const buildShortcutPatch = (
   actionId: ShortcutActionId,
-  accelerator: string,
+  hotkey: string,
   current: ShortcutSettings,
 ): Partial<ShortcutSettings> => {
-  const stolenFrom = entries(current).find(
-    ([id, value]) => id !== actionId && value === accelerator,
-  )?.[0];
+  const patch: Partial<ShortcutSettings> = { [actionId]: hotkey };
 
-  const patch: Partial<ShortcutSettings> = { [actionId]: accelerator };
+  // Find another action holding this hotkey and clear it.
+  for (const id in current) {
+    const otherId = id as ShortcutActionId;
 
-  if (stolenFrom) patch[stolenFrom] = null;
+    if (otherId !== actionId && current[otherId] === hotkey) {
+      patch[otherId] = null;
+      break;
+    }
+  }
 
   return patch;
 };
 
-// True when the accelerator is already bound to any of our own actions —
-// the bridge holds the OS registration, so an OS probe would falsely report
-// "already registered" against ourselves.
-export const isOwnedByUs = (accelerator: string, current: ShortcutSettings): boolean => {
-  return values(current).includes(accelerator);
+// True when the hotkey is already bound to any of our own actions — the bridge
+// holds the OS registration, so an OS probe would falsely report "already
+// registered" against ourselves.
+export const isOwnedByUs = (hotkey: string, current: ShortcutSettings): boolean => {
+  for (const id in current) {
+    if (current[id as ShortcutActionId] === hotkey) return true;
+  }
+
+  return false;
 };

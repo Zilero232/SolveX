@@ -213,7 +213,7 @@
       "recording": "Press a combination… (Esc to cancel)",
       "clear": "Clear",
       "errors": {
-        "needsModifier": "Use a combination with Ctrl/Shift/Alt or F1-F12 keys",
+        "needsModifier": "Use a combination with Ctrl, Shift or Alt",
         "systemTaken": "This combination is reserved by another application"
       }
     }

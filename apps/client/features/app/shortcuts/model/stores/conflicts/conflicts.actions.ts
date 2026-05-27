@@ -1,35 +1,35 @@
 import { conflictsStoreApi } from './conflicts.store';
 
-const add = (accelerator: string) => {
+const add = (hotkey: string) => {
   const current = conflictsStoreApi.get().items;
 
-  if (current.has(accelerator)) return;
+  if (current.has(hotkey)) return;
 
-  conflictsStoreApi.set({ items: new Set(current).add(accelerator) });
+  conflictsStoreApi.set({ items: new Set(current).add(hotkey) });
 };
 
-const remove = (accelerator: string) => {
+const remove = (hotkey: string) => {
   const current = conflictsStoreApi.get().items;
 
-  if (!current.has(accelerator)) return;
+  if (!current.has(hotkey)) return;
 
   const next = new Set(current);
-  next.delete(accelerator);
+  next.delete(hotkey);
 
   conflictsStoreApi.set({ items: next });
 };
 
-const keep = (accelerators: Iterable<string>) => {
-  const keepSet = new Set(accelerators);
+const keep = (hotkeys: Iterable<string>) => {
+  const keepSet = new Set(hotkeys);
   const next = new Set<string>();
 
   let changed = false;
 
   const current = conflictsStoreApi.get().items;
 
-  for (const accel of current) {
-    if (keepSet.has(accel)) {
-      next.add(accel);
+  for (const hotkey of current) {
+    if (keepSet.has(hotkey)) {
+      next.add(hotkey);
     } else {
       changed = true;
     }

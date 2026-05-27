@@ -1,15 +1,9 @@
-export {
-  formatAccelerator,
-  hasModifier,
-  isFunctionKey,
-  isPureModifier,
-  prettyAccelerator,
-} from './accelerator/accelerator';
 export { appBus } from './app-bus';
 export { cn } from './cn';
 export { detectAssetPlatform } from './detect-asset-platform';
 export { formatBytes } from './format-bytes';
 export { formatMessageTime } from './format-date';
+export { formatHotkey, hasModifier, isPureModifier, prettyHotkey } from './hotkey/hotkey';
 export { getAvatarColor, getInitials } from './initials';
 export { raceWithTimeout } from './race-with-timeout';
 export {

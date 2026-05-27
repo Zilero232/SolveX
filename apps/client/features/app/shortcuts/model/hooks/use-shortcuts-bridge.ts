@@ -10,19 +10,21 @@ import { syncShortcuts, teardownShortcuts } from '../../lib/shortcuts-registry';
 export const useShortcutsBridge = () => {
   const { settings } = useAppSettings();
 
-  const bindings = settings.shortcuts;
-
+  // Re-sync on every bindings change. `syncShortcuts` diffs against the
+  // current OS state, so this is cheap when nothing changed.
   useEffect(() => {
     if (!isTauri()) return;
 
-    const signal = { cancelled: false };
+    syncShortcuts(settings.shortcuts);
+  }, [settings.shortcuts]);
 
-    syncShortcuts(bindings, signal);
+  // Tear down once on unmount (app shutdown). Sync handles the diff between
+  // rebinds, so unregistering on every change would just churn the OS.
+  useEffect(() => {
+    if (!isTauri()) return;
 
     return () => {
-      signal.cancelled = true;
-
       teardownShortcuts();
     };
-  }, [bindings]);
+  }, []);
 };

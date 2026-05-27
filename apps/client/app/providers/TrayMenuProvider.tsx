@@ -1,6 +1,5 @@
 'use client';
 
-import { useMemo } from 'react';
 import { trayMenuContext, useCloseOnWindowEvent, useTraySetup } from '@/features/app/system-tray';
 import type { ReactNode } from 'react';
 
@@ -11,7 +10,8 @@ export const TrayMenuProvider = ({ children }: { children: ReactNode }) => {
 
   // Bypass the reactuse Provider — it reads initialValue once and our `tray`
   // arrives async. instance.Provider takes a reactive `value` prop.
-  const contextValue = useMemo(() => ({ value: tray, set: () => {} }), [tray]);
+  // reactCompiler memoizes this object against `tray`.
+  const contextValue = { value: tray, set: () => {} };
 
   return (
     <trayMenuContext.instance.Provider value={contextValue}>

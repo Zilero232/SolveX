@@ -213,7 +213,7 @@
       "recording": "Нажмите комбинацию… (Esc — отмена)",
       "clear": "Очистить",
       "errors": {
-        "needsModifier": "Используйте комбинацию с Ctrl/Shift/Alt или клавиши F1-F12",
+        "needsModifier": "Используйте комбинацию с Ctrl, Shift или Alt",
         "systemTaken": "Эта комбинация занята другим приложением"
       }
     }

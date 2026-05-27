@@ -4,13 +4,16 @@ import { isTauri } from '@tauri-apps/api/core';
 import { Info } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { isNullish } from 'remeda';
-import { formatBindingDisplay, type ShortcutActionId, ShortcutRow } from '@/entities/app/shortcut';
+import {
+  formatBindingDisplay,
+  SHORTCUT_ACTIONS,
+  type ShortcutActionId,
+  ShortcutRow,
+} from '@/entities/app/shortcut';
 import { useShortcutConflict, useShortcutRecording } from '@/features/app/shortcuts';
 import { EXTERNAL_LINKS } from '@/shared/constants';
 import { useAppSettings } from '../../model';
 import { appSettingsStyles as s } from '../AppSettingsButton.styles';
-
-const ACTIONS: ShortcutActionId[] = ['muteToggle', 'pttHold'];
 
 const WebNotice = () => {
   const t = useTranslations('settings.shortcuts');
@@ -56,6 +59,7 @@ const ActionRow = ({ actionId }: ActionRowProps) => {
     allBindings: bindings,
     onPatch: (patch) => setGroup('shortcuts', { ...bindings, ...patch }),
   });
+
   const hasConflict = useShortcutConflict(binding);
 
   const display = formatBindingDisplay(recording, binding, {
@@ -87,7 +91,7 @@ export const ShortcutsTab = () => {
 
   return (
     <div className={s.tabPanel}>
-      {ACTIONS.map((actionId) => (
+      {Object.values(SHORTCUT_ACTIONS).map((actionId) => (
         <ActionRow key={actionId} actionId={actionId} />
       ))}
     </div>
