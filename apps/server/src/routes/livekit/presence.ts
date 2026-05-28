@@ -68,7 +68,7 @@ export const addParticipant = (roomId: string, participant: RoomParticipant) => 
   }
 
   participants.set(participant.identity, participant);
-  
+
   emit();
 };
 
