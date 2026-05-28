@@ -40,6 +40,15 @@
     "welcome": "Welcome back, {name}",
     "subtitle": "Jump into a voice room or start your own",
     "appVersion": "App version",
+    "stats": {
+      "rooms": "Rooms",
+      "live": "Live now",
+      "online": "Online"
+    },
+    "recent": {
+      "heading": "Continue",
+      "lastVisited": "Last visited"
+    },
     "roomsHeading": "Rooms",
     "searchPlaceholder": "Search rooms...",
     "nothingFound": "No rooms match \"{query}\"",
@@ -59,7 +68,7 @@
   },
   "room": {
     "sections": {
-      "public": "Voice rooms",
+      "public": "Open",
       "private": "Private"
     },
     "loading": "Loading room...",

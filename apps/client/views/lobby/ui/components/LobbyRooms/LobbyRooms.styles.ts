@@ -19,7 +19,7 @@ export const lobbyRoomsStyles = {
   section: 'flex flex-col gap-3',
   sectionLabel: 'font-semibold text-foreground/70 text-xs uppercase tracking-[0.14em]',
 
-  grid: 'grid gap-3 sm:grid-cols-2 lg:grid-cols-3',
+  grid: 'grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5',
 
   loader: 'flex justify-center py-12',
   loaderIcon: 'size-5 animate-spin text-muted-foreground',

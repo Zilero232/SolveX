@@ -9,6 +9,10 @@ type Listener = (snapshot: RoomsParticipantsSnapshot) => void;
 const rooms = new Map<string, Map<string, RoomParticipant>>();
 const listeners = new Set<Listener>();
 
+// Lobby presence: per-user connection counter. A user opens N tabs → counter
+// goes to N; closing N-1 keeps them online; closing the last evicts them.
+const lobbyConnections = new Map<string, number>();
+
 const roomService = new RoomServiceClient(
   env.LIVEKIT_URL,
   env.LIVEKIT_API_KEY,
@@ -40,7 +44,31 @@ const buildSnapshot = (): RoomsParticipantsSnapshot => {
     if (participants.size > 0) result[roomId] = [...participants.values()];
   }
 
-  return { rooms: result };
+  return { rooms: result, lobbyOnline: lobbyConnections.size };
+};
+
+export const addLobbyConnection = (userId: string) => {
+  const current = lobbyConnections.get(userId) ?? 0;
+  const isNewUser = current === 0;
+
+  lobbyConnections.set(userId, current + 1);
+
+  if (isNewUser) emit();
+};
+
+export const removeLobbyConnection = (userId: string) => {
+  const current = lobbyConnections.get(userId);
+
+  if (!current) return;
+
+  if (current <= 1) {
+    lobbyConnections.delete(userId);
+    emit();
+
+    return;
+  }
+
+  lobbyConnections.set(userId, current - 1);
 };
 
 const emit = () => {

@@ -4,6 +4,7 @@ import { AudioLines, Lightbulb } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { CreateRoomDialog } from '@/features/room/create';
 import { Button } from '@/shared/ui';
+import { RecentRooms } from '../RecentRooms';
 import { channelsLobbyBannerStyles as s } from './ChannelsLobbyBanner.styles';
 
 export const ChannelsLobbyBanner = () => {
@@ -29,6 +30,8 @@ export const ChannelsLobbyBanner = () => {
           }
         />
       </div>
+
+      <RecentRooms />
 
       <div className={s.tip}>
         <Lightbulb className={s.tipIcon} />

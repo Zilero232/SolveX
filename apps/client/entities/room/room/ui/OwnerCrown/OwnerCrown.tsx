@@ -14,13 +14,13 @@ export const OwnerCrown = ({ className }: OwnerCrownProps) => {
     <span
       aria-label={t('ownerTooltip')}
       className={cn(
-        'absolute -top-1 -left-1 z-10 flex size-3.5 items-center justify-center rounded-full bg-background ring-1 ring-background',
+        'absolute -top-0.5 left-0 z-10 flex size-3 items-center justify-center rounded-full bg-background ring-1 ring-background',
         className,
       )}
       role="img"
       title={t('ownerTooltip')}
     >
-      <Crown className="size-2.5 fill-amber-300 text-amber-300" />
+      <Crown className="size-2 fill-amber-300 text-amber-300" />
     </span>
   );
 };

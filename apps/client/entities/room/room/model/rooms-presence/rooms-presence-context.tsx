@@ -18,5 +18,13 @@ export const useRoomsPresence = () => {
 
   if (!value) throw new Error('useRoomsPresence must be used within RoomsPresenceProvider');
 
-  return value;
+  return value.rooms;
+};
+
+export const useLobbyOnline = () => {
+  const value = use();
+
+  if (!value) throw new Error('useLobbyOnline must be used within RoomsPresenceProvider');
+
+  return value.lobbyOnline;
 };

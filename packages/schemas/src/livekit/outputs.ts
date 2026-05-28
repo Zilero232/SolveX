@@ -32,4 +32,5 @@ export const roomParticipantSchema = participantProfileSchema.extend({
 // room, keyed by roomId. The client replaces its cache wholesale on each event.
 export const roomsParticipantsSnapshotSchema = z.object({
   rooms: z.record(z.string(), z.array(roomParticipantSchema)),
+  lobbyOnline: z.number().int().nonnegative().default(0),
 });

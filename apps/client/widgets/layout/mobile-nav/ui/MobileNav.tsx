@@ -1,6 +1,6 @@
 'use client';
 
-import { AudioLines, Menu } from 'lucide-react';
+import { Menu } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { Button, Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/shared/ui';
 import { AppSidebar } from '@/widgets/app/app-sidebar';
@@ -32,9 +32,6 @@ export const MobileNav = ({ open, onOpenChange }: MobileNavProps) => {
         </SheetTrigger>
 
         <div className={s.brand}>
-          <span aria-hidden className={s.brandIcon}>
-            <AudioLines className="size-4" />
-          </span>
           <span className={s.brandTitle}>Chatovo</span>
         </div>
 

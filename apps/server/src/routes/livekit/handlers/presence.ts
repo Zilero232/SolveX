@@ -1,6 +1,6 @@
 import { streamSSE } from 'hono/streaming';
 import { verifyAccessToken } from '../../../lib/auth';
-import { getSnapshot, subscribe } from '../presence';
+import { addLobbyConnection, getSnapshot, removeLobbyConnection, subscribe } from '../presence';
 import type { Handler } from 'hono';
 import type { Env } from '../../shared/types';
 
@@ -15,6 +15,8 @@ export const presenceHandler: Handler<Env> = async (c) => {
 
   if (!user) return c.json({ error: 'Unauthorized' }, 401);
 
+  addLobbyConnection(user.userId);
+
   return streamSSE(c, async (stream) => {
     let closed = false;
     let unsubscribe = () => {};
@@ -27,6 +29,7 @@ export const presenceHandler: Handler<Env> = async (c) => {
       closed = true;
       clearInterval(ping);
       unsubscribe();
+      removeLobbyConnection(user.userId);
     };
 
     // Hono's SSE stream wraps a single locked WritableStream writer. Two

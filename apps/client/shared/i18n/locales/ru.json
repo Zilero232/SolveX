@@ -40,6 +40,15 @@
     "welcome": "С возвращением, {name}",
     "subtitle": "Зайдите в голосовую комнату или создайте свою",
     "appVersion": "Версия приложения",
+    "stats": {
+      "rooms": "Комнат",
+      "live": "Активных",
+      "online": "Онлайн"
+    },
+    "recent": {
+      "heading": "Недавние",
+      "lastVisited": "Последний визит"
+    },
     "roomsHeading": "Комнаты",
     "searchPlaceholder": "Поиск комнат...",
     "nothingFound": "Нет комнат по запросу «{query}»",
@@ -59,7 +68,7 @@
   },
   "room": {
     "sections": {
-      "public": "Голосовые комнаты",
+      "public": "Открытые",
       "private": "Приватные"
     },
     "loading": "Загрузка комнаты...",

@@ -7,7 +7,7 @@ import { isString } from 'remeda';
 import { buildPresenceStreamUrl } from '@/shared/api';
 import type { RoomsParticipantsSnapshot } from '@chatovo/schemas';
 
-const EMPTY: RoomsParticipantsSnapshot['rooms'] = {};
+const EMPTY: RoomsParticipantsSnapshot = { rooms: {}, lobbyOnline: 0 };
 
 export const useRoomsPresenceStream = (enabled: boolean) => {
   const [url, setUrl] = useState<string>();
@@ -42,5 +42,5 @@ export const useRoomsPresenceStream = (enabled: boolean) => {
 
   const parsed = roomsParticipantsSnapshotSchema.safeParse(safeJsonParse(data));
 
-  return parsed.success ? parsed.data.rooms : EMPTY;
+  return parsed.success ? parsed.data : EMPTY;
 };

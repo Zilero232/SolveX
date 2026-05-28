@@ -5,6 +5,7 @@ import { useBoolean } from '@siberiacancode/reactuse';
 import { AudioLines, MessageSquare } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useRef } from 'react';
+import { useRecentRooms } from '@/entities/room/room';
 import { cn } from '@/shared/lib';
 import { Button } from '@/shared/ui';
 import { useAppSettings } from '@/widgets/app/app-settings';
@@ -43,6 +44,7 @@ export const VoiceRoom = ({
 }: VoiceRoomProps) => {
   const t = useTranslations('chat');
   const { settings } = useAppSettings();
+  const { push: pushRecent } = useRecentRooms();
 
   const [isChatOpen, toggleChat] = useBoolean(false);
 
@@ -65,6 +67,7 @@ export const VoiceRoom = ({
           video={false}
           onConnected={() => {
             hasConnectedRef.current = true;
+            pushRecent(roomId);
           }}
           onDisconnected={(reason) => {
             if (!hasConnectedRef.current) {

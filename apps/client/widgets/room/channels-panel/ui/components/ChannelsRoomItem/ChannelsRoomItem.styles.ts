@@ -20,9 +20,9 @@ export const channelsRoomItemStyles = {
   joinedIcon: 'size-3.5 text-brand-cyan drop-shadow-[0_0_6px_oklch(0.82_0.16_200/0.6)]',
   manageSlot:
     'absolute top-1/2 right-1 -translate-y-1/2 opacity-0 transition-opacity group-hover/room:opacity-100 focus-within:opacity-100 data-[state=open]:opacity-100',
-  participants: 'flex flex-col',
-  participant: 'flex items-center gap-2 py-1 pr-2 pl-8',
-  participantAvatar: 'size-5',
+  participants: 'mt-2 flex flex-col gap-0.5',
+  participant: 'flex items-center gap-2.5 px-2 py-1',
+  participantAvatar: 'size-6',
   participantFallback: 'text-[10px]',
   participantName: 'truncate text-muted-foreground text-xs',
 } as const;

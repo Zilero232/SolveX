@@ -3,4 +3,5 @@ export const STORAGE_KEYS = {
   participantVolumes: 'chatovo.participant-volumes',
   appSettings: 'chatovo.app-settings',
   locale: 'chatovo.locale',
+  recentRooms: 'chatovo.recent-rooms',
 } as const;

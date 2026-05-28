@@ -31,7 +31,7 @@ export const LobbyRoomCard = ({ room }: LobbyRoomCardProps) => {
   return (
     <div className={s.root}>
       <button
-        className={s.enter({ owner: isOwner })}
+        className={s.enter()}
         type="button"
         onClick={() => router.push(buildRoomHref(room.id))}
       >
@@ -54,33 +54,35 @@ export const LobbyRoomCard = ({ room }: LobbyRoomCardProps) => {
           </div>
         </div>
 
-        {isLive ? (
-          <div className={s.participants}>
-            <div className={s.avatars}>
-              {shown.map((participant) => (
-                <AvatarWithBadges
-                  key={participant.identity}
-                  topLeft={participant.identity === room.ownerId ? <OwnerCrown /> : null}
-                >
-                  <UserAvatar
-                    name={participant.name}
-                    src={participant.avatarUrl}
-                    className={s.avatar}
-                    fallbackClassName={s.avatarFallback}
-                  />
-                </AvatarWithBadges>
-              ))}
-              {overflow > 0 && (
-                <Badge size="sm" tone="muted">
-                  +{overflow}
-                </Badge>
-              )}
+        <div className={s.body}>
+          {isLive ? (
+            <div className={s.participants}>
+              <div className={s.avatars}>
+                {shown.map((participant) => (
+                  <AvatarWithBadges
+                    key={participant.identity}
+                    topLeft={participant.identity === room.ownerId ? <OwnerCrown /> : null}
+                  >
+                    <UserAvatar
+                      name={participant.name}
+                      src={participant.avatarUrl}
+                      className={s.avatar}
+                      fallbackClassName={s.avatarFallback}
+                    />
+                  </AvatarWithBadges>
+                ))}
+                {overflow > 0 && (
+                  <Badge size="sm" tone="muted">
+                    +{overflow}
+                  </Badge>
+                )}
+              </div>
+              <span className={s.countLabel}>{t('people', { count: participants.length })}</span>
             </div>
-            <span className={s.countLabel}>{t('people', { count: participants.length })}</span>
-          </div>
-        ) : (
-          <span className={s.emptyHint}>{t('emptyHint')}</span>
-        )}
+          ) : (
+            <span className={s.emptyHint}>{t('emptyHint')}</span>
+          )}
+        </div>
       </button>
 
       <ManageRoomMenu className={s.menu} room={room} />

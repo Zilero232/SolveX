@@ -1,1 +1,1 @@
-export { RoomsPresenceProvider, useRoomsPresence } from './rooms-presence-context';
+export { RoomsPresenceProvider, useLobbyOnline, useRoomsPresence } from './rooms-presence-context';
