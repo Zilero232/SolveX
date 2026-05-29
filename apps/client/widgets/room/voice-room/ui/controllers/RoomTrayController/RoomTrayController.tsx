@@ -5,9 +5,8 @@ import { isTauri } from '@tauri-apps/api/core';
 import { useEffect } from 'react';
 import { isNullish } from 'remeda';
 import { useTrayMenuItem } from '@/features/app/system-tray';
-import { appBus } from '@/shared/lib';
+import { appBus, toggleMicStream } from '@/shared/lib';
 import { useAppSettings } from '@/widgets/app/app-settings';
-import { toggleMicStream } from '../../../lib/toggle-mic-stream';
 
 export const RoomTrayController = () => {
   const { localParticipant, isMicrophoneEnabled } = useLocalParticipant();
@@ -24,6 +23,7 @@ export const RoomTrayController = () => {
       const next = !localParticipant.isMicrophoneEnabled;
       await localParticipant.setMicrophoneEnabled(next);
 
+      if (next) appBus.push('micActivated', undefined);
       if (isPtt && next) {
         toggleMicStream(localParticipant, false);
       }

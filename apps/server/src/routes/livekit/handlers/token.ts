@@ -53,6 +53,7 @@ export const tokenHandler: RouteHandler<typeof tokenRoute, Env> = async (c) => {
     canPublish: true,
     canSubscribe: true,
     canPublishData: true,
+    canUpdateOwnMetadata: true,
     roomAdmin: isAdmin,
   });
 

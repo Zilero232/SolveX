@@ -2,7 +2,7 @@
 
 import { BarVisualizer, useIsSpeaking, useParticipantTracks } from '@livekit/components-react';
 import { Track } from 'livekit-client';
-import { MicOff, ScreenShare } from 'lucide-react';
+import { HeadphoneOff, MicOff, ScreenShare } from 'lucide-react';
 import { isNonNullish } from 'remeda';
 import { UserName } from '@/entities/auth/user';
 import { readParticipantMeta } from '@/entities/room/room';
@@ -12,7 +12,7 @@ import { ParticipantCardMenu } from '../ParticipantCardMenu';
 import { participantCardStyles as s } from './ParticipantCard.styles';
 import type { ParticipantCardProps } from './ParticipantCard.types';
 
-export const ParticipantCard = ({ participant }: ParticipantCardProps) => {
+export const ParticipantCard = ({ participant, deafened }: ParticipantCardProps) => {
   const [cameraTrack] = useParticipantTracks([Track.Source.Camera], participant.identity);
   const [screenTrack] = useParticipantTracks([Track.Source.ScreenShare], participant.identity);
   const [micTrack] = useParticipantTracks([Track.Source.Microphone], participant.identity);
@@ -54,6 +54,7 @@ export const ParticipantCard = ({ participant }: ParticipantCardProps) => {
 
         <div className={s.metadata}>
           {!participant.isMicrophoneEnabled && <MicOff className={s.micIcon} />}
+          {deafened && <HeadphoneOff className={s.micIcon} />}
           <ProfileCardTrigger identity={participant.identity} name={displayName}>
             <button className={s.nameTrigger} type="button">
               <UserName name={displayName} verified={verified} className={s.name} />

@@ -1,7 +1,7 @@
 export { safeJsonParse } from './json';
 export {
-  micStateRequestSchema,
   participantMetadataSchema,
+  presenceStateRequestSchema,
   roomParticipantSchema,
   roomsParticipantsSnapshotSchema,
   tokenRequestSchema,
@@ -10,8 +10,8 @@ export {
 export { createRoomInputSchema, roomSchema, updateRoomInputSchema } from './rooms';
 export { userProfileSchema } from './users';
 export type {
-  MicStateRequest,
   ParticipantMetadata,
+  PresenceStateRequest,
   RoomParticipant,
   RoomsParticipantsSnapshot,
   TokenRequest,

@@ -1,5 +1,6 @@
 'use client';
 
+import { DeafenSyncController } from '../DeafenSyncController';
 import { MicActivationController } from '../MicActivationController';
 import { MicStateController } from '../MicStateController';
 import { RoomDeviceController } from '../RoomDeviceController';
@@ -20,5 +21,6 @@ export const RoomControllers = ({ roomId, isChatOpen }: RoomControllersProps) =>
     <MicActivationController />
     <MicStateController roomId={roomId} />
     <RoomSoundsController isChatOpen={isChatOpen} />
+    <DeafenSyncController />
   </>
 );

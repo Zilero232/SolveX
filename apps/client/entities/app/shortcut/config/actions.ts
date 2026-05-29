@@ -1,5 +1,6 @@
 export const SHORTCUT_ACTIONS = {
   muteToggle: 'muteToggle',
+  deafenToggle: 'deafenToggle',
   pttHold: 'pttHold',
 } as const;
 

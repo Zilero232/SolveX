@@ -1,7 +1,7 @@
 'use client';
 
 import { useLocalParticipant, useRoomContext } from '@livekit/components-react';
-import { useAudio } from '@siberiacancode/reactuse';
+import { useAudio, usePrevious } from '@siberiacancode/reactuse';
 import {
   type LocalParticipant,
   ParticipantEvent,
@@ -12,6 +12,7 @@ import {
 } from 'livekit-client';
 import { useEffect, useRef } from 'react';
 import { useLeaveSound } from '@/entities/room/room';
+import { useDeafen } from '@/features/room/room-control';
 import { appBus } from '@/shared/lib';
 import { type SoundCategory, useAppSettings } from '@/widgets/app/app-settings';
 
@@ -21,6 +22,7 @@ export const useVoiceRoomSounds = (isChatOpen: boolean) => {
 
   const playLeave = useLeaveSound();
 
+  const { isDeafened } = useDeafen();
   const { settings } = useAppSettings();
 
   const joinAudio = useAudio('/audios/user_join.mp3', { interrupt: true });
@@ -28,6 +30,8 @@ export const useVoiceRoomSounds = (isChatOpen: boolean) => {
   const muteAudio = useAudio('/audios/mute.mp3', { interrupt: true });
   const unmuteAudio = useAudio('/audios/unmute.mp3', { interrupt: true });
   const pttAudio = useAudio('/audios/ptt.mp3', { interrupt: true });
+  const deafenAudio = useAudio('/audios/deafen.mp3', { interrupt: true });
+  const undeafenAudio = useAudio('/audios/undeafen.mp3', { interrupt: true });
   const messageAudio = useAudio('/audios/notification.mp3', { interrupt: true });
 
   const soundsRef = useRef(settings.sounds);
@@ -39,16 +43,10 @@ export const useVoiceRoomSounds = (isChatOpen: boolean) => {
     mute: muteAudio,
     unmute: unmuteAudio,
     ptt: pttAudio,
+    deafen: deafenAudio,
+    undeafen: undeafenAudio,
     message: messageAudio,
   });
-  audioRef.current = {
-    join: joinAudio,
-    reconnect: reconnectAudio,
-    mute: muteAudio,
-    unmute: unmuteAudio,
-    ptt: pttAudio,
-    message: messageAudio,
-  };
 
   const guardedPlay = (category: SoundCategory, key: keyof typeof audioRef.current) => {
     return () => {
@@ -57,6 +55,7 @@ export const useVoiceRoomSounds = (isChatOpen: boolean) => {
 
       const audio = audioRef.current[key];
       audio.setVolume(volume);
+
       void audio.play();
     };
   };
@@ -70,11 +69,26 @@ export const useVoiceRoomSounds = (isChatOpen: boolean) => {
     mute: guardedPlay('mute', 'mute'),
     unmute: guardedPlay('mute', 'unmute'),
     ptt: guardedPlay('mute', 'ptt'),
+    deafen: guardedPlay('mute', 'deafen'),
+    undeafen: guardedPlay('mute', 'undeafen'),
     message: guardedPlay('message', 'message'),
   });
 
   const isChatOpenRef = useRef(isChatOpen);
   isChatOpenRef.current = isChatOpen;
+
+  appBus.useSubscribe('pttHold', () => {
+    void playRef.current.ptt();
+  });
+
+  const prevDeafened = usePrevious(isDeafened);
+
+  useEffect(() => {
+    if (prevDeafened === undefined || prevDeafened === isDeafened) return;
+
+    if (isDeafened) void playRef.current.deafen();
+    else void playRef.current.undeafen();
+  }, [isDeafened, prevDeafened]);
 
   useEffect(() => {
     if (room.state === 'connected') void playRef.current.join();
@@ -130,10 +144,6 @@ export const useVoiceRoomSounds = (isChatOpen: boolean) => {
       localParticipant.off(ParticipantEvent.TrackUnmuted, onUnmuted);
     };
   }, [localParticipant]);
-
-  appBus.useSubscribe('pttHold', () => {
-    void playRef.current.ptt();
-  });
 
   useEffect(() => {
     const onJoin = () => {

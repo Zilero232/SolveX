@@ -6,8 +6,8 @@ import {
   clearRoom,
   isMicMuted,
   parseParticipantMeta,
+  patchParticipant,
   removeParticipant,
-  setParticipantMicMuted,
   syncRoom,
 } from '../presence';
 import type { Handler } from 'hono';
@@ -46,6 +46,7 @@ export const webhookHandler: Handler<Env> = async (c) => {
           identity: participant.identity,
           name: participant.name || participant.identity,
           micMuted: isMicMuted(participant.tracks),
+          deafened: participant.attributes?.deafened === 'true',
           ...parseParticipantMeta(participant.metadata),
         });
       }
@@ -58,12 +59,12 @@ export const webhookHandler: Handler<Env> = async (c) => {
     // POST /livekit/mic-state endpoint from the client instead.
     .with('track_published', () => {
       if (participant && isMicTrack && track) {
-        setParticipantMicMuted(roomId, participant.identity, track.muted);
+        patchParticipant(roomId, participant.identity, { micMuted: track.muted });
       }
     })
     .with('track_unpublished', () => {
       if (participant && isMicTrack) {
-        setParticipantMicMuted(roomId, participant.identity, true);
+        patchParticipant(roomId, participant.identity, { micMuted: true });
       }
     })
     .with('room_finished', () => clearRoom(roomId))

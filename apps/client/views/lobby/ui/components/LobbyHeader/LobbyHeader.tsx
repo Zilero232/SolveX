@@ -1,5 +1,6 @@
 'use client';
 
+import NumberFlow from '@number-flow/react';
 import { Radio, Sparkles, Users } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useCurrentUser } from '@/entities/auth/user';
@@ -43,25 +44,31 @@ export const LobbyHeader = () => {
         </div>
 
         <div className={s.stats}>
-          <div className={s.stat}>
-            <Users className={s.statIconMuted} />
-            <span className={s.statValue}>{rooms.length}</span>
+          <div className={s.stat} style={{ animationDelay: '60ms' }}>
+            <span className={s.statIconWrap}>
+              <Users className={s.statIconMuted} />
+            </span>
+            <NumberFlow className={s.statValue} value={rooms.length} />
             <span className={s.statLabel}>{tStats('rooms')}</span>
           </div>
 
           <span aria-hidden className={s.statDivider} />
 
-          <div className={s.stat}>
-            <Radio className={liveRooms > 0 ? s.statIconLive : s.statIconMuted} />
-            <span className={s.statValue}>{liveRooms}</span>
+          <div className={s.stat} style={{ animationDelay: '140ms' }}>
+            <span className={s.statIconWrap}>
+              <Radio className={liveRooms > 0 ? s.statIconLive : s.statIconMuted} />
+            </span>
+            <NumberFlow className={s.statValue} value={liveRooms} />
             <span className={s.statLabel}>{tStats('live')}</span>
           </div>
 
           <span aria-hidden className={s.statDivider} />
 
-          <div className={s.stat}>
-            <span className={s.statPulse} />
-            <span className={s.statValue}>{lobbyOnline}</span>
+          <div className={s.stat} style={{ animationDelay: '220ms' }}>
+            <span className={s.statIconWrap}>
+              <span className={s.statPulse} />
+            </span>
+            <NumberFlow className={s.statValue} value={lobbyOnline} />
             <span className={s.statLabel}>{tStats('online')}</span>
           </div>
         </div>

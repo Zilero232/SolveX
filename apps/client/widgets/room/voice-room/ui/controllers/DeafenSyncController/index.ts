@@ -1,0 +1,1 @@
+export { DeafenSyncController } from './DeafenSyncController';

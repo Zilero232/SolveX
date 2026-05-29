@@ -64,7 +64,8 @@
       "people": "{count, plural, one {# person} other {# people}}",
       "yours": "Yours",
       "ownerTooltip": "Room owner",
-      "micMuted": "Microphone muted"
+      "micMuted": "Microphone muted",
+      "deafened": "Sound off"
     }
   },
   "room": {
@@ -92,6 +93,25 @@
     },
     "shortcuts": {
       "pttBlockedByMute": "Microphone is muted — unmute to use push-to-talk"
+    },
+    "controls": {
+      "mute": "Mute",
+      "unmute": "Unmute",
+      "micDevice": "Select microphone",
+      "camera": "Turn on camera",
+      "cameraOff": "Turn off camera",
+      "camDevice": "Select camera",
+      "screenShare": "Share screen",
+      "stopShare": "Stop sharing",
+      "react": "Send a reaction",
+      "emojiSearch": "Search emoji…",
+      "emojiLoading": "Loading…",
+      "emojiEmpty": "No emoji found",
+      "deafen": "Deafen",
+      "undeafen": "Undeafen",
+      "speakerDevice": "Select speakers",
+      "pttHint": "Push-to-talk",
+      "leave": "Leave"
     }
   },
   "chat": {
@@ -241,6 +261,7 @@
       "webNotice": "Custom hotkeys are not supported in the browser yet. To use custom hotkeys, <link>download</link> the desktop app.",
       "actions": {
         "muteToggle": "Toggle microphone",
+        "deafenToggle": "Toggle deafen",
         "pttHold": "Push-to-talk (hold)"
       },
       "unassigned": "Not assigned",

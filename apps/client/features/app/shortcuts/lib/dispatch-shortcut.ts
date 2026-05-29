@@ -12,5 +12,8 @@ export const dispatchShortcut = (actionId: ShortcutActionId, state: KeyState) =>
     .with({ actionId: 'muteToggle', state: 'Pressed' }, () => {
       appBus.push('muteToggle', undefined);
     })
+    .with({ actionId: 'deafenToggle', state: 'Pressed' }, () => {
+      appBus.push('deafenToggle', undefined);
+    })
     .otherwise(() => {});
 };

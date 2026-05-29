@@ -1,5 +1,5 @@
 import { api, readErrorMessage } from '../http';
-import type { MicStateRequest, TokenRequest, TokenResponse } from '@chatovo/schemas';
+import type { PresenceStateRequest, TokenRequest, TokenResponse } from '@chatovo/schemas';
 
 export const fetchLiveKitToken = async (body: TokenRequest): Promise<TokenResponse> => {
   try {
@@ -19,18 +19,18 @@ export const fetchLiveKitToken = async (body: TokenRequest): Promise<TokenRespon
   }
 };
 
-export const reportMicState = async (body: MicStateRequest): Promise<void> => {
+export const reportPresenceState = async (body: PresenceStateRequest): Promise<void> => {
   try {
-    const res = await api.livekit['mic-state'].$post({ json: body });
+    const res = await api.livekit['presence-state'].$post({ json: body });
 
     if (!res.ok) {
       const message = await readErrorMessage(res);
 
-      throw new Error(message ?? `mic-state failed: ${res.status}`);
+      throw new Error(message ?? `presence-state failed: ${res.status}`);
     }
   } catch (error) {
     if (error instanceof Error) throw error;
 
-    throw new Error('mic-state failed');
+    throw new Error('presence-state failed');
   }
 };

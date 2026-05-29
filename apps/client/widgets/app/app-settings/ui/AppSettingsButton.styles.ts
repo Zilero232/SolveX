@@ -30,7 +30,8 @@ export const appSettingsStyles = {
   micTestFill:
     'h-full rounded-full bg-brand-cyan shadow-[0_0_8px_oklch(0.82_0.16_200/0.6)] transition-[width] duration-75',
 
-  profilePanel: 'flex flex-col gap-6 pt-2',
+  profilePanel:
+    '-mr-2 flex max-h-[calc(100dvh-14rem)] flex-col gap-6 overflow-y-auto pr-2 pt-2 sm:max-h-[24rem]',
   profileForm: 'flex flex-col gap-4',
   profileAvatarRow: 'flex items-center gap-4',
   profileAvatarButton:

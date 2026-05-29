@@ -3,8 +3,8 @@
 import { useLocalParticipant } from '@livekit/components-react';
 import { useAsyncEffect } from '@siberiacancode/reactuse';
 import { isNullish } from 'remeda';
+import { toggleMicStream } from '@/shared/lib';
 import { useAppSettings } from '@/widgets/app/app-settings';
-import { toggleMicStream } from '../../lib/toggle-mic-stream';
 
 export const useMicActivationMode = () => {
   const { settings } = useAppSettings();

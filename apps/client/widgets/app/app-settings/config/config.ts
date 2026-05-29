@@ -39,6 +39,7 @@ export const DEFAULT_APP_SETTINGS: AppSettings = {
   },
   shortcuts: {
     muteToggle: 'Ctrl+Shift+M',
+    deafenToggle: 'Ctrl+Shift+D',
     pttHold: 'Alt+L',
   },
 };

@@ -27,6 +27,9 @@ export const roomParticipantSchema = participantProfileSchema.extend({
   // Includes the "joined but mic never published yet" case, which is still
   // effectively silent for everyone else in the room.
   micMuted: z.boolean().default(true),
+  // True when the participant has muted all incoming audio (deafen). Carried
+  // live via the deafen-state endpoint, mirroring micMuted.
+  deafened: z.boolean().default(false),
 });
 
 // SSE payload pushed to clients: the full participant list of every active

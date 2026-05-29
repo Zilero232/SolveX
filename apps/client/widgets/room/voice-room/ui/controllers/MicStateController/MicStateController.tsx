@@ -3,7 +3,7 @@
 import { useLocalParticipant } from '@livekit/components-react';
 import { ParticipantEvent } from 'livekit-client';
 import { useEffect } from 'react';
-import { reportMicState } from '@/shared/api';
+import { reportPresenceState } from '@/shared/api';
 import type { MicStateControllerProps } from './MicStateController.types';
 
 export const MicStateController = ({ roomId }: MicStateControllerProps) => {
@@ -13,7 +13,7 @@ export const MicStateController = ({ roomId }: MicStateControllerProps) => {
     if (!localParticipant) return;
 
     const push = () => {
-      void reportMicState({ roomId, micMuted: !localParticipant.isMicrophoneEnabled });
+      void reportPresenceState({ roomId, micMuted: !localParticipant.isMicrophoneEnabled });
     };
 
     push();

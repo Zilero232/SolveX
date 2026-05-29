@@ -1,4 +1,8 @@
-import { micStateRequestSchema, tokenRequestSchema, tokenResponseSchema } from '@chatovo/schemas';
+import {
+  presenceStateRequestSchema,
+  tokenRequestSchema,
+  tokenResponseSchema,
+} from '@chatovo/schemas';
 import { createRoute, z } from '@hono/zod-openapi';
 import { errorSchema } from '../shared/schemas';
 
@@ -38,16 +42,16 @@ export const tokenRoute = createRoute({
   },
 });
 
-export const micStateRoute = createRoute({
+export const presenceStateRoute = createRoute({
   method: 'post',
-  path: '/mic-state',
+  path: '/presence-state',
   tags: ['livekit'],
-  summary: 'Report current microphone state',
+  summary: 'Report a partial presence patch (mic, deafen, ...)',
   security: [{ bearerAuth: [] }],
   request: {
     body: {
       required: true,
-      content: { 'application/json': { schema: micStateRequestSchema } },
+      content: { 'application/json': { schema: presenceStateRequestSchema } },
     },
   },
   responses: {

@@ -5,9 +5,8 @@ import { isTauri } from '@tauri-apps/api/core';
 import { useTranslations } from 'next-intl';
 import { isNullish } from 'remeda';
 import { toast } from 'sonner';
-import { appBus } from '@/shared/lib';
+import { appBus, toggleMicStream } from '@/shared/lib';
 import { useAppSettings } from '@/widgets/app/app-settings';
-import { toggleMicStream } from '../../lib/toggle-mic-stream';
 
 export const useShortcutActions = () => {
   const { localParticipant } = useLocalParticipant();
@@ -24,6 +23,7 @@ export const useShortcutActions = () => {
       const next = !localParticipant.isMicrophoneEnabled;
       await localParticipant.setMicrophoneEnabled(next);
 
+      if (next) appBus.push('micActivated', undefined);
       if (mode === 'pushToTalk' && next) {
         toggleMicStream(localParticipant, false);
       }

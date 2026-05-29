@@ -20,13 +20,14 @@ export const lobbyHeaderStyles = {
     'bg-linear-to-r from-brand-cyan to-brand-violet bg-clip-text font-semibold text-transparent text-xs tabular-nums tracking-[0.04em]',
 
   stats: 'flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-6 sm:gap-y-3',
-  stat: 'flex items-center gap-2.5',
+  stat: 'flex animate-in items-center gap-2.5 fill-mode-both fade-in slide-in-from-bottom-2 duration-500',
+  statIconWrap: 'flex size-4 shrink-0 items-center justify-center',
   statIcon: 'size-4 text-brand-cyan',
   statIconLive: 'size-4 text-brand-cyan drop-shadow-[0_0_6px_oklch(0.82_0.16_200/0.7)]',
   statIconMuted: 'size-4 text-muted-foreground',
   statPulse:
     'inline-block size-2 animate-pulse rounded-full bg-brand-violet shadow-[0_0_10px_oklch(0.7_0.2_270/0.8)]',
-  statValue: 'font-bold text-foreground text-lg tabular-nums sm:text-xl',
-  statLabel: 'text-muted-foreground text-xs uppercase tracking-[0.12em]',
+  statValue: 'min-w-4 font-bold text-foreground text-lg leading-none tabular-nums sm:text-xl',
+  statLabel: 'text-muted-foreground text-xs uppercase leading-none tracking-[0.12em]',
   statDivider: 'hidden h-6 w-px bg-white/12 sm:block',
 } as const;

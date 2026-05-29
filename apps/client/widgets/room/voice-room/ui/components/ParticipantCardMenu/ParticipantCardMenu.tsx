@@ -60,7 +60,7 @@ export const ParticipantCardMenu = ({ participant, children }: ParticipantCardMe
 
               <Slider
                 aria-label={t('volumeFor', { name: displayName })}
-                max={2}
+                max={1}
                 min={0}
                 step={0.05}
                 value={[volume]}

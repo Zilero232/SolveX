@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import { clamp, defaultTo } from 'remeda';
 import { STORAGE_KEYS } from '@/shared/constants';
 
-const MAX_VOLUME = 2;
+const MAX_VOLUME = 1;
 const DEFAULT_VOLUME = 1;
 
 const PERSIST_DELAY_MS = 300;

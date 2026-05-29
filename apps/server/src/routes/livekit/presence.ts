@@ -100,15 +100,21 @@ export const addParticipant = (roomId: string, participant: RoomParticipant) => 
   emit();
 };
 
-// Mic-only update — caller already knows the participant's identity from the
-// webhook payload; we only flip the flag and broadcast.
-export const setParticipantMicMuted = (roomId: string, identity: string, micMuted: boolean) => {
+// Partial presence update (mic, deafen, ...) — both webhooks and client
+// reports flow through here. Only emits when a field actually changes.
+type ParticipantPatch = Partial<Pick<RoomParticipant, 'micMuted' | 'deafened'>>;
+
+export const patchParticipant = (roomId: string, identity: string, patch: ParticipantPatch) => {
   const participants = rooms.get(roomId);
   const current = participants?.get(identity);
 
-  if (!current || current.micMuted === micMuted) return;
+  if (!participants || !current) return;
 
-  participants?.set(identity, { ...current, micMuted });
+  const next = { ...current, ...patch };
+
+  if (next.micMuted === current.micMuted && next.deafened === current.deafened) return;
+
+  participants.set(identity, next);
 
   emit();
 };
@@ -134,6 +140,7 @@ const toRoomParticipant = (p: ParticipantInfo): RoomParticipant => {
     identity: p.identity,
     name: p.name || p.identity,
     micMuted: isMicMuted(p.tracks),
+    deafened: p.attributes?.deafened === 'true',
     ...parseParticipantMeta(p.metadata),
   };
 };

@@ -4,7 +4,12 @@ import { Crown, Headphones, Lock } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { isEmpty } from 'remeda';
 import { UserAvatar, UserName, useCurrentUser } from '@/entities/auth/user';
-import { MicMutedBadge, OwnerCrown, useRoomParticipants } from '@/entities/room/room';
+import {
+  DeafenedBadge,
+  MicMutedBadge,
+  OwnerCrown,
+  useRoomParticipants,
+} from '@/entities/room/room';
 import { ManageRoomMenu } from '@/features/room/manage';
 import { ProfileCardTrigger } from '@/features/room/profile-card';
 import { buildRoomHref } from '@/shared/constants';
@@ -50,6 +55,7 @@ export const ChannelsRoomItem = ({ room, onNavigate }: ChannelsRoomItemProps) =>
                 <AvatarWithBadges
                   topLeft={p.identity === room.ownerId ? <OwnerCrown /> : null}
                   bottomRight={p.micMuted ? <MicMutedBadge /> : null}
+                  bottomLeft={p.deafened ? <DeafenedBadge /> : null}
                 >
                   <UserAvatar
                     name={p.name}

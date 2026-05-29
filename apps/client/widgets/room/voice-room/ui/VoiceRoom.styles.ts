@@ -13,11 +13,7 @@ export const voiceRoomStyles = {
   body: 'relative flex min-h-0 flex-1 flex-col',
 
   controls:
-    'relative flex items-center justify-center border-t border-white/8 bg-linear-to-t from-white/4 to-transparent p-2.5',
-  controlBar: 'flex justify-center',
-  controlBarPttIdle:
-    '[&_button[data-lk-source="microphone"]]:!bg-white/8 [&_button[data-lk-source="microphone"]]:!text-muted-foreground',
-  controlBarPttActive:
-    '[&_button[data-lk-source="microphone"]]:!bg-brand-cyan/20 [&_button[data-lk-source="microphone"]]:!text-brand-cyan [&_button[data-lk-source="microphone"]]:!shadow-[0_0_18px_-4px_oklch(0.82_0.16_200/0.7)]',
-  chatButton: 'absolute right-2',
+    'flex items-center gap-1.5 border-t border-white/8 bg-linear-to-t from-white/4 to-transparent p-2.5 sm:gap-2',
+  controlBarWrap: 'flex min-w-0 flex-1 justify-center',
+  chatButton: 'size-9! shrink-0 sm:size-10!',
 } as const;
