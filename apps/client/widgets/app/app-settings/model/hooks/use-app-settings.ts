@@ -12,8 +12,6 @@ export const useAppSettings = (): UseAppSettings => {
     DEFAULT_APP_SETTINGS,
   );
 
-  // Deep-merge over defaults so a field added in a later release is never
-  // `undefined`. reactCompiler memoizes the result against `value`.
   const settings: AppSettings = mergeDeep(DEFAULT_APP_SETTINGS, value ?? {});
 
   const setGroup: UseAppSettings['setGroup'] = (group, patch) => {

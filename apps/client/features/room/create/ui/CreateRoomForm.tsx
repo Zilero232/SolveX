@@ -12,7 +12,6 @@ import type { CreateRoomRequest } from '@chatovo/schemas';
 const DEFAULT_VALUES: CreateRoomRequest = { name: '', isPrivate: false };
 
 type CreateRoomFormProps = {
-  // Fired once the room is created — lets a host dialog close itself.
   onCreated?: () => void;
 };
 

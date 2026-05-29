@@ -28,9 +28,6 @@ import { SoundsTab } from './sections/SoundsTab';
 import { SystemTab } from './sections/SystemTab';
 import { VideoTab } from './sections/VideoTab';
 
-// A gear button that opens the app-wide settings dialog. Drop it anywhere —
-// it is self-contained and owns its open state. Each tab reads useAppSettings
-// itself; reactuse keeps the shared localStorage entry in sync across them.
 export const AppSettingsButton = () => {
   const t = useTranslations('settings');
 

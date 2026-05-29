@@ -1,7 +1,5 @@
 import { details, toString as eventToHotkey, setOptions } from 'keyboard-event-to-string';
 
-// Tauri accepts both 'Ctrl+M' and 'Ctrl+KeyM'. The library emits Tauri-friendly
-// labels for modifiers; that's the whole reason for the setup call.
 setOptions({
   cmd: 'Meta',
   ctrl: 'Ctrl',
@@ -17,8 +15,6 @@ export const isPureModifier = (key: string): boolean => {
   return PURE_MODIFIER_KEYS.has(key);
 };
 
-// Returns a Tauri-compatible accelerator ('Ctrl+M', 'Alt+F4', 'F8') or null
-// when the event carries only modifiers.
 export const formatHotkey = (e: KeyboardEvent): string | null => {
   const info = details(e);
 

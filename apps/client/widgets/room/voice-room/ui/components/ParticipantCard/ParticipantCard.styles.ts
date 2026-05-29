@@ -18,4 +18,6 @@ export const participantCardStyles = {
     'absolute inset-x-0 bottom-0 flex items-center justify-center gap-1.5 bg-linear-to-t from-black/80 via-black/40 to-transparent px-3 pt-6 pb-2 text-xs text-white',
   micIcon: 'size-3.5 shrink-0 text-destructive drop-shadow-[0_0_6px_oklch(0.7_0.22_22/0.7)]',
   name: 'truncate font-medium',
+  nameTrigger:
+    'min-w-0 rounded outline-hidden hover:underline focus-visible:ring-2 focus-visible:ring-brand-cyan',
 } as const;

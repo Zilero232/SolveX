@@ -11,8 +11,6 @@ type UseLocale = {
   setLocale: (locale: Locale) => void;
 };
 
-// Reads and writes the user's UI language preference. reactuse keeps every
-// consumer in sync, so switching the language re-renders the whole app at once.
 export const useLocale = (): UseLocale => {
   const { value, set } = useLocalStorage<Locale>(STORAGE_KEYS.locale, DEFAULT_LOCALE);
 
@@ -20,6 +18,5 @@ export const useLocale = (): UseLocale => {
 
   useMount(() => setIsReady(true));
 
-  // A stale or hand-edited value is narrowed back to a supported locale.
   return { isReady, locale: resolveLocale(value), setLocale: set };
 };

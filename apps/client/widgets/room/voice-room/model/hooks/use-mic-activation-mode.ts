@@ -16,9 +16,6 @@ export const useMicActivationMode = () => {
     if (isNullish(localParticipant)) return;
     if (mode !== 'pushToTalk') return;
 
-    // PTT mode keeps the publication unmuted (so the LiveKit track-state stays
-    // a clean "user wants to be heard" flag) but bans the underlying media
-    // stream so nothing actually goes out until PTT key is pressed.
     try {
       await localParticipant.setMicrophoneEnabled(true);
 

@@ -1,9 +1,6 @@
 import { cva } from 'class-variance-authority';
 
 export const lobbyRoomCardStyles = {
-  // Outer wrapper is `relative` so the manage menu can float over the card's
-  // top-right corner without sitting inside the navigate button (button-in-button
-  // is invalid HTML and breaks Radix focus management).
   root: 'group/card glass glass-hover relative flex h-full min-h-[140px] flex-col overflow-hidden rounded-2xl hover:border-brand-violet/40 hover:shadow-glow-violet',
 
   enter: cva(

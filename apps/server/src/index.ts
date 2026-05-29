@@ -8,6 +8,7 @@ import { ConflictError, ForbiddenError, NotFoundError } from './lib/errors';
 import { authMiddleware } from './middleware/auth';
 import { livekitRouter } from './routes/livekit';
 import { roomsRouter } from './routes/rooms';
+import { usersRouter } from './routes/users';
 
 const app = new OpenAPIHono();
 
@@ -43,6 +44,7 @@ export const routes = app
   )
   .get('/health', (c) => c.json({ ok: true }))
   .use('/rooms/*', authMiddleware)
+  .use('/users/*', authMiddleware)
   // The webhook is signed by LiveKit and the SSE stream authorizes via a query
   // token (EventSource cannot send headers) — both bypass the bearer middleware.
   .use('/livekit/*', async (c, next) => {
@@ -53,6 +55,7 @@ export const routes = app
     return authMiddleware(c, next);
   })
   .route('/rooms', roomsRouter)
+  .route('/users', usersRouter)
   .route('/livekit', livekitRouter);
 
 // Single place that turns thrown errors into HTTP responses. Domain errors

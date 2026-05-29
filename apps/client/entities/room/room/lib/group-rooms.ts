@@ -3,7 +3,6 @@ import type { Room, RoomsParticipantsSnapshot } from '@chatovo/schemas';
 
 type RoomsPresenceMap = RoomsParticipantsSnapshot['rooms'];
 
-// `key` doubles as the i18n key for the section heading (room.sections.*).
 export type RoomSection = {
   key: 'private' | 'public';
   rooms: Room[];

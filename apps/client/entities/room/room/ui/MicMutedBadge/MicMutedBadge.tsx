@@ -5,7 +5,6 @@ import { useTranslations } from 'next-intl';
 import { cn } from '@/shared/lib/cn';
 import type { MicMutedBadgeProps } from './MicMutedBadge.types';
 
-// Floating overlay badge anchored to the bottom-right of an avatar.
 export const MicMutedBadge = ({ className }: MicMutedBadgeProps) => {
   const t = useTranslations('lobby.card');
 

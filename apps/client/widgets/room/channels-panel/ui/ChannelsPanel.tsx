@@ -7,8 +7,6 @@ import { ChannelsFooter, ChannelsHeader, ChannelsList, ChannelsLobbyBanner } fro
 import type { ChannelsPanelProps } from './ChannelsPanel.types';
 
 export const ChannelsPanel = ({ variant = 'desktop', onNavigate }: ChannelsPanelProps = {}) => {
-  // On the lobby the rooms are already laid out on the page, so the panel's
-  // list slot becomes a create-room banner instead of a duplicate list.
   const isLobby = usePathname() === ROUTES.lobby;
 
   return (

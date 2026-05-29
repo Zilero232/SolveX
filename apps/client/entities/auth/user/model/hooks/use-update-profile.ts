@@ -2,38 +2,37 @@
 
 import { useMutation } from '@tanstack/react-query';
 import { z } from 'zod';
-import { queryClient, supabase } from '@/shared/api';
+import { queryClient, supabase, updateUserProfile } from '@/shared/api';
 import { QUERY_KEYS } from '@/shared/constants';
 import type { Session } from '@supabase/supabase-js';
 
-// Both fields live in Supabase user_metadata. An empty profileUrl clears the
-// link; otherwise it must be a valid URL. Messages are i18n keys (see useFieldError).
 export const profileSchema = z.object({
   name: z.string().trim().min(2, 'validation.nameMin').max(32, 'validation.nameMax'),
   profileUrl: z.union([z.literal(''), z.url('validation.urlInvalid')]),
+  bannerColor: z.string().nullable(),
+  bio: z.string().max(280, 'validation.bioMax'),
 });
 
 export type ProfileValues = z.infer<typeof profileSchema>;
 
-// Updates the signed-in user's display name and profile link in a single
-// Supabase call, then patches the cached session so useCurrentUser reflects
-// the change at once.
+export type UpdateProfileInput = ProfileValues & {
+  avatar?: File | null;
+};
+
 export const useUpdateProfile = () => {
   return useMutation({
-    mutationFn: async ({ name, profileUrl }: ProfileValues) => {
-      const { data, error } = await supabase.auth.updateUser({
-        data: { display_name: name, profile_url: profileUrl.trim() },
-      });
+    mutationFn: async ({ name, profileUrl, bannerColor, bio, avatar }: UpdateProfileInput) => {
+      const profile = await updateUserProfile({ name, profileUrl, bannerColor, bio, avatar });
 
-      if (error) throw error;
+      const { data } = await supabase.auth.refreshSession();
 
-      // updateUser returns the fresh user but not a session — merge the user
-      // into the cached session so the new values propagate immediately.
-      queryClient.setQueryData<Session | null>(QUERY_KEYS.session(), (current) =>
-        current ? { ...current, user: data.user } : current,
-      );
+      if (data.session) {
+        queryClient.setQueryData<Session | null>(QUERY_KEYS.session(), data.session);
+      }
 
-      return data.user;
+      queryClient.setQueryData(QUERY_KEYS.userProfile(profile.id), profile);
+
+      return profile;
     },
   });
 };

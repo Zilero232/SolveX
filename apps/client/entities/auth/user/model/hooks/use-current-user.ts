@@ -29,8 +29,14 @@ const readProfileUrl = (user: User | null): string | null => {
   return firstNonEmptyString([user?.user_metadata?.profile_url]);
 };
 
-// display_name is set at email sign-up; Google sign-in stores the name under
-// full_name/name. Fall back to the email local part as a last resort.
+const readBannerColor = (user: User | null): string | null => {
+  return firstNonEmptyString([user?.user_metadata?.banner_color]);
+};
+
+const readBio = (user: User | null): string | null => {
+  return firstNonEmptyString([user?.user_metadata?.bio]);
+};
+
 const resolveDisplayName = (user: User | null): string => {
   const meta = user?.user_metadata ?? {};
 
@@ -41,7 +47,6 @@ const resolveDisplayName = (user: User | null): string => {
   );
 };
 
-// OAuth providers store the avatar URL under avatar_url; some use picture.
 const readAvatarUrl = (user: User | null): string | null => {
   const meta = user?.user_metadata ?? {};
 
@@ -56,7 +61,6 @@ export const useCurrentUser = () => {
 
       return data.session;
     },
-    staleTime: Number.POSITIVE_INFINITY,
     gcTime: Number.POSITIVE_INFINITY,
   });
 
@@ -77,6 +81,8 @@ export const useCurrentUser = () => {
     avatarUrl: readAvatarUrl(user),
     verified: readVerified(user),
     profileUrl: readProfileUrl(user),
+    bannerColor: readBannerColor(user),
+    bio: readBio(user),
     isAuthenticated: isNonNullish(user),
   };
 };

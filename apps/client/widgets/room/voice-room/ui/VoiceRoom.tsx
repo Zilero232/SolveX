@@ -16,8 +16,6 @@ import { RoomControllers } from './controllers';
 import { voiceRoomStyles as s } from './VoiceRoom.styles';
 import type { VoiceRoomProps } from './VoiceRoom.types';
 
-// Renders the live participant count inside the room header. Must live below
-// the LiveKitRoom so `useParticipants` has its required context.
 const RoomHeader = ({ name }: { name: string }) => {
   return (
     <div className={s.header}>

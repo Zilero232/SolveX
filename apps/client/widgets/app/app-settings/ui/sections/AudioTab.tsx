@@ -28,9 +28,6 @@ export const AudioTab = ({ onJumpToShortcuts }: AudioTabProps) => {
   const pttBindingMissing =
     audio.activationMode === 'pushToTalk' && isNullish(settings.shortcuts.pttHold);
 
-  // Only persist here — this dialog opens from the sidebar, outside LiveKitRoom,
-  // so it has no room to apply to. useDeviceSync, which runs inside the room,
-  // watches the store and re-captures the mic track when these flags change.
   const setFlag = (key: keyof AudioSettings, value: boolean) => {
     setGroup('audio', { [key]: value });
   };

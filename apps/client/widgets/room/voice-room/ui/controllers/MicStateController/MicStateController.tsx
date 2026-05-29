@@ -6,10 +6,6 @@ import { useEffect } from 'react';
 import { reportMicState } from '@/shared/api';
 import type { MicStateControllerProps } from './MicStateController.types';
 
-// LiveKit webhooks ship `track_published` / `track_unpublished` but NOT
-// `track_muted` / `track_unmuted`. To keep the presence cache in sync with
-// live mute toggles, the local participant reports its mic state to the API
-// each time it changes (initial mount + every Track* event).
 export const MicStateController = ({ roomId }: MicStateControllerProps) => {
   const { localParticipant } = useLocalParticipant();
 

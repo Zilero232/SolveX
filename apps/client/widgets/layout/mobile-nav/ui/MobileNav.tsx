@@ -9,8 +9,6 @@ import { ChannelsPanel } from '@/widgets/room/channels-panel';
 import { mobileNavStyles as s } from './MobileNav.styles';
 import type { MobileNavProps } from './MobileNav.types';
 
-// Mobile-only top bar + slide-in drawer. On `md+` everything here is hidden
-// and the desktop sidebar/channels render inline instead.
 export const MobileNav = ({ open, onOpenChange }: MobileNavProps) => {
   const t = useTranslations('appSidebar');
 

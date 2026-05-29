@@ -7,7 +7,6 @@ export const useRooms = () => {
   const { data, isLoading, isError } = useQuery({
     queryKey: QUERY_KEYS.rooms(),
     queryFn: listRooms,
-    staleTime: 30_000,
   });
 
   const rooms = data ?? [];

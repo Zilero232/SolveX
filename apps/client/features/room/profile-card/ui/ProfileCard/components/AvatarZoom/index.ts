@@ -1,0 +1,1 @@
+export { AvatarZoom } from './AvatarZoom';

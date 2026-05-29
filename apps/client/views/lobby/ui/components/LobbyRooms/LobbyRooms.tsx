@@ -19,8 +19,6 @@ export const LobbyRooms = () => {
 
   const [query, setQuery] = useState('');
 
-  // Public / Private sections, each ordered busiest-first then alphabetical —
-  // the same grouping the channels sidebar uses.
   const sections = groupRooms(rooms, presence, query);
 
   return (

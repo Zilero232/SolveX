@@ -19,8 +19,6 @@ export const fetchLiveKitToken = async (body: TokenRequest): Promise<TokenRespon
   }
 };
 
-// Fire-and-forget: presence cache is best-effort and a missed mic-state update
-// will be reconciled the next time the participant joins.
 export const reportMicState = async (body: MicStateRequest): Promise<void> => {
   try {
     const res = await api.livekit['mic-state'].$post({ json: body });

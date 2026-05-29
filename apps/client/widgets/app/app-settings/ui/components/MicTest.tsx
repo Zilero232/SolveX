@@ -18,7 +18,6 @@ export const MicTest = ({ deviceId, audio }: MicTestProps) => {
   return (
     <div className={s.micTest}>
       <div className={s.micTestBar}>
-        {/* The fill width tracks the live mic level, 0..100%. */}
         <div className={s.micTestFill} style={{ width: `${Math.round(level * 100)}%` }} />
       </div>
 

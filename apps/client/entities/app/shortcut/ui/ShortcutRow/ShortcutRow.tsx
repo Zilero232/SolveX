@@ -4,8 +4,6 @@ import { ShortcutClearButton, ShortcutComboButton } from './components';
 import { shortcutRowStyles as s } from './ShortcutRow.styles';
 import type { ShortcutRowProps } from './ShortcutRow.types';
 
-// Stateless view for one user-bindable action. All decisions (recording, conflict,
-// patches) live in the parent — the row only renders the resolved presentation.
 export const ShortcutRow = ({
   label,
   display,

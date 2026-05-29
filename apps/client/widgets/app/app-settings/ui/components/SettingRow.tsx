@@ -7,7 +7,6 @@ type SettingRowProps = {
   label: string;
   hint?: string;
   control: ReactNode;
-  // When true the control is placed below the label instead of beside it.
   stacked?: boolean;
 };
 

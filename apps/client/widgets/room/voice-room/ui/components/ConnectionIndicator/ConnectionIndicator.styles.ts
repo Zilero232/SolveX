@@ -2,7 +2,6 @@ export const connectionIndicatorStyles = {
   root: 'flex items-center gap-1.5',
 
   bars: 'flex items-end gap-0.5',
-  // Each bar grows taller; index 0 is the shortest. Heights via inline style.
   bar: 'w-1 rounded-[1px] transition-colors',
   barActive: {
     good: 'bg-brand-cyan shadow-[0_0_6px_oklch(0.82_0.16_200/0.6)]',

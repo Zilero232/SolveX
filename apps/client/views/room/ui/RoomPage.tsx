@@ -21,11 +21,8 @@ export const RoomPage = () => {
 
   const { room, isLoading, displayName, isPrivate } = useRoomById(roomId);
 
-  // Wait for room data before isPrivate is meaningful — otherwise a private
-  // room reads as public for one render and useRoomToken fires unauthenticated.
   const roomReady = isNonNullish(room);
 
-  // data dep: password feeds useRoomToken below
   const [password, setPassword] = useState<string>();
 
   const {

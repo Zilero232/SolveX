@@ -4,7 +4,6 @@ import { AudioLines } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { CenteredState } from '@/shared/ui';
 
-// Shown when no rooms exist yet — nudges the user toward the create button.
 export const LobbyEmpty = () => {
   const t = useTranslations('lobby.empty');
 

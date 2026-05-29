@@ -6,6 +6,7 @@ import { MicOff, ScreenShare } from 'lucide-react';
 import { isNonNullish } from 'remeda';
 import { UserName } from '@/entities/auth/user';
 import { readParticipantMeta } from '@/entities/room/room';
+import { ProfileCardTrigger } from '@/features/room/profile-card';
 import { CardVideo } from '../CardVideo';
 import { ParticipantCardMenu } from '../ParticipantCardMenu';
 import { participantCardStyles as s } from './ParticipantCard.styles';
@@ -18,9 +19,8 @@ export const ParticipantCard = ({ participant }: ParticipantCardProps) => {
 
   const isSpeaking = useIsSpeaking(participant);
   const displayName = participant.name || participant.identity;
-  const { profileUrl, verified } = readParticipantMeta(participant.metadata);
+  const { verified } = readParticipantMeta(participant.metadata);
 
-  // A track may be published but muted; the *Enabled getters account for that.
   const hasCamera = isNonNullish(cameraTrack) && participant.isCameraEnabled;
   const hasScreen = isNonNullish(screenTrack) && participant.isScreenShareEnabled;
   const hasVideo = hasCamera || hasScreen;
@@ -54,12 +54,11 @@ export const ParticipantCard = ({ participant }: ParticipantCardProps) => {
 
         <div className={s.metadata}>
           {!participant.isMicrophoneEnabled && <MicOff className={s.micIcon} />}
-          <UserName
-            name={displayName}
-            verified={verified}
-            profileUrl={profileUrl}
-            className={s.name}
-          />
+          <ProfileCardTrigger identity={participant.identity} name={displayName}>
+            <button className={s.nameTrigger} type="button">
+              <UserName name={displayName} verified={verified} className={s.name} />
+            </button>
+          </ProfileCardTrigger>
         </div>
       </div>
     </ParticipantCardMenu>

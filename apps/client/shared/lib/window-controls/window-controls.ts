@@ -1,8 +1,5 @@
 import { getCurrentWindow } from '@tauri-apps/api/window';
 
-// Wraps a window operation in a uniform try/catch so consumers can call these
-// without their own error handling. Failures are logged and swallowed — window
-// ops are best-effort UI side effects, never load-bearing.
 const safeWindow = async (label: string, fn: () => Promise<void>) => {
   try {
     await fn();
@@ -11,8 +8,6 @@ const safeWindow = async (label: string, fn: () => Promise<void>) => {
   }
 };
 
-// Reveal the main window: unminimize first so a minimized window comes back
-// from the taskbar, then show in case it was hidden to the tray, then focus.
 export const showMainWindow = async () => {
   await safeWindow('show', async () => {
     const win = getCurrentWindow();

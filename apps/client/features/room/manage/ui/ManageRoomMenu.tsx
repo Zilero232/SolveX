@@ -21,8 +21,6 @@ export const ManageRoomMenu = ({ room, className }: ManageRoomMenuProps) => {
 
   const { user } = useCurrentUser();
 
-  // Plain useState (not useBoolean from reactuse) — setters are passed into
-  // dialog `onOpenChange` props; the stable identity matters across renders.
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
 

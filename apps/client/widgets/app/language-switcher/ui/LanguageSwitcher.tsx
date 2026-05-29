@@ -18,16 +18,11 @@ import {
 import { languageSwitcherStyles as s } from './LanguageSwitcher.styles';
 import type { ComponentType, SVGProps } from 'react';
 
-// SVG flag per locale — real flags render identically on every OS, unlike
-// emoji flags, which Windows does not display at all.
 const LOCALE_FLAGS: Record<Locale, ComponentType<SVGProps<SVGSVGElement>>> = {
   en: FlagGbIcon,
   ru: FlagRuIcon,
 };
 
-// A compact language picker: the current locale's flag opens a dropdown to
-// switch UI language. The choice is persisted (see useLocale), so the whole
-// app re-renders in the new language instantly.
 export const LanguageSwitcher = () => {
   const t = useTranslations('language');
   const { locale, setLocale } = useLocale();

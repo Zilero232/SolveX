@@ -6,8 +6,6 @@ import { type SoundCategory, useAppSettings } from '../../model';
 import { appSettingsStyles as s } from '../AppSettingsButton.styles';
 import { SettingRow } from '../components/SettingRow';
 
-// Per-category sound toggles. Each category's label/hint are i18n keys
-// `<category>` / `<category>Hint` under settings.sounds.
 const SOUND_CATEGORIES: SoundCategory[] = ['join', 'leave', 'mute', 'reconnect', 'message'];
 
 export const SoundsTab = () => {

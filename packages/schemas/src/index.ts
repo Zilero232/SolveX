@@ -8,6 +8,7 @@ export {
   tokenResponseSchema,
 } from './livekit';
 export { createRoomInputSchema, roomSchema, updateRoomInputSchema } from './rooms';
+export { userProfileSchema } from './users';
 export type {
   MicStateRequest,
   ParticipantMetadata,
@@ -17,3 +18,4 @@ export type {
   TokenResponse,
 } from './livekit';
 export type { CreateRoomRequest, Room, UpdateRoomRequest } from './rooms';
+export type { UserProfile } from './users';

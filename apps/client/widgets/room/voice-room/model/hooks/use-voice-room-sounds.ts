@@ -109,9 +109,6 @@ export const useVoiceRoomSounds = (isChatOpen: boolean) => {
     };
   }, [room]);
 
-  // Mic mute/unmute → plays mute/unmute clip. PTT does NOT mute the LiveKit
-  // publication (it flips MediaStreamTrack.enabled instead), so this listener
-  // only fires for explicit user mute.
   useEffect(() => {
     const onMuted = (publication: TrackPublication) => {
       if (publication.source !== Track.Source.Microphone) return;
@@ -134,8 +131,6 @@ export const useVoiceRoomSounds = (isChatOpen: boolean) => {
     };
   }, [localParticipant]);
 
-  // PTT press/release → dedicated PTT clip (track stays unmuted at the
-  // publication level so no mute/unmute event fires from the listener above).
   appBus.useSubscribe('pttHold', () => {
     void playRef.current.ptt();
   });

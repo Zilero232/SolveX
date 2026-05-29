@@ -11,7 +11,6 @@ import { AvatarWithBadges, Badge } from '@/shared/ui';
 import { lobbyRoomCardStyles as s } from './LobbyRoomCard.styles';
 import type { LobbyRoomCardProps } from './LobbyRoomCard.types';
 
-// How many participant avatars to render before collapsing into a "+N" chip.
 const MAX_AVATARS = 4;
 
 export const LobbyRoomCard = ({ room }: LobbyRoomCardProps) => {

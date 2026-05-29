@@ -17,8 +17,6 @@ export const CardVideo = ({ trackRef }: CardVideoProps) => {
 
   const { settings } = useAppSettings();
 
-  // Mirror applies only to the local participant's own preview — remote
-  // participants are always shown unmirrored, as they really appear.
   const isMirrored = trackRef.participant.isLocal && settings.video.mirrorVideo;
 
   const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
@@ -28,7 +26,6 @@ export const CardVideo = ({ trackRef }: CardVideoProps) => {
     }
   };
 
-  // A muted camera track is still published; show nothing for it.
   if (muted) return null;
 
   return (

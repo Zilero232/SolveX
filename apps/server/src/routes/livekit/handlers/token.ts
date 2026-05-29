@@ -1,34 +1,13 @@
 import { AccessToken } from 'livekit-server-sdk';
-import { filter, first, isString, map, pipe } from 'remeda';
 import { readRole } from '../../../lib/auth';
 import { env } from '../../../lib/env';
 import { prisma } from '../../../lib/prisma';
 import { supabaseAdmin } from '../../../lib/supabase';
+import { toUserProfile } from '../../../lib/user-profile';
 import type { ParticipantMetadata, TokenResponse } from '@chatovo/schemas';
 import type { RouteHandler } from '@hono/zod-openapi';
 import type { Env } from '../../shared/types';
 import type { tokenRoute } from '../routes';
-
-const resolveString = (value: unknown): string | null => {
-  return isString(value) && value.trim().length > 0 ? value.trim() : null;
-};
-
-const resolveDisplayName = (
-  metadata: Record<string, unknown>,
-  email: string | undefined,
-  userId: string,
-): string => {
-  return (
-    pipe(
-      [metadata.display_name, metadata.full_name, metadata.name],
-      map(resolveString),
-      filter(isString),
-      first(),
-    ) ??
-    email?.split('@')[0] ??
-    userId
-  );
-};
 
 export const tokenHandler: RouteHandler<typeof tokenRoute, Env> = async (c) => {
   const userId = c.get('userId');
@@ -49,31 +28,20 @@ export const tokenHandler: RouteHandler<typeof tokenRoute, Env> = async (c) => {
 
   if (error || !data.user) return c.json({ error: 'User lookup failed' }, 500);
 
-  const appMetadata = data.user.app_metadata ?? {};
-  const userMetadata = data.user.user_metadata ?? {};
-
-  const isAdmin = readRole(appMetadata) === 'admin';
-  const verified = appMetadata.verified === true;
-  const displayName = resolveDisplayName(userMetadata, email, userId);
-  const profileUrl = resolveString(userMetadata.profile_url);
-  const avatarUrl =
-    pipe(
-      [userMetadata.avatar_url, userMetadata.picture],
-      map(resolveString),
-      filter(isString),
-      first(),
-    ) ?? null;
+  const isAdmin = readRole(data.user.app_metadata) === 'admin';
+  const profile = toUserProfile(data.user);
 
   const participantMetadata: ParticipantMetadata = {
     email: email ?? null,
-    verified,
-    profileUrl,
-    avatarUrl,
+    verified: profile.verified,
+    profileUrl: profile.profileUrl,
+    avatarUrl: profile.avatarUrl,
+    bannerColor: profile.bannerColor,
   };
 
   const at = new AccessToken(env.LIVEKIT_API_KEY, env.LIVEKIT_API_SECRET, {
     identity: userId,
-    name: displayName,
+    name: profile.name,
     metadata: JSON.stringify(participantMetadata),
     ttl: 60 * 60,
   });

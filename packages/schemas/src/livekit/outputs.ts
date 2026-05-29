@@ -11,6 +11,7 @@ const participantProfileSchema = z.object({
   verified: z.boolean().default(false),
   profileUrl: z.string().nullable().default(null),
   avatarUrl: z.string().nullable().default(null),
+  bannerColor: z.string().nullable().default(null),
 });
 
 // Shape of the JSON string carried in LiveKit participant.metadata. The only

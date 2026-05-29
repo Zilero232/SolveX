@@ -35,9 +35,6 @@ export const RoomTrayController = () => {
   useEffect(() => {
     if (isNullish(muteItem)) return;
 
-    // In PTT mode the publication stays unmuted, so `isMicrophoneEnabled` is
-    // always true while the user is "live but silent". Tray checkbox should
-    // still reflect explicit user mute — which only happens in voiceActivity.
     const next = isPtt ? false : !isMicrophoneEnabled;
 
     (async () => {
