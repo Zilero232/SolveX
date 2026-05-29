@@ -15,9 +15,7 @@ import { KIND_TO_SLOT, useAppSettings } from '../../model';
 import { appSettingsStyles as s } from '../AppSettingsButton.styles';
 
 type DeviceSelectProps = {
-  // MediaDeviceKind is the built-in DOM type; useMediaDeviceSelect expects it.
   kind: MediaDeviceKind;
-  // Some browsers report no audiooutput devices — shown as the trigger label.
   emptyLabel?: string;
 };
 
@@ -27,18 +25,11 @@ export const DeviceSelect = ({ kind, emptyLabel }: DeviceSelectProps) => {
 
   const slot = KIND_TO_SLOT[kind];
 
-  // This dialog opens from the sidebar, outside LiveKitRoom, so a room-bound
-  // useMediaDeviceSelect is not available. The hook is used here only to
-  // enumerate devices (requestPermissions unlocks the labels); the choice is
-  // persisted to the store, and useDeviceSync — running inside the room —
-  // applies it to the live room and mirrors back any external switch.
   const { devices } = useMediaDeviceSelect({ kind, requestPermissions: true });
 
   const selectedId = settings.devices[slot];
   const active = devices.find((device) => device.deviceId === selectedId);
 
-  // Prefer the selected device's label, fall back to the first device, then to
-  // the empty-state text when nothing is enumerated.
   const triggerLabel = active?.label || devices[0]?.label || emptyLabel || t('noDevices');
 
   const selectDevice = (deviceId: string) => {

@@ -6,6 +6,7 @@ import { isEmpty } from 'remeda';
 import { UserAvatar, UserName, useCurrentUser } from '@/entities/auth/user';
 import { MicMutedBadge, OwnerCrown, useRoomParticipants } from '@/entities/room/room';
 import { ManageRoomMenu } from '@/features/room/manage';
+import { ProfileCardTrigger } from '@/features/room/profile-card';
 import { buildRoomHref } from '@/shared/constants';
 import { AvatarWithBadges } from '@/shared/ui';
 import { channelsRoomItemStyles as s } from './ChannelsRoomItem.styles';
@@ -44,25 +45,22 @@ export const ChannelsRoomItem = ({ room, onNavigate }: ChannelsRoomItemProps) =>
       {!isEmpty(participants) && (
         <div className={s.participants}>
           {participants.map((p) => (
-            <div key={p.identity} className={s.participant}>
-              <AvatarWithBadges
-                topLeft={p.identity === room.ownerId ? <OwnerCrown /> : null}
-                bottomRight={p.micMuted ? <MicMutedBadge /> : null}
-              >
-                <UserAvatar
-                  name={p.name}
-                  src={p.avatarUrl}
-                  className={s.participantAvatar}
-                  fallbackClassName={s.participantFallback}
-                />
-              </AvatarWithBadges>
-              <UserName
-                name={p.name}
-                verified={p.verified}
-                profileUrl={p.profileUrl}
-                className={s.participantName}
-              />
-            </div>
+            <ProfileCardTrigger key={p.identity} identity={p.identity} name={p.name}>
+              <button className={s.participant} type="button">
+                <AvatarWithBadges
+                  topLeft={p.identity === room.ownerId ? <OwnerCrown /> : null}
+                  bottomRight={p.micMuted ? <MicMutedBadge /> : null}
+                >
+                  <UserAvatar
+                    name={p.name}
+                    src={p.avatarUrl}
+                    className={s.participantAvatar}
+                    fallbackClassName={s.participantFallback}
+                  />
+                </AvatarWithBadges>
+                <UserName name={p.name} verified={p.verified} className={s.participantName} />
+              </button>
+            </ProfileCardTrigger>
           ))}
         </div>
       )}

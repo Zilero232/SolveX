@@ -24,9 +24,6 @@ export const useShortcutActions = () => {
       const next = !localParticipant.isMicrophoneEnabled;
       await localParticipant.setMicrophoneEnabled(next);
 
-      // PTT keeps the publication unmuted but the underlying stream banned.
-      // When the user unmutes via the toggle, re-ban the stream so PTT-press
-      // is still the only thing that actually opens the mic.
       if (mode === 'pushToTalk' && next) {
         toggleMicStream(localParticipant, false);
       }
@@ -43,13 +40,8 @@ export const useShortcutActions = () => {
       return;
     }
 
-    // Promote the raw key edge into a real PTT transmission — UI highlight
-    // and sound subscribers listen to `pttHold`, not `pttKey`.
     appBus.push('pttHold', payload);
 
-    // Flip the underlying MediaStream, not the LiveKit publication — this
-    // skips `ParticipantEvent.TrackMuted`/`TrackUnmuted` which are reserved
-    // for explicit user mute.
     toggleMicStream(localParticipant, payload.phase === 'pressed');
   });
 };

@@ -33,7 +33,8 @@
       "emailInvalid": "Invalid email",
       "passwordMin": "Min 8 characters",
       "passwordsMismatch": "Passwords do not match",
-      "urlInvalid": "Enter a valid URL"
+      "urlInvalid": "Enter a valid URL",
+      "bioMax": "Max 280 characters"
     }
   },
   "lobby": {
@@ -112,6 +113,14 @@
     "copyName": "Copy name",
     "nameCopied": "Name copied"
   },
+  "profileCard": {
+    "inVoice": "In voice channel",
+    "notInVoice": "Not in a voice channel",
+    "join": "Join",
+    "editProfile": "Edit profile",
+    "openSettingsHint": "Open settings to edit your profile.",
+    "avatarAlt": "{name}'s avatar"
+  },
   "channels": {
     "searchPlaceholder": "Search rooms...",
     "noRoomsYet": "No rooms yet",
@@ -158,11 +167,22 @@
     "profile": {
       "displayNameLabel": "Display name",
       "displayNameHint": "The name other people see in voice rooms.",
+      "avatarLabel": "Avatar",
+      "avatarHint": "PNG or JPG, up to 2 MB.",
+      "avatarRemove": "Remove avatar",
+      "avatarInvalidType": "That file is not an image.",
+      "bannerLabel": "Banner color",
+      "bannerHint": "The background color of your profile card.",
+      "bannerCustom": "Custom color",
+      "bannerReset": "Reset banner color",
       "save": "Save",
       "saved": "Profile updated",
       "profileUrlLabel": "Profile link",
       "profileUrlPlaceholder": "https://...",
       "profileUrlHint": "When set, your name becomes a clickable link. Leave empty to remove.",
+      "bioLabel": "About me",
+      "bioPlaceholder": "Tell others a bit about yourself...",
+      "bioHint": "Shown on your profile card. Up to 280 characters.",
       "emailSoon": "Email — coming soon",
       "passwordSoon": "Password — coming soon"
     },

@@ -1,7 +1,6 @@
 export const lobbyRoomsStyles = {
   root: 'flex flex-col gap-3',
 
-  // Heading on the left, search on the right; wraps on narrow widths.
   bar: 'flex flex-wrap items-center justify-between gap-3',
   heading: 'font-semibold text-base text-foreground/90',
 
@@ -14,7 +13,6 @@ export const lobbyRoomsStyles = {
   searchShortcut:
     'hidden shrink-0 items-center gap-1 rounded-md border border-white/10 bg-white/5 px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground sm:flex',
 
-  // Rooms split into Public / Private sections, each with a heading.
   sections: 'flex flex-col gap-6',
   section: 'flex flex-col gap-3',
   sectionLabel: 'font-semibold text-foreground/70 text-xs uppercase tracking-[0.14em]',

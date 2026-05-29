@@ -14,7 +14,6 @@ type SetupTrayResult = {
 };
 
 export const setupTray = async ({ tooltip, menu }: SetupTrayArgs): Promise<SetupTrayResult> => {
-  // Close a stale tray with the same id (HMR leftover) — Tauri throws otherwise.
   const existing = await TrayIcon.getById(TRAY_ID);
 
   if (existing) await existing.close();

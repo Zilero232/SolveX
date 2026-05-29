@@ -48,9 +48,6 @@ type ActionRowProps = {
   actionId: ShortcutActionId;
 };
 
-// Wires the stateless entity row to feature hooks (recording flow + conflict
-// store) and to the settings store. Lives here, not in the entity, because
-// FSD forbids entities from pulling features.
 const ActionRow = ({ actionId }: ActionRowProps) => {
   const t = useTranslations('settings.shortcuts');
   const tActions = useTranslations('settings.shortcuts.actions');

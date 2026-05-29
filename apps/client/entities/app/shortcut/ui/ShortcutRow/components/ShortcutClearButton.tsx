@@ -9,8 +9,6 @@ type ShortcutClearButtonProps = {
   onClick: () => void;
 };
 
-// Stays mounted but invisible when there is no binding to clear, so the row
-// width does not jump when the user assigns or removes a combo.
 export const ShortcutClearButton = ({ visible, onClick }: ShortcutClearButtonProps) => {
   const t = useTranslations('settings.shortcuts');
 

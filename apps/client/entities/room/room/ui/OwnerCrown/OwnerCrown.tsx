@@ -5,8 +5,6 @@ import { useTranslations } from 'next-intl';
 import { cn } from '@/shared/lib/cn';
 import type { OwnerCrownProps } from './OwnerCrown.types';
 
-// Floating overlay badge anchored to the top-left of an avatar — distinct from
-// the inline `OwnerBadge` chip used in card headers.
 export const OwnerCrown = ({ className }: OwnerCrownProps) => {
   const t = useTranslations('lobby.card');
 

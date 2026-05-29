@@ -8,6 +8,5 @@ export type EditRoomDialogProps = {
 
 export type EditRoomFormProps = {
   room: Room;
-  // Fired once the room is updated — lets the dialog close itself.
   onUpdated?: () => void;
 };

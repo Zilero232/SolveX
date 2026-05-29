@@ -17,7 +17,6 @@ import { useParticipantVolume } from '../../../model';
 import { participantCardMenuStyles as s } from './ParticipantCardMenu.styles';
 import type { ParticipantCardMenuProps } from './ParticipantCardMenu.types';
 
-// All controls are local to the current listener — they affect nobody else.
 export const ParticipantCardMenu = ({ participant, children }: ParticipantCardMenuProps) => {
   const t = useTranslations('participant');
 
@@ -50,7 +49,6 @@ export const ParticipantCardMenu = ({ participant, children }: ParticipantCardMe
               {isMuted ? t('unmuteForMe') : t('muteForMe')}
             </ContextMenuItem>
 
-            {/* Keep the menu open while dragging the slider. */}
             <ContextMenuItem className={s.volumeItem} onSelect={(event) => event.preventDefault()}>
               <div className={s.volumeRow}>
                 <span className="flex items-center gap-2">

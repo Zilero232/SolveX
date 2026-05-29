@@ -21,12 +21,12 @@ const roomService = new RoomServiceClient(
 
 export const parseParticipantMeta = (
   metadata: string | undefined,
-): Pick<RoomParticipant, 'verified' | 'profileUrl' | 'avatarUrl'> => {
-  const { verified, profileUrl, avatarUrl } = participantMetadataSchema.parse(
+): Pick<RoomParticipant, 'verified' | 'profileUrl' | 'avatarUrl' | 'bannerColor'> => {
+  const { verified, profileUrl, avatarUrl, bannerColor } = participantMetadataSchema.parse(
     safeJsonParse(metadata),
   );
 
-  return { verified, profileUrl, avatarUrl };
+  return { verified, profileUrl, avatarUrl, bannerColor };
 };
 
 // Mic counts as live only if an unmuted microphone track is published.

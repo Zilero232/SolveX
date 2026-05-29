@@ -37,7 +37,6 @@ export const useRoomsPresenceStream = (enabled: boolean) => {
     retry: true,
   });
 
-  // reactCompiler memoizes the parse against `data`.
   if (!isString(data)) return EMPTY;
 
   const parsed = roomsParticipantsSnapshotSchema.safeParse(safeJsonParse(data));

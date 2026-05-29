@@ -16,7 +16,6 @@ const startOAuth = (redirectTo: string) => {
 const signInViaPopup = async () => {
   const popup = openPopup();
 
-  // Subscribe before the popup navigates — avoids a SIGNED_IN race.
   const signedIn = waitForSignIn(popup);
 
   const { data, error } = await startOAuth(`${window.location.origin}${ROUTES.auth}`);

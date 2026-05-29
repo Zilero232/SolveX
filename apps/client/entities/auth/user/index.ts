@@ -3,6 +3,7 @@ export { useCurrentUser } from './model/hooks/use-current-user';
 export {
   type ProfileValues,
   profileSchema,
+  type UpdateProfileInput,
   useUpdateProfile,
 } from './model/hooks/use-update-profile';
 export { UserAvatar } from './ui/UserAvatar';

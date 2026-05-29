@@ -15,8 +15,6 @@ export const useCloseOnWindowEvent = () => {
   useEffect(() => {
     if (!isTauri()) return;
 
-    // onCloseRequested returns a Promise<UnlistenFn>; the unsubscribe runs on
-    // unmount, even if the component unmounted before the promise resolved.
     let cancelled = false;
     let unlisten: (() => void) | null = null;
 
@@ -25,8 +23,6 @@ export const useCloseOnWindowEvent = () => {
         const off = await getCurrentWindow().onCloseRequested((event) => {
           if (!closeToTrayRef.current) return;
 
-          // preventDefault must run before any await: Tauri checks the flag
-          // synchronously after the handler returns.
           event.preventDefault();
 
           hideMainWindow();

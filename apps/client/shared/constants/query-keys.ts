@@ -5,4 +5,5 @@ export const QUERY_KEYS = {
   room: (id: string | null) => ['room', id] as const,
   rooms: () => ['rooms'] as const,
   session: () => ['session'] as const,
+  userProfile: (id: string) => ['user-profile', id] as const,
 };

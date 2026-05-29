@@ -41,6 +41,7 @@
     "next-intl": "^4.12.0",
     "radix-ui": "^1.4.3",
     "react": "^19.2.6",
+    "react-colorful": "^5.7.0",
     "react-dom": "^19.2.6",
     "react-hook-form": "^7.75.0",
     "remeda": "^2.34.1",

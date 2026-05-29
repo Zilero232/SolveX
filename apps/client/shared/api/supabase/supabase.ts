@@ -9,9 +9,6 @@ export const supabase = createClient(
     auth: {
       persistSession: true,
       autoRefreshToken: true,
-      // Implicit flow: the app ships as a static Tauri bundle with no server,
-      // so OAuth must complete fully client-side. The session arrives in the
-      // URL hash and is picked up automatically — no PKCE code verifier needed.
       detectSessionInUrl: true,
       flowType: 'implicit',
       storageKey: STORAGE_KEYS.authSession,

@@ -1,0 +1,1 @@
+export { ProfileVoiceBlock } from './ProfileVoiceBlock';

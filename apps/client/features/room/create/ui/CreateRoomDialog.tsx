@@ -16,7 +16,6 @@ import { CreateRoomForm } from './CreateRoomForm';
 import type { ReactNode } from 'react';
 
 type CreateRoomDialogProps = {
-  // Custom trigger element; falls back to a default "Create room" button.
   trigger?: ReactNode;
 };
 

@@ -6,10 +6,6 @@ import { useAppSettings } from '@/widgets/app/app-settings';
 
 export type PttState = 'off' | 'idle' | 'active';
 
-// Reports PTT key status:
-//   'off'    — mode is voiceActivity, PTT not relevant
-//   'idle'   — pushToTalk mode, key not held
-//   'active' — pushToTalk mode, key currently held
 export const usePttActive = (): PttState => {
   const [held, setHeld] = useState(false);
 

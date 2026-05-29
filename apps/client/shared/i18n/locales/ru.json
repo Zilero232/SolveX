@@ -33,7 +33,8 @@
       "emailInvalid": "Некорректный email",
       "passwordMin": "Минимум 8 символов",
       "passwordsMismatch": "Пароли не совпадают",
-      "urlInvalid": "Введите корректную ссылку"
+      "urlInvalid": "Введите корректную ссылку",
+      "bioMax": "Максимум 280 символов"
     }
   },
   "lobby": {
@@ -112,6 +113,14 @@
     "copyName": "Скопировать имя",
     "nameCopied": "Имя скопировано"
   },
+  "profileCard": {
+    "inVoice": "В голосовом чате",
+    "notInVoice": "Не в голосовом чате",
+    "join": "Присоединиться",
+    "editProfile": "Редактировать профиль",
+    "openSettingsHint": "Откройте настройки, чтобы изменить профиль.",
+    "avatarAlt": "Аватар {name}"
+  },
   "channels": {
     "searchPlaceholder": "Поиск комнат...",
     "noRoomsYet": "Пока нет комнат",
@@ -158,11 +167,22 @@
     "profile": {
       "displayNameLabel": "Отображаемое имя",
       "displayNameHint": "Имя, которое другие видят в голосовых комнатах.",
+      "avatarLabel": "Аватар",
+      "avatarHint": "PNG или JPG, до 2 МБ.",
+      "avatarRemove": "Удалить аватар",
+      "avatarInvalidType": "Это не изображение.",
+      "bannerLabel": "Цвет баннера",
+      "bannerHint": "Цвет фона вашей карточки профиля.",
+      "bannerCustom": "Свой цвет",
+      "bannerReset": "Сбросить цвет баннера",
       "save": "Сохранить",
       "saved": "Профиль обновлён",
       "profileUrlLabel": "Ссылка на профиль",
       "profileUrlPlaceholder": "https://...",
       "profileUrlHint": "Если заполнено, ваше имя станет кликабельной ссылкой. Очистите, чтобы убрать.",
+      "bioLabel": "О себе",
+      "bioPlaceholder": "Расскажите немного о себе...",
+      "bioHint": "Показывается в карточке профиля. До 280 символов.",
       "emailSoon": "Email — скоро",
       "passwordSoon": "Пароль — скоро"
     },

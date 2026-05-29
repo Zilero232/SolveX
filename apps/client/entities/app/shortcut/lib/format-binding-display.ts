@@ -7,10 +7,6 @@ type Labels = {
   unassigned: string;
 };
 
-// Picks the text shown inside the row's combo button:
-//   "press a combination…" while recording,
-//   "not assigned" when the action has no binding,
-//   the pretty-formatted hotkey otherwise.
 export const formatBindingDisplay = (
   recording: boolean,
   binding: ShortcutBinding,

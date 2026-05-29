@@ -11,18 +11,10 @@ type ConnectingOverlayProps = {
   roomName: string;
 };
 
-// A full-frame overlay shown until the LiveKit connection is established.
-// Having a token only means we *can* connect — the WebSocket handshake still
-// has to finish, and until it does the participants grid would otherwise show
-// the local card against an unconnected room. Rendered inside LiveKitRoom so
-// it can read the live connection state.
 export const ConnectingOverlay = ({ roomName }: ConnectingOverlayProps) => {
   const t = useTranslations('room');
   const state = useConnectionState();
 
-  // `null` once connected — the overlay clears and the grid shows through.
-  // Disconnected also clears: it's the leave/teardown state, where VoiceRoom's
-  // onDisconnected navigates away — showing "connecting" there is wrong.
   const text = match(state)
     .with(ConnectionState.Connected, ConnectionState.Disconnected, () => null)
     .with(ConnectionState.Reconnecting, ConnectionState.SignalReconnecting, () =>

@@ -8,9 +8,6 @@ export const TrayMenuProvider = ({ children }: { children: ReactNode }) => {
 
   useCloseOnWindowEvent();
 
-  // Bypass the reactuse Provider — it reads initialValue once and our `tray`
-  // arrives async. instance.Provider takes a reactive `value` prop.
-  // reactCompiler memoizes this object against `tray`.
   const contextValue = { value: tray, set: () => {} };
 
   return (

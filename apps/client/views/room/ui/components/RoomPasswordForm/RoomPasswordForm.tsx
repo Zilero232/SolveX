@@ -31,7 +31,6 @@ export const RoomPasswordForm = ({
 
   const submit = handleSubmit(({ password }) => onSubmit(password));
 
-  // The validation error is an i18n key; the server `error` is already text.
   const fieldError = passwordError(errors.password) ?? error;
 
   return (

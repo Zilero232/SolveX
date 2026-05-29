@@ -37,9 +37,6 @@ export const useWindowControls = () => {
     };
   }, []);
 
-  // Branches on the user's close-to-tray preference: hide if on (the OS-level
-  // onCloseRequested race makes that interception unreliable for the custom X),
-  // close otherwise.
   const close = async () => {
     if (settings.system.tray.closeToTray) {
       return await hideMainWindow();

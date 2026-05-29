@@ -16,7 +16,6 @@ export const GoogleAuthButton = () => {
     mutate(undefined, {
       onSuccess: () => toast.success(t('signedIn')),
       onError: (err: Error) => {
-        // Closing the popup is a user choice, not a failure.
         if (err instanceof GoogleSignInCancelled) return;
 
         toast.error(err.message);

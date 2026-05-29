@@ -8,10 +8,6 @@ type Options = {
   password?: string;
 };
 
-// Single LiveKit-token source for both public and private rooms.
-// Public: fetches once roomId is known. Private: stays idle until a password
-// is supplied, then fetches. Password is closed over (not in queryKey) so it
-// never lands in the cache/devtools — call refetch() to retry with a new one.
 export const useRoomToken = (roomId: string | null, { isPrivate, password }: Options) => {
   return useQuery({
     queryKey: QUERY_KEYS.livekitToken(roomId),

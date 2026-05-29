@@ -21,7 +21,8 @@ export const channelsRoomItemStyles = {
   manageSlot:
     'absolute top-1/2 right-1 -translate-y-1/2 opacity-0 transition-opacity group-hover/room:opacity-100 focus-within:opacity-100 data-[state=open]:opacity-100',
   participants: 'mt-2 flex flex-col gap-0.5',
-  participant: 'flex items-center gap-2.5 px-2 py-1',
+  participant:
+    'flex w-full items-center gap-2.5 rounded-md px-2 py-1 text-left outline-hidden transition-colors hover:bg-white/5 focus-visible:ring-2 focus-visible:ring-brand-cyan',
   participantAvatar: 'size-6',
   participantFallback: 'text-[10px]',
   participantName: 'truncate text-muted-foreground text-xs',

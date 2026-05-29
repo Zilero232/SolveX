@@ -3,8 +3,6 @@ import { POPUP_HEIGHT, POPUP_POLL_MS, POPUP_TIMEOUT_MS, POPUP_WIDTH } from './co
 import { GoogleSignInCancelled } from './errors';
 
 const buildCenteredFeatures = (width: number, height: number): string => {
-  // Multi-monitor aware: window.screen[Left|Top] reports the active screen origin;
-  // outerWidth/outerHeight fall back to inner dimensions when chromeless.
   const screenLeft = window.screenLeft ?? window.screenX ?? 0;
   const screenTop = window.screenTop ?? window.screenY ?? 0;
   const viewportWidth = window.outerWidth ?? window.innerWidth;
@@ -36,7 +34,6 @@ export const waitForSignIn = (popup: Window) => {
       popup.close();
     };
 
-    // Subscribe before the popup navigates, so a fast SIGNED_IN can't be missed.
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event) => {

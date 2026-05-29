@@ -21,7 +21,6 @@ export const DeleteRoomDialog = ({ room, open, onOpenChange }: DeleteRoomDialogP
       onSuccess: () => {
         toast.success(t('deleted'), { description: `"${room.name}"` });
         onOpenChange(false);
-        // If the user is currently inside the deleted room, bounce to the lobby.
         if (params.get('id') === room.id) router.replace(ROUTES.lobby);
       },
       onError: (err: Error) => toast.error(err.message),

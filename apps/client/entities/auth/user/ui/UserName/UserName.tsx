@@ -30,8 +30,6 @@ export const UserName = ({
     </Tooltip>
   ) : null;
 
-  // Inside Tauri the webview ignores `target="_blank"` on plain anchors —
-  // route the click through the opener plugin so the OS handles the URL.
   const handleClick = (event: MouseEvent<HTMLAnchorElement>) => {
     event.stopPropagation();
 

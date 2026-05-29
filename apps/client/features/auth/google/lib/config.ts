@@ -9,6 +9,4 @@ export const DEEP_LINK_SCHEME = 'chatovo';
 
 export const DEEP_LINK_CALLBACK = `${DEEP_LINK_SCHEME}://auth/callback`;
 
-// Tauri can't detect when the user closes the browser tab, so we time out the
-// loading state after a minute rather than blocking the UI for two.
 export const DEEP_LINK_TIMEOUT_MS = 60_000;

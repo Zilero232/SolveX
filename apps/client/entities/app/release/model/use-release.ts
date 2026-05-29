@@ -5,13 +5,10 @@ import { detectAssetPlatform } from '@/shared/lib';
 import { EXTENSION_TO_PLATFORM } from '../config';
 import type { DesktopPlatform, Release, ReleaseAsset } from './types';
 
-// `enabled` keeps the GitHub API request from firing on page load — it runs
-// only once the download dialog is actually opened.
 export const useRelease = (enabled = true) => {
   return useQuery({
     queryKey: QUERY_KEYS.release(),
     enabled,
-    staleTime: 5 * 60_000,
     retry: 1,
     queryFn: async (): Promise<Release> => {
       const data = await getLatestRelease();

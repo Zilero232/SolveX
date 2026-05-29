@@ -15,13 +15,8 @@ import {
 } from './providers/index';
 import type { ReactNode } from 'react';
 
-// LiveKit's client logs connection/track lifecycle to the console at info level
-// by default — silence everything below errors. Runs once at app startup.
 setLogLevel('error');
 
-// The app-wide provider stack. I18nProvider is outermost so every other
-// provider and the whole tree can use translations; AuthBootstrap is innermost
-// so the splash it shows is already localized.
 export const Providers = ({ children }: { children: ReactNode }) => (
   <QueryClientProvider client={queryClient}>
     <I18nProvider>

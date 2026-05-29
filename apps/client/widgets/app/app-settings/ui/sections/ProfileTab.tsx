@@ -3,7 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { useFieldError } from '@/entities/app/locale';
 import {
@@ -12,40 +12,59 @@ import {
   useCurrentUser,
   useUpdateProfile,
 } from '@/entities/auth/user';
-import { Button, Input, Label } from '@/shared/ui';
+import { Button, Input, Label, Textarea } from '@/shared/ui';
+import { useAvatarDraft } from '../../model/hooks/use-avatar-draft';
 import { appSettingsStyles as s } from '../AppSettingsButton.styles';
+import { AvatarField } from '../fields/AvatarField';
+import { BannerColorField } from '../fields/BannerColorField';
 
 export const ProfileTab = () => {
   const t = useTranslations('settings.profile');
   const fieldError = useFieldError('auth');
 
-  const { displayName, profileUrl } = useCurrentUser();
+  const { displayName, profileUrl, avatarUrl, bannerColor, bio } = useCurrentUser();
+
   const { isPending, mutate } = useUpdateProfile();
 
+  const avatar = useAvatarDraft(avatarUrl);
+
   const {
+    control,
     formState: { errors, isDirty },
     handleSubmit,
     register,
     reset,
   } = useForm<ProfileValues>({
     resolver: zodResolver(profileSchema),
-    defaultValues: { name: displayName, profileUrl: profileUrl ?? '' },
+    defaultValues: { name: displayName, profileUrl: profileUrl ?? '', bannerColor, bio: bio ?? '' },
   });
 
   const onSubmit = handleSubmit((values) => {
-    mutate(values, {
-      onSuccess: () => {
-        toast.success(t('saved'));
-        // Re-baseline the form so the fields are no longer "dirty".
-        reset(values);
+    mutate(
+      { ...values, avatar: avatar.value },
+      {
+        onSuccess: () => {
+          toast.success(t('saved'));
+          reset(values);
+          avatar.reset();
+        },
+        onError: (err: Error) => toast.error(err.message),
       },
-      onError: (err: Error) => toast.error(err.message),
-    });
+    );
   });
+
+  const canSave = (isDirty || avatar.changed) && !isPending;
 
   return (
     <div className={s.profilePanel}>
       <form className={s.profileForm} onSubmit={onSubmit}>
+        <AvatarField
+          name={displayName}
+          src={avatar.shownSrc}
+          onPick={avatar.pick}
+          onRemove={avatar.remove}
+        />
+
         <div className={s.profileField}>
           <Label className={s.profileLabel} htmlFor="profile-display-name">
             {t('displayNameLabel')}
@@ -80,13 +99,37 @@ export const ProfileTab = () => {
           )}
         </div>
 
-        <Button className={s.profileSubmit} disabled={!isDirty || isPending} type="submit">
+        <div className={s.profileField}>
+          <Label className={s.profileLabel} htmlFor="profile-bio">
+            {t('bioLabel')}
+          </Label>
+
+          <Textarea
+            id="profile-bio"
+            placeholder={t('bioPlaceholder')}
+            rows={3}
+            {...register('bio')}
+          />
+
+          {errors.bio ? (
+            <p className={s.profileError}>{fieldError(errors.bio)}</p>
+          ) : (
+            <p className={s.profileHint}>{t('bioHint')}</p>
+          )}
+        </div>
+
+        <Controller
+          control={control}
+          name="bannerColor"
+          render={({ field }) => <BannerColorField value={field.value} onChange={field.onChange} />}
+        />
+
+        <Button className={s.profileSubmit} disabled={!canSave} type="submit">
           {isPending && <Loader2 className={s.profileSpinner} />}
           {t('save')}
         </Button>
       </form>
 
-      {/* Placeholders for editors shipping later. */}
       <div className={s.profileSoon}>
         <div className={s.profileSoonRow}>
           <span className={s.profileSoonLabel}>{t('emailSoon')}</span>

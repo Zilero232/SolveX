@@ -13,8 +13,6 @@ type ShortcutComboButtonProps = {
   onClick: () => void;
 };
 
-// The main recording trigger. Doubles as the conflict-hint surface when an
-// external app holds the combo — the tooltip explains the amber state.
 export const ShortcutComboButton = ({
   display,
   label,
