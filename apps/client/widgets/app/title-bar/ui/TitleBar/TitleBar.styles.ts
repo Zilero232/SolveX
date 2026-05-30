@@ -14,4 +14,8 @@ export const titleBarStyles = {
     },
   ),
   dragRegion: 'flex flex-1 items-center',
+  navButtons: 'flex items-center gap-0.5 px-2',
+  navButton:
+    'flex size-6 items-center justify-center rounded text-muted-foreground transition-colors hover:bg-accent hover:text-foreground disabled:pointer-events-none disabled:opacity-30',
+  navIcon: 'size-4',
 } as const;

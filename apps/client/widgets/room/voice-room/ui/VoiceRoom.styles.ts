@@ -1,7 +1,7 @@
 export const voiceRoomStyles = {
   root: 'h-full p-2 sm:p-4',
   frame: 'glass flex h-full flex-col overflow-hidden rounded-2xl',
-  room: 'flex h-full flex-col',
+  room: 'relative flex h-full flex-col',
 
   header:
     'flex items-center gap-2 border-b border-white/8 bg-linear-to-b from-white/4 to-transparent px-3 py-2.5 sm:px-4 sm:py-3.5',

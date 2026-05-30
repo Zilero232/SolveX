@@ -10,17 +10,16 @@ import { ShortcutActionsController } from '../ShortcutActionsController';
 
 type RoomControllersProps = {
   roomId: string;
-  isChatOpen: boolean;
 };
 
-export const RoomControllers = ({ roomId, isChatOpen }: RoomControllersProps) => (
+export const RoomControllers = ({ roomId }: RoomControllersProps) => (
   <>
     <RoomDeviceController />
     <RoomTrayController />
     <ShortcutActionsController />
     <MicActivationController />
     <MicStateController roomId={roomId} />
-    <RoomSoundsController isChatOpen={isChatOpen} />
+    <RoomSoundsController />
     <DeafenSyncController />
   </>
 );

@@ -113,7 +113,7 @@ export const VoiceRoom = ({
                 <ChatPanel isOpen={isChatOpen} onClose={() => toggleChat(false)} />
 
                 <RoomAudio />
-                <RoomControllers isChatOpen={isChatOpen} roomId={roomId} />
+                <RoomControllers roomId={roomId} />
               </ReactionsProvider>
             </DeafenProvider>
           </RoomChatProvider>

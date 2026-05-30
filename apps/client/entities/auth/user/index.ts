@@ -1,4 +1,3 @@
-export { subscribeAuth } from './api/auth-bridge';
 export { useCurrentUser } from './model/hooks/use-current-user';
 export {
   type ProfileValues,

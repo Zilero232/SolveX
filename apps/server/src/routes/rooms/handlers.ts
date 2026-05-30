@@ -1,5 +1,5 @@
+import { HTTPException } from 'hono/http-exception';
 import { isNonNullish, isNullish } from 'remeda';
-import { ForbiddenError, NotFoundError } from '../../lib/errors';
 import { prisma } from '../../lib/prisma';
 import type { RouteHandler } from '@hono/zod-openapi';
 import type { Prisma } from '../../../generated';
@@ -63,8 +63,8 @@ const assertCanManage = async (roomId: string, userId: string) => {
     select: { ownerId: true, isPrivate: true, password: true },
   });
 
-  if (isNullish(room)) throw new NotFoundError('Room not found');
-  if (room.ownerId !== userId) throw new ForbiddenError();
+  if (isNullish(room)) throw new HTTPException(404, { message: 'Room not found' });
+  if (room.ownerId !== userId) throw new HTTPException(403, { message: 'Forbidden' });
 
   return room;
 };

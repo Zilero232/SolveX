@@ -16,7 +16,7 @@ import { useDeafen } from '@/features/room/room-control';
 import { appBus } from '@/shared/lib';
 import { type SoundCategory, useAppSettings } from '@/widgets/app/app-settings';
 
-export const useVoiceRoomSounds = (isChatOpen: boolean) => {
+export const useVoiceRoomSounds = () => {
   const room = useRoomContext();
   const { localParticipant } = useLocalParticipant();
 
@@ -73,9 +73,6 @@ export const useVoiceRoomSounds = (isChatOpen: boolean) => {
     undeafen: guardedPlay('mute', 'undeafen'),
     message: guardedPlay('message', 'message'),
   });
-
-  const isChatOpenRef = useRef(isChatOpen);
-  isChatOpenRef.current = isChatOpen;
 
   appBus.useSubscribe('pttHold', () => {
     void playRef.current.ptt();
@@ -165,7 +162,7 @@ export const useVoiceRoomSounds = (isChatOpen: boolean) => {
   useEffect(() => {
     const onMessage = (_message: unknown, participant?: RemoteParticipant | LocalParticipant) => {
       const isOwn = participant?.identity === localParticipant.identity;
-      if (isOwn || isChatOpenRef.current) return;
+      if (isOwn) return;
 
       void playRef.current.message();
     };

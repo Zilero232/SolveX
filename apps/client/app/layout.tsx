@@ -29,8 +29,8 @@ const RootLayout = ({ children }: { children: ReactNode }) => (
     </head>
     <body className="font-sans">
       <Providers>
-        <TooltipProvider>{children}</TooltipProvider>
         <Toaster />
+        <TooltipProvider>{children}</TooltipProvider>
       </Providers>
     </body>
   </html>

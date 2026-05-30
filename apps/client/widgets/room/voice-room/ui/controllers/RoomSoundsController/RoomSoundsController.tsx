@@ -2,8 +2,8 @@
 
 import { useVoiceRoomSounds } from '../../../model';
 
-export const RoomSoundsController = ({ isChatOpen }: { isChatOpen: boolean }) => {
-  useVoiceRoomSounds(isChatOpen);
+export const RoomSoundsController = () => {
+  useVoiceRoomSounds();
 
   return null;
 };

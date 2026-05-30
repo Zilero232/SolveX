@@ -1,6 +1,5 @@
 import { supabase } from '@/shared/api';
 import { openCenteredPopup } from '@/shared/lib';
-import { GoogleSignInCancelled } from './errors';
 
 const POPUP_TIMEOUT_MS = 120_000;
 const POPUP_POLL_MS = 500;
@@ -42,7 +41,7 @@ export const waitForSignIn = (popup: Window) => {
       if (!popup.closed) return;
 
       cleanup();
-      reject(new GoogleSignInCancelled());
+      reject(new Error('Google sign-in was cancelled'));
     }, POPUP_POLL_MS);
   });
 };

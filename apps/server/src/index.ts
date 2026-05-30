@@ -1,10 +1,10 @@
 import { swaggerUI } from '@hono/swagger-ui';
 import { OpenAPIHono } from '@hono/zod-openapi';
 import { cors } from 'hono/cors';
+import { HTTPException } from 'hono/http-exception';
 import { logger } from 'hono/logger';
 import { filter, map, pipe } from 'remeda';
 import { env } from './lib/env';
-import { ConflictError, ForbiddenError, NotFoundError } from './lib/errors';
 import { authMiddleware } from './middleware/auth';
 import { livekitRouter } from './routes/livekit';
 import { roomsRouter } from './routes/rooms';
@@ -58,12 +58,10 @@ export const routes = app
   .route('/users', usersRouter)
   .route('/livekit', livekitRouter);
 
-// Single place that turns thrown errors into HTTP responses. Domain errors
-// map to their status; anything else is an unexpected failure -> 500.
+// Single place that turns thrown errors into HTTP responses. HTTPExceptions
+// carry their own status; anything else is an unexpected failure -> 500.
 app.onError((error, c) => {
-  if (error instanceof ConflictError) return c.json({ error: error.message }, 409);
-  if (error instanceof NotFoundError) return c.json({ error: error.message }, 404);
-  if (error instanceof ForbiddenError) return c.json({ error: error.message }, 403);
+  if (error instanceof HTTPException) return c.json({ error: error.message }, error.status);
 
   return c.json({ error: 'Internal server error' }, 500);
 });

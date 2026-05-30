@@ -1,7 +1,6 @@
 import { onOpenUrl } from '@tauri-apps/plugin-deep-link';
 import { openUrl } from '@tauri-apps/plugin-opener';
 import { supabase } from '@/shared/api';
-import { GoogleSignInCancelled } from './errors';
 
 const DEEP_LINK_SCHEME = 'chatovo';
 const DEEP_LINK_TIMEOUT_MS = 60_000;
@@ -26,7 +25,7 @@ export const signInWithGoogleViaDeepLink = async (authorizeUrl: string) => {
   });
 
   const timeout = setTimeout(() => {
-    rejectTimeout(new GoogleSignInCancelled());
+    rejectTimeout(new Error('Google sign-in was cancelled'));
   }, DEEP_LINK_TIMEOUT_MS);
 
   await openUrl(authorizeUrl);

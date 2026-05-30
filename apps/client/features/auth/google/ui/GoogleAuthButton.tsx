@@ -4,7 +4,6 @@ import { Loader2 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
 import { Button, GoogleIcon } from '@/shared/ui';
-import { GoogleSignInCancelled } from '../lib/errors';
 import { useGoogleAuth } from '../model/use-google-auth';
 import { googleAuthButtonStyles as s } from './GoogleAuthButton.styles';
 
@@ -15,11 +14,7 @@ export const GoogleAuthButton = () => {
   const handleClick = () => {
     mutate(undefined, {
       onSuccess: () => toast.success(t('signedIn')),
-      onError: (err: Error) => {
-        if (err instanceof GoogleSignInCancelled) return;
-
-        toast.error(err.message);
-      },
+      onError: (err: Error) => toast.error(err.message),
     });
   };
 

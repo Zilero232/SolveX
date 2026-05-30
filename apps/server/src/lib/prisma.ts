@@ -1,8 +1,8 @@
 import { PrismaPg } from '@prisma/adapter-pg';
+import { HTTPException } from 'hono/http-exception';
 import { match } from 'ts-pattern';
 import { Prisma, PrismaClient } from '../../generated';
 import { env } from './env';
-import { ConflictError, NotFoundError } from './errors';
 
 // `model` is the operation's model name as Prisma reports it (e.g. "Room"),
 // or undefined for raw queries — used to phrase a readable error message.
@@ -21,8 +21,8 @@ const mapPrismaError = (
   model: PrismaModel,
 ): Error | undefined => {
   return match(error.code)
-    .with('P2002', () => new ConflictError(`${label(model)} already exists`))
-    .with('P2025', () => new NotFoundError(`${label(model)} not found`))
+    .with('P2002', () => new HTTPException(409, { message: `${label(model)} already exists` }))
+    .with('P2025', () => new HTTPException(404, { message: `${label(model)} not found` }))
     .otherwise(() => undefined);
 };
 
