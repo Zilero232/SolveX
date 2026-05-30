@@ -1,6 +1,6 @@
 {
   "name": "chatovo",
-  "version": "0.2.8",
+  "version": "0.2.9",
   "private": true,
   "type": "module",
   "workspaces": [
@@ -25,6 +25,6 @@
     "babel-plugin-react-compiler": "^1.0.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.4.15"
+    "@biomejs/biome": "2.4.16"
   }
 }

@@ -16,7 +16,7 @@ export const getFreshAccessToken = async (): Promise<string> => {
 
   if (expiresAt - SKEW_SEC > nowSec) return session.access_token;
 
-  const refreshed = await supabase.auth.refreshSession();
+  const refreshed = await supabase.auth.refreshSession(session);
 
   if (refreshed.error) throw refreshed.error;
 

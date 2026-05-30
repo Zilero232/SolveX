@@ -10,9 +10,11 @@ export const useCreateRoom = () => {
   return useMutation({
     mutationFn: createRoom,
     onSuccess: (room) => {
-      queryClient.setQueryData<Room[]>(QUERY_KEYS.rooms(), (prev) =>
-        uniqueBy([room, ...(prev ?? [])], (r) => r.id),
-      );
+      queryClient.setQueryData<Room[]>(QUERY_KEYS.rooms(), (prev) => {
+        const next: Room[] = [room, ...(prev ?? [])];
+
+        return uniqueBy(next, (r) => r.id);
+      });
     },
   });
 };

@@ -3,15 +3,19 @@ import { cva } from 'class-variance-authority';
 export const channelsRoomItemStyles = {
   row: 'group/room relative',
   trigger: cva(
-    'relative flex w-full items-center justify-between gap-2 rounded-lg px-2.5 py-2 text-sm transition-all group-focus-within/room:pr-8 group-hover/room:pr-8 group-has-[[data-state=open]]/room:pr-8',
+    'relative flex w-full items-center justify-between gap-2 rounded-lg px-2.5 py-2 text-sm transition-all',
     {
       variants: {
         active: {
           true: 'bg-linear-to-r from-brand-violet/25 to-brand-cyan/15 text-foreground shadow-[inset_0_0_0_1px_oklch(0.7_0.2_270/0.35)]',
           false: 'text-sidebar-foreground/75 hover:bg-white/6 hover:text-sidebar-foreground',
         },
+        owner: {
+          true: 'group-focus-within/room:pr-8 group-hover/room:pr-8 group-has-[[data-state=open]]/room:pr-8',
+          false: '',
+        },
       },
-      defaultVariants: { active: false },
+      defaultVariants: { active: false, owner: false },
     },
   ),
   triggerLabel: 'flex items-center gap-2',

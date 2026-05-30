@@ -5,6 +5,7 @@ export { formatBytes } from './format-bytes';
 export { formatMessageTime } from './format-date';
 export { formatHotkey, hasModifier, isPureModifier, prettyHotkey } from './hotkey/hotkey';
 export { getAvatarColor, getInitials } from './initials';
+export { openCenteredPopup } from './open-centered-popup';
 export { raceWithTimeout } from './race-with-timeout';
 export { toggleMicStream } from './toggle-mic-stream';
 export {

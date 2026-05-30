@@ -17,7 +17,13 @@ export const ChannelsFooter = () => {
       />
       <div className={s.info}>
         <UserName name={displayName} verified={verified} className={s.name} />
-        <span className={s.status}>online</span>
+        <span className={s.status}>
+          <span className={s.dot}>
+            <span className={s.dotPing} />
+            <span className={s.dotCore} />
+          </span>
+          online
+        </span>
       </div>
 
       <AppSettingsButton />

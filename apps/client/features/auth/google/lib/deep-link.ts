@@ -1,36 +1,16 @@
 import { onOpenUrl } from '@tauri-apps/plugin-deep-link';
 import { openUrl } from '@tauri-apps/plugin-opener';
 import { supabase } from '@/shared/api';
-import { DEEP_LINK_SCHEME, DEEP_LINK_TIMEOUT_MS } from './config';
 import { GoogleSignInCancelled } from './errors';
+
+const DEEP_LINK_SCHEME = 'chatovo';
+const DEEP_LINK_TIMEOUT_MS = 60_000;
 
 const AUTH_CALLBACK_PREFIX = `${DEEP_LINK_SCHEME}://auth/`;
 
-const parseTokensFromCallback = (url: string) => {
-  const { hash, searchParams } = new URL(url);
+export const DEEP_LINK_CALLBACK = `${DEEP_LINK_SCHEME}://auth/callback`;
 
-  const hashParams = new URLSearchParams(hash.startsWith('#') ? hash.slice(1) : hash);
-
-  const error = hashParams.get('error') ?? searchParams.get('error');
-
-  if (error) {
-    const description =
-      hashParams.get('error_description') ?? searchParams.get('error_description') ?? error;
-
-    throw new Error(description);
-  }
-
-  const accessToken = hashParams.get('access_token');
-  const refreshToken = hashParams.get('refresh_token');
-
-  if (!accessToken || !refreshToken) {
-    throw new Error('OAuth callback did not include session tokens');
-  }
-
-  return { accessToken, refreshToken };
-};
-
-const waitForAuthCallback = async (): Promise<string> => {
+export const signInWithGoogleViaDeepLink = async (authorizeUrl: string) => {
   let resolveUrl: (url: string) => void;
   let rejectTimeout: (err: Error) => void;
 
@@ -49,31 +29,32 @@ const waitForAuthCallback = async (): Promise<string> => {
     rejectTimeout(new GoogleSignInCancelled());
   }, DEEP_LINK_TIMEOUT_MS);
 
+  await openUrl(authorizeUrl);
+
+  let callbackUrl: string;
+
   try {
-    return await urlPromise;
+    callbackUrl = await urlPromise;
   } finally {
     clearTimeout(timeout);
     unlisten();
   }
-};
 
-const applySession = async (callbackUrl: string) => {
-  const { accessToken, refreshToken } = parseTokensFromCallback(callbackUrl);
+  const { searchParams } = new URL(callbackUrl);
 
-  const { error } = await supabase.auth.setSession({
-    access_token: accessToken,
-    refresh_token: refreshToken,
-  });
+  const error = searchParams.get('error');
 
-  if (error) throw error;
-};
+  if (error) {
+    throw new Error(searchParams.get('error_description') ?? error);
+  }
 
-export const signInWithGoogleViaDeepLink = async (authorizeUrl: string) => {
-  const callback = waitForAuthCallback();
+  const code = searchParams.get('code');
 
-  await openUrl(authorizeUrl);
+  if (!code) {
+    throw new Error('OAuth callback did not include an authorization code');
+  }
 
-  const callbackUrl = await callback;
+  const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
 
-  await applySession(callbackUrl);
+  if (exchangeError) throw exchangeError;
 };

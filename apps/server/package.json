@@ -29,12 +29,12 @@
     "@prisma/adapter-pg": "^7.8.0",
     "@prisma/client": "^7.8.0",
     "@prisma/client-runtime-utils": "^7.8.0",
-    "@supabase/supabase-js": "^2.105.4",
-    "hono": "^4.6.14",
-    "livekit-server-sdk": "^2.15.2",
+    "@supabase/supabase-js": "^2.106.2",
+    "hono": "^4.12.23",
+    "livekit-server-sdk": "^2.15.4",
     "mime-types": "^3.0.2",
-    "pg": "^8.20.0",
-    "remeda": "^2.34.1",
+    "pg": "^8.21.0",
+    "remeda": "^2.37.0",
     "ts-pattern": "^5.9.0",
     "zod": "^4.4.3"
   },
@@ -44,6 +44,6 @@
     "@types/pg": "^8.20.0",
     "dotenv": "^17.4.2",
     "prisma": "^7.8.0",
-    "typescript": "~5.8.3"
+    "typescript": "~6.0.3"
   }
 }

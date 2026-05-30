@@ -4,9 +4,9 @@ import { useBoolean } from '@siberiacancode/reactuse';
 import { SmilePlus } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { Popover, PopoverContent, PopoverTrigger } from '@/shared/ui';
+import { QUICK_REACTIONS } from '../../../../config/reactions';
 import { useReactions } from '../../../../model/contexts/reactions-context';
 import { controlButton } from '../ControlButton/ControlButton.styles';
-import { EmojiPicker } from './EmojiPicker';
 import { reactionButtonStyles as s } from './ReactionButton.styles';
 
 export const ReactionButton = () => {
@@ -27,8 +27,26 @@ export const ReactionButton = () => {
         <SmilePlus />
       </PopoverTrigger>
 
-      <PopoverContent align="center" className={s.popover} side="top">
-        <EmojiPicker onPick={pick} />
+      <PopoverContent
+        align="center"
+        className={s.popover}
+        side="top"
+        sideOffset={24}
+        onOpenAutoFocus={(event) => event.preventDefault()}
+      >
+        <div className={s.row}>
+          {QUICK_REACTIONS.map((emoji) => (
+            <button
+              key={emoji}
+              aria-label={emoji}
+              className={s.emoji}
+              type="button"
+              onClick={() => pick(emoji)}
+            >
+              {emoji}
+            </button>
+          ))}
+        </div>
       </PopoverContent>
     </Popover>
   );

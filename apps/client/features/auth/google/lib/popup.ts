@@ -1,35 +1,25 @@
 import { supabase } from '@/shared/api';
-import { POPUP_HEIGHT, POPUP_POLL_MS, POPUP_TIMEOUT_MS, POPUP_WIDTH } from './config';
+import { openCenteredPopup } from '@/shared/lib';
 import { GoogleSignInCancelled } from './errors';
 
-const buildCenteredFeatures = (width: number, height: number): string => {
-  const screenLeft = window.screenLeft ?? window.screenX ?? 0;
-  const screenTop = window.screenTop ?? window.screenY ?? 0;
-  const viewportWidth = window.outerWidth ?? window.innerWidth;
-  const viewportHeight = window.outerHeight ?? window.innerHeight;
+const POPUP_TIMEOUT_MS = 120_000;
+const POPUP_POLL_MS = 500;
+const POPUP_WIDTH = 480;
+const POPUP_HEIGHT = 640;
 
-  const left = Math.round(screenLeft + (viewportWidth - width) / 2);
-  const top = Math.round(screenTop + (viewportHeight - height) / 2);
-
-  return `width=${width},height=${height},left=${left},top=${top},menubar=no,toolbar=no,location=no,status=no`;
-};
-
-export const openPopup = (): Window => {
-  const features = buildCenteredFeatures(POPUP_WIDTH, POPUP_HEIGHT);
-  const popup = window.open('about:blank', 'oauth-google', features);
-
-  if (!popup || popup.closed) {
-    throw new Error('Popup blocked — allow popups for this site');
-  }
-
-  return popup;
-};
+export const openPopup = (): Window =>
+  openCenteredPopup('about:blank', {
+    width: POPUP_WIDTH,
+    height: POPUP_HEIGHT,
+    name: 'oauth-google',
+  });
 
 export const waitForSignIn = (popup: Window) => {
   return new Promise<void>((resolve, reject) => {
     const cleanup = () => {
       clearTimeout(timer);
       clearInterval(poll);
+
       subscription.unsubscribe();
       popup.close();
     };

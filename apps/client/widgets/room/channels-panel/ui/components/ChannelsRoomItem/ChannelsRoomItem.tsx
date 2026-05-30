@@ -37,7 +37,11 @@ export const ChannelsRoomItem = ({ room, onNavigate }: ChannelsRoomItemProps) =>
   return (
     <div>
       <div className={s.row}>
-        <button className={s.trigger({ active: isActive })} type="button" onClick={handleClick}>
+        <button
+          className={s.trigger({ active: isActive, owner: isOwner })}
+          type="button"
+          onClick={handleClick}
+        >
           <span className={s.triggerLabel}>
             {room.name}
             {room.isPrivate && <Lock className={s.privateIcon} />}

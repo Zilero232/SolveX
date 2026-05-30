@@ -2,8 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 import { isTauri } from '@tauri-apps/api/core';
 import { supabase } from '@/shared/api';
 import { ROUTES } from '@/shared/constants';
-import { DEEP_LINK_CALLBACK } from '../lib/config';
-import { signInWithGoogleViaDeepLink } from '../lib/deep-link';
+import { DEEP_LINK_CALLBACK, signInWithGoogleViaDeepLink } from '../lib/deep-link';
 import { openPopup, waitForSignIn } from '../lib/popup';
 
 const startOAuth = (redirectTo: string) => {
