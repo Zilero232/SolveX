@@ -5,7 +5,7 @@ import { SmilePlus } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { Popover, PopoverContent, PopoverTrigger } from '@/shared/ui';
 import { QUICK_REACTIONS } from '../../../../config/reactions';
-import { useReactions } from '../../../../model/contexts/reactions-context';
+import { useReactions } from '../../../../model/contexts';
 import { controlButton } from '../ControlButton/ControlButton.styles';
 import { reactionButtonStyles as s } from './ReactionButton.styles';
 

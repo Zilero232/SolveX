@@ -6,8 +6,10 @@ import type { ReactNode } from 'react';
 const useLeaveSoundValue = () => {
   const { play } = useAudio('/audios/user_leave.mp3', { interrupt: true });
 
-  return () => {
-    play().catch(() => {});
+  return async () => {
+    try {
+      await play();
+    } catch {}
   };
 };
 

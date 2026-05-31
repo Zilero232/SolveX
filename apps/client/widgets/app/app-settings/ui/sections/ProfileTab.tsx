@@ -13,7 +13,7 @@ import {
   useUpdateProfile,
 } from '@/entities/auth/user';
 import { Button, Input, Label, Textarea } from '@/shared/ui';
-import { useAvatarDraft } from '../../model/hooks/use-avatar-draft';
+import { useAvatarDraft } from '../../model/hooks';
 import { appSettingsStyles as s } from '../AppSettingsButton.styles';
 import { AvatarField } from '../fields/AvatarField';
 import { BannerColorField } from '../fields/BannerColorField';

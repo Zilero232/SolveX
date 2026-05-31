@@ -70,7 +70,7 @@ import { ChannelsHeader } from './components/ChannelsHeader';
 
 - `.types.ts` — создаётся только если есть Props или локальные union-типы.
 - `.styles.ts` — создаётся если 3+ Tailwind-классов в одном `className` (иначе inline, см. секцию 3).
-- `shared/ui/` (shadcn) остаётся плоским (`button.tsx`, `input.tsx`) — не трогаем.
+- `shared/ui/` — атомарный (atoms/molecules/organisms/icons), внутри сегмента файлы плоские (`atoms/button.tsx`). Импорт снаружи — через корневой barrel `@/shared/ui`, не per-primitive. Подробнее — [`docs/fsd.md`](./fsd.md) §5.
 
 ### Slice barrel
 
@@ -79,6 +79,23 @@ import { ChannelsHeader } from './components/ChannelsHeader';
 export { VoiceRoom } from './ui/VoiceRoom';
 export type { VoiceRoomProps } from './ui/VoiceRoom.types';
 ```
+
+### Headless-контроллеры (`ui/controllers/`)
+
+Сайд-эффект без разметки — компонент, который рендерит `null` и инкапсулирует один эффект (sync mic-state, sync tray, sounds, shortcuts). Каждый — папка в `ui/controllers/`, собираются в один фрагмент-оркестратор:
+
+```tsx
+// ui/controllers/RoomControllers/RoomControllers.tsx
+export const RoomControllers = ({ roomId }: RoomControllersProps) => (
+  <>
+    <RoomDeviceController />
+    <MicStateController roomId={roomId} />
+    <RoomSoundsController />
+  </>
+);
+```
+
+Так эффекты не раздувают тело главного компонента, каждый изолирован и тестируется отдельно. Альтернатива «куча `useEffect` в `VoiceRoom.tsx`» — запрещена (превышает лимит 100 строк, секция 4).
 
 ### Примеры
 
@@ -224,12 +241,14 @@ Deep import мимо barrel запрещён:
 ```ts
 // ✗ ЗАПРЕЩЕНО
 import { ChannelsList } from '@/widgets/room/channels-panel/ui/components/ChannelsList';
+import { Button } from '@/shared/ui/atoms/button';
 
 // ✓ ОК
 import { ChannelsPanel } from '@/widgets/room/channels-panel';
+import { Button } from '@/shared/ui';
 ```
 
-Исключения: `@/shared/ui/<primitive>` (shadcn-конвенция), внутри слайса — относительные ОК.
+`shared/ui` — единый корневой barrel `@/shared/ui` (атомарный слой под капотом). Внутри слайса — относительные ОК.
 
 Biome не проверяет FSD-границы — ловим на review.
 
@@ -493,18 +512,39 @@ const tokenMutation = useRoomTokenMutation();
 
 ```
 entities/room/model/
-  use-enter-room.ts          ← одиночный хук = файл
-  use-room-token.ts
+  hooks/                     ← группа хуков
+    index.ts                 ← barrel хуков
+    use-enter-room.ts
+    use-room-token.ts
   rooms-presence/            ← подсистема = папка
     index.ts                 ← barrel: { RoomsPresenceProvider, useRoomsPresence }
     rooms-presence-context.tsx
     use-rooms-presence-stream.ts
   types.ts                   ← публичные типы слайса (если используются снаружи)
+  (без model/index.ts — barrel на уровне подпапок)
 ```
 
 Файлы — kebab-case. Функции внутри — camelCase.
 
-**Плоско по умолчанию, папка когда нужна.** Одиночный хук → файл. Подсистема (Provider + context + хук, либо хук + 2+ модуля только для него) → папка с `index.ts`. Не плоди папки под одиночные файлы — лишний `index.ts` без причины.
+**Подсистема → папка.** Provider + context + хук (либо хук + 2+ модуля только для него) → отдельная папка с `index.ts` (напр. `rooms-presence/`). Хуки/контексты слайса группируются в `model/hooks/`, `model/contexts/` (см. barrel-правило ниже). Совсем плоский `model/` (1-2 файла без подпапок) допустим для мелких слайсов.
+
+**Группировка внутри `model/`.** Когда в слайсе много `model`-файлов, группируй их в подпапки по природе (`model/contexts/`, `model/hooks/`, `model/stores/`, `model/lib/`) — см. `features/room/room-control`, `widgets/room/chat`. Это организация **внутри** сегмента `model/`, не отдельный top-level сегмент `hooks/` (тот запрещён, см. ниже).
+
+**Barrel-правило `model/`.** У каждой подпапки `model/` — свой `index.ts` (`model/hooks/index.ts`, `model/contexts/index.ts`, `model/stores/index.ts`). **Slice-level `model/index.ts` НЕ создаём.** Импорт снаружи подпапки — через её barrel:
+
+```ts
+// ✓ ОК
+import { useRoomControls } from '../model/hooks';
+import { DeafenProvider } from '../model/contexts';
+// slice index.ts
+export { useRoomControls } from './model/hooks';
+
+// ✗ НЕ ОК
+import { useRoomControls } from '../model/hooks/use-room-controls';  // deep мимо barrel
+import { useRoomControls } from '../model';                          // model/index не существует
+```
+
+Между файлами **внутри одной подпапки** — относительный импорт по файлу (`./use-x`, `../types`), не через свой barrel (самоимпорт). `model/types.ts` — это файл, не папка: импортируется напрямую `../model/types`, без barrel. Плоский `model/` (нет подпапок, только `use-x.ts` + `types.ts`) — barrel не нужен, импорт по файлу.
 
 **Типы:**
 
@@ -817,7 +857,7 @@ const ChannelsList = () => {
 
 ```
 apps/server/src/routes/
-  rooms/
+  rooms/ users/ livekit/ chat/ github/
     routes.ts    ← createRoute({...}) определения
     handlers.ts  ← RouteHandler<typeof route, Env>
     index.ts     ← OpenAPIHono<Env>().openapi(route, handler)
@@ -829,8 +869,12 @@ apps/server/src/routes/
 - `routes.ts` — только route definitions.
 - `handlers.ts` — только обработчики. Общий `type Env` (`{ Variables: AuthVars }`)
   не дублируем по роутерам — он живёт в `shared/types.ts`, импортируется оттуда.
-- Validation внутри `createRoute({ request: { body: { content: { ... schema } } } })`, не отдельный `zValidator`.
+- Validation внутри `createRoute({ request: { body: { content: { ... schema } } } })`, не отдельный `zValidator`. Схемы — из `@chatovo/schemas`.
 - Все ответы (включая 4xx/5xx) описаны в `responses`.
+- `404`/`403`/прочие доменные ошибки — `throw new HTTPException(status, { message })` (ловит глобальный `app.onError`), а не повтор `if (!x) return c.json(...)` по хендлерам. Общий guard выноси в helper (напр. `requireRoomId`).
+- `OpenAPIHono` создаётся с `defaultHook`, нормализующим провал zod-валидации в `{ error }` (иначе клиент получает сырой zod-объект → `[object Object]`).
+- Тип строки Prisma (с `include`) — выводи через `Prisma.<Model>GetPayload<{...}>` рядом с хендлером, не дублируй поля вручную и не выноси в `@chatovo/schemas` (там чистый Zod, без Prisma).
+- Mount: публичные роуты (`github`, `health`) — без `authMiddleware`; защищённые — `.use('/<path>/*', authMiddleware)`.
 - Стрим-роуты (SSE через `streamSSE`) не описываются `createRoute` — обычный
   `.get()` с хендлером типа `Handler<Env>`, тело хендлера всё равно в `handlers.ts`.
 

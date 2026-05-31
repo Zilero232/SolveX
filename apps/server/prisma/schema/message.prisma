@@ -1,0 +1,19 @@
+model Message {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+
+  roomId String @map("room_id") @db.Uuid
+  room   Room   @relation(fields: [roomId], references: [id], onDelete: Cascade)
+
+  senderId String? @map("sender_id") @db.Uuid
+  sender   User?   @relation(fields: [senderId], references: [id], onDelete: SetNull)
+
+  body String
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@index([roomId, createdAt])
+  @@index([senderId])
+  @@map("messages")
+  @@schema("public")
+}

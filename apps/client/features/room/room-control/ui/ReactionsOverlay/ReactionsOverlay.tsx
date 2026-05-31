@@ -1,6 +1,6 @@
 'use client';
 
-import { useReactions } from '../../model/contexts/reactions-context';
+import { useReactions } from '../../model/contexts';
 import { reactionsOverlayStyles as s } from './ReactionsOverlay.styles';
 
 export const ReactionsOverlay = () => {

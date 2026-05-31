@@ -1,0 +1,1 @@
+export { MessageAttachment } from './MessageAttachment';

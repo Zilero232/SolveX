@@ -30,18 +30,22 @@ export const buildTrayMenu = async (labels: TrayMenuLabels) => {
   const checkUpdates = await MenuItem.new({
     id: TRAY_MENU_ID.checkUpdates,
     text: labels.checkUpdates,
-    action: () => {
+    action: async () => {
       appBus.push('recheckUpdate', undefined);
 
-      showMainWindow().catch(() => {});
+      try {
+        await showMainWindow();
+      } catch {}
     },
   });
 
   const quit = await MenuItem.new({
     id: TRAY_MENU_ID.quit,
     text: labels.quit,
-    action: () => {
-      exit(0).catch(() => {});
+    action: async () => {
+      try {
+        await exit(0);
+      } catch {}
     },
   });
 

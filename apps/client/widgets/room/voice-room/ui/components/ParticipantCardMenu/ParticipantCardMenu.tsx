@@ -13,7 +13,7 @@ import {
   ContextMenuTrigger,
   Slider,
 } from '@/shared/ui';
-import { useParticipantVolume } from '../../../model';
+import { useParticipantVolume } from '../../../model/hooks';
 import { participantCardMenuStyles as s } from './ParticipantCardMenu.styles';
 import type { ParticipantCardMenuProps } from './ParticipantCardMenu.types';
 

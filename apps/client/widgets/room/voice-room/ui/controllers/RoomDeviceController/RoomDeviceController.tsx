@@ -1,6 +1,6 @@
 'use client';
 
-import { useDeviceSync } from '../../../model';
+import { useDeviceSync } from '../../../model/hooks';
 
 export const RoomDeviceController = () => {
   useDeviceSync();

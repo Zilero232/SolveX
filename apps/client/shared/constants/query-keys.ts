@@ -1,4 +1,5 @@
 export const QUERY_KEYS = {
+  chatMessages: (roomId: string) => ['chat-messages', roomId] as const,
   release: () => ['release'] as const,
   livekitToken: (roomName: string | null) => ['livekit-token', roomName] as const,
   roomParticipants: (roomId: string) => ['room-participants', roomId] as const,

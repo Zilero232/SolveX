@@ -2,9 +2,10 @@
 
 import { useTranslations } from 'next-intl';
 import { Slider, Switch } from '@/shared/ui';
-import { type SoundCategory, useAppSettings } from '../../model';
+import { useAppSettings } from '../../model/hooks';
 import { appSettingsStyles as s } from '../AppSettingsButton.styles';
 import { SettingRow } from '../components/SettingRow';
+import type { SoundCategory } from '../../model/types';
 
 const SOUND_CATEGORIES: SoundCategory[] = ['join', 'leave', 'mute', 'reconnect', 'message'];
 

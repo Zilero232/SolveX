@@ -21,11 +21,13 @@ export const useRoomsPresenceStream = (enabled: boolean) => {
 
     let cancelled = false;
 
-    buildPresenceStreamUrl()
-      .then((next) => {
+    void (async () => {
+      try {
+        const next = await buildPresenceStreamUrl();
+
         if (!cancelled) setUrl(next);
-      })
-      .catch(() => {});
+      } catch {}
+    })();
 
     return () => {
       cancelled = true;

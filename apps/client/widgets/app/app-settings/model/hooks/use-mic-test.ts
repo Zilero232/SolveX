@@ -42,9 +42,10 @@ export const useMicTest = ({ deviceId, audio }: MicTestArgs): UseMicTest => {
       ...(deviceId && { deviceId: { exact: deviceId } }),
     };
 
-    navigator.mediaDevices
-      .getUserMedia({ audio: constraints })
-      .then((stream) => {
+    const start = async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: constraints });
+
         if (cancelled) {
           for (const t of stream.getTracks()) t.stop();
 
@@ -58,16 +59,21 @@ export const useMicTest = ({ deviceId, audio }: MicTestArgs): UseMicTest => {
         const sink = sinkRef.current;
         if (sink) {
           sink.srcObject = stream;
-          void sink.play().catch(() => {});
+
+          try {
+            await sink.play();
+          } catch {}
         }
 
         const analyser = createAudioAnalyser(track);
         calcVolumeRef.current = analyser.calculateVolume;
         cleanup = analyser.cleanup;
-      })
-      .catch(() => {
+      } catch {
         if (!cancelled) setError(true);
-      });
+      }
+    };
+
+    void start();
 
     return () => {
       cancelled = true;

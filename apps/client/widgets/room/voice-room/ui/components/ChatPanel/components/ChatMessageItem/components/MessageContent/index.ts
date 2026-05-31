@@ -1,1 +1,0 @@
-export { MessageContent } from './MessageContent';

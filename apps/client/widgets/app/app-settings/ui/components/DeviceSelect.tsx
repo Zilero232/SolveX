@@ -11,7 +11,8 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from '@/shared/ui';
-import { KIND_TO_SLOT, useAppSettings } from '../../model';
+import { KIND_TO_SLOT } from '../../config/config';
+import { useAppSettings } from '../../model/hooks';
 import { appSettingsStyles as s } from '../AppSettingsButton.styles';
 
 type DeviceSelectProps = {

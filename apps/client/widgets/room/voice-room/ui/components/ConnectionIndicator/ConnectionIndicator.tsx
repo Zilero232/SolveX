@@ -10,7 +10,7 @@ import { useTranslations } from 'next-intl';
 import { isNonNullish } from 'remeda';
 import { match } from 'ts-pattern';
 import { cn } from '@/shared/lib';
-import { useConnectionRtt } from '../../../model';
+import { useConnectionRtt } from '../../../model/hooks';
 import { connectionIndicatorStyles as s } from './ConnectionIndicator.styles';
 
 const BAR_HEIGHTS = [4, 7, 10, 13, 16] as const;

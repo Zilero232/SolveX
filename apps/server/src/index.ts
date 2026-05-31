@@ -6,11 +6,19 @@ import { logger } from 'hono/logger';
 import { filter, map, pipe } from 'remeda';
 import { env } from './lib/env';
 import { authMiddleware } from './middleware/auth';
+import { chatRouter } from './routes/chat';
+import { githubRouter } from './routes/github';
 import { livekitRouter } from './routes/livekit';
 import { roomsRouter } from './routes/rooms';
 import { usersRouter } from './routes/users';
 
-const app = new OpenAPIHono();
+const app = new OpenAPIHono({
+  defaultHook: (result, c) => {
+    if (!result.success) {
+      return c.json({ error: result.error.issues[0]?.message ?? 'Invalid input' }, 400);
+    }
+  },
+});
 
 app.openAPIRegistry.registerComponent('securitySchemes', 'bearerAuth', {
   type: 'http',
@@ -45,6 +53,7 @@ export const routes = app
   .get('/health', (c) => c.json({ ok: true }))
   .use('/rooms/*', authMiddleware)
   .use('/users/*', authMiddleware)
+  .use('/chat/*', authMiddleware)
   // The webhook is signed by LiveKit and the SSE stream authorizes via a query
   // token (EventSource cannot send headers) — both bypass the bearer middleware.
   .use('/livekit/*', async (c, next) => {
@@ -56,6 +65,8 @@ export const routes = app
   })
   .route('/rooms', roomsRouter)
   .route('/users', usersRouter)
+  .route('/chat', chatRouter)
+  .route('/github', githubRouter)
   .route('/livekit', livekitRouter);
 
 // Single place that turns thrown errors into HTTP responses. HTTPExceptions

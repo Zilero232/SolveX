@@ -15,9 +15,9 @@ import {
 } from '@/features/room/room-control';
 import { Button } from '@/shared/ui';
 import { useAppSettings } from '@/widgets/app/app-settings';
+import { ChatPanel, RoomChatProvider } from '@/widgets/room/chat';
 import { FAILURE_REASONS } from '../config';
-import { RoomChatProvider } from '../model';
-import { ChatPanel, ConnectingOverlay, ConnectionIndicator, ParticipantsView } from './components';
+import { ConnectingOverlay, ConnectionIndicator, ParticipantsView } from './components';
 import { RoomControllers } from './controllers';
 import { voiceRoomStyles as s } from './VoiceRoom.styles';
 import type { VoiceRoomProps } from './VoiceRoom.types';
@@ -110,7 +110,7 @@ export const VoiceRoom = ({
                   </Button>
                 </div>
 
-                <ChatPanel isOpen={isChatOpen} onClose={() => toggleChat(false)} />
+                <ChatPanel roomId={roomId} isOpen={isChatOpen} onClose={() => toggleChat(false)} />
 
                 <RoomAudio />
                 <RoomControllers roomId={roomId} />

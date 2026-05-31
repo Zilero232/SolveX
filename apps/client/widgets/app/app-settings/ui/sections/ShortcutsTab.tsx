@@ -13,7 +13,7 @@ import {
 } from '@/entities/app/shortcut';
 import { DownloadAppDialog } from '@/features/app/download-app';
 import { useShortcutConflict, useShortcutRecording } from '@/features/app/shortcuts';
-import { useAppSettings } from '../../model';
+import { useAppSettings } from '../../model/hooks';
 import { appSettingsStyles as s } from '../AppSettingsButton.styles';
 
 const WebNotice = () => {

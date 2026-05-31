@@ -53,7 +53,11 @@ export const useTraySetup = (): TrayMenuValue | null => {
 
       setValue(null);
 
-      dispose?.().catch(() => {});
+      void (async () => {
+        try {
+          await dispose?.();
+        } catch {}
+      })();
     };
   }, [t]);
 

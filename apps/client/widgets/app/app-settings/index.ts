@@ -1,4 +1,5 @@
-export { KIND_TO_SLOT, useAppSettings } from './model';
+export { KIND_TO_SLOT } from './config/config';
+export { useAppSettings } from './model/hooks';
 export { AppSettingsButton } from './ui/AppSettingsButton';
 export type {
   AppSettings,
@@ -8,4 +9,4 @@ export type {
   SoundSettings,
   TraySettings,
   VideoSettings,
-} from './model';
+} from './model/types';

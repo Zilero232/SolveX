@@ -2,7 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import { Switch } from '@/shared/ui';
-import { useAppSettings } from '../../model';
+import { useAppSettings } from '../../model/hooks';
 import { appSettingsStyles as s } from '../AppSettingsButton.styles';
 import { DeviceSelect } from '../components/DeviceSelect';
 import { SettingRow } from '../components/SettingRow';

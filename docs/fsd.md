@@ -116,9 +116,10 @@ App → Views → Widgets → Features → Entities → Shared
 У каждого слайса — `index.ts` в корне, реэкспортирующий публичный интерфейс.
 
 ```ts
-// features/auth/sign-in/index.ts
-export { SignInForm } from './ui/SignInForm';
-export { useSignIn } from './model/use-sign-in';
+// features/room/room-control/index.ts
+export { RoomControlBar } from './ui/RoomControlBar';
+export { useRoomControls } from './model/hooks';
+export { DeafenProvider } from './model/contexts';
 ```
 
 **Правила:**
@@ -127,8 +128,9 @@ export { useSignIn } from './model/use-sign-in';
 - **Минимальная поверхность** — экспортируй только то, что реально нужно другим слоям.
 - **Внешние импорты — только через index слайса** — никогда `@/features/auth/sign-in/ui/SignInForm` напрямую. Всегда `@/features/auth/sign-in`.
 - **Группа домена — не публичный API** — `@/features/auth` не существует, импортируется конкретный слайс. Доменная папка только организует файлы.
+- **`model/` — barrel в подпапках, не на уровне `model/`.** `model/hooks/index.ts`, `model/contexts/index.ts`, `model/stores/index.ts` — каждая подпапка свой barrel. Slice-level `model/index.ts` НЕ создаём. Slice `index.ts` и внутренние импорты идут через подпапку: `./model/hooks`, `../model/contexts`. Подробнее — [`docs/style.md`](./style.md) §11.
 - **Без циклических импортов** — не импортируй из собственного `index.ts` внутри слайса. Внутри — относительные пути.
-- **Исключение `shared/ui`** — для tree-shaking `shared/ui/` может использовать per-component index-файлы (`shared/ui/button/index.ts`) вместо одного barrel.
+- **`shared/ui` — атомарный слой.** Сегменты `atoms/` (shadcn-примитивы + Badge/Spinner/Stack/Row), `molecules/` (FormField, SubmitButton, IconButtonWithTooltip, AvatarWithBadges), `organisms/` (ConfirmDialog, CenteredState), `icons/`. У каждого сегмента свой barrel, корневой `shared/ui/index.ts` реэкспортит все. Снаружи импорт через единый корневой barrel `@/shared/ui` — не per-primitive. shadcn-алиас `ui` (`components.json`) указывает на `shared/ui/atoms`.
 
 ---
 

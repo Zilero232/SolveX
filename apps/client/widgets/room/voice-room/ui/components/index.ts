@@ -1,5 +1,4 @@
 export { CardVideo } from './CardVideo';
-export { ChatPanel } from './ChatPanel';
 export { ConnectingOverlay } from './ConnectingOverlay';
 export { ConnectionIndicator } from './ConnectionIndicator';
 export { ParticipantCard } from './ParticipantCard';

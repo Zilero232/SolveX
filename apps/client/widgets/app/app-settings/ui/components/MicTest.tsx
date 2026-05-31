@@ -3,8 +3,9 @@
 import { Mic, MicOff } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { Button } from '@/shared/ui';
-import { type AudioSettings, useMicTest } from '../../model';
+import { useMicTest } from '../../model/hooks';
 import { appSettingsStyles as s } from '../AppSettingsButton.styles';
+import type { AudioSettings } from '../../model/types';
 
 type MicTestProps = {
   deviceId: string;

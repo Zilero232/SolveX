@@ -47,6 +47,7 @@ model User {
   webauthn_credentials        webauthn_credentials[]
   
   rooms                       Room[]
+  messages                    Message[]
 
   @@index([created_at(sort: Desc)], map: "idx_users_created_at_desc")
   @@index([email], map: "idx_users_email")

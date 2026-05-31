@@ -1,14 +1,16 @@
 export { filterAndOrderRooms, groupRooms, type RoomSection } from './lib/group-rooms';
 export { readParticipantMeta } from './lib/participant-meta';
-export { useCreateRoom } from './model/hooks/use-create-room';
-export { useDeleteRoom } from './model/hooks/use-delete-room';
-export { useEnterRoom } from './model/hooks/use-enter-room';
-export { useRecentRooms } from './model/hooks/use-recent-rooms';
-export { useRoomById } from './model/hooks/use-room-by-id';
-export { useRoomParticipants } from './model/hooks/use-room-participants';
-export { useRoomToken } from './model/hooks/use-room-token';
-export { useRooms } from './model/hooks/use-rooms';
-export { useUpdateRoom } from './model/hooks/use-update-room';
+export {
+  useCreateRoom,
+  useDeleteRoom,
+  useEnterRoom,
+  useRecentRooms,
+  useRoomById,
+  useRoomParticipants,
+  useRooms,
+  useRoomToken,
+  useUpdateRoom,
+} from './model/hooks';
 export { LeaveSoundProvider, useLeaveSound } from './model/leave-sound';
 export { RoomsPresenceProvider, useLobbyOnline, useRoomsPresence } from './model/rooms-presence';
 export { DeafenedBadge } from './ui/DeafenedBadge';

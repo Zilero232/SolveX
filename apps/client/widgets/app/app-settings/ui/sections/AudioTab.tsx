@@ -5,11 +5,12 @@ import { useTranslations } from 'next-intl';
 import { useId } from 'react';
 import { isNullish } from 'remeda';
 import { RadioGroup, RadioGroupItem, Switch } from '@/shared/ui';
-import { type AudioSettings, type MicActivationMode, useAppSettings } from '../../model';
+import { useAppSettings } from '../../model/hooks';
 import { appSettingsStyles as s } from '../AppSettingsButton.styles';
 import { DeviceSelect } from '../components/DeviceSelect';
 import { MicTest } from '../components/MicTest';
 import { SettingRow } from '../components/SettingRow';
+import type { AudioSettings, MicActivationMode } from '../../model/types';
 
 type AudioTabProps = {
   onJumpToShortcuts: () => void;

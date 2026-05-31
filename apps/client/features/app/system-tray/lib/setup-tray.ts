@@ -26,14 +26,18 @@ export const setupTray = async ({ tooltip, menu }: SetupTrayArgs): Promise<Setup
     tooltip,
     menu,
     menuOnLeftClick: false,
-    action: (event) => {
+    action: async (event) => {
       if (event.type === 'Click' && event.button === 'Left' && event.buttonState === 'Up') {
-        toggleMainWindow().catch(() => {});
+        try {
+          await toggleMainWindow();
+        } catch {}
       }
     },
   });
 
   return {
-    dispose: () => tray.close().then(() => undefined),
+    dispose: async () => {
+      await tray.close();
+    },
   };
 };
