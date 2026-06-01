@@ -1,6 +1,12 @@
 'use client';
 
-import { BarVisualizer, useIsSpeaking, useParticipantTracks } from '@livekit/components-react';
+import {
+  BarVisualizer,
+  useIsMuted,
+  useIsSpeaking,
+  useParticipantInfo,
+  useParticipantTracks,
+} from '@livekit/components-react';
 import { Track } from 'livekit-client';
 import { HeadphoneOff, MicOff, ScreenShare } from 'lucide-react';
 import { isNonNullish } from 'remeda';
@@ -18,11 +24,15 @@ export const ParticipantCard = ({ participant, deafened }: ParticipantCardProps)
   const [micTrack] = useParticipantTracks([Track.Source.Microphone], participant.identity);
 
   const isSpeaking = useIsSpeaking(participant);
-  const displayName = participant.name || participant.identity;
-  const { verified } = readParticipantMeta(participant.metadata);
+  const micMuted = useIsMuted(micTrack ?? { participant, source: Track.Source.Microphone });
 
-  const hasCamera = isNonNullish(cameraTrack) && participant.isCameraEnabled;
-  const hasScreen = isNonNullish(screenTrack) && participant.isScreenShareEnabled;
+  const { name, metadata } = useParticipantInfo({ participant });
+  const { verified } = readParticipantMeta(metadata);
+
+  const displayName = name || participant.identity;
+
+  const hasCamera = isNonNullish(cameraTrack);
+  const hasScreen = isNonNullish(screenTrack);
   const hasVideo = hasCamera || hasScreen;
 
   return (
@@ -53,7 +63,7 @@ export const ParticipantCard = ({ participant, deafened }: ParticipantCardProps)
         )}
 
         <div className={s.metadata}>
-          {!participant.isMicrophoneEnabled && <MicOff className={s.micIcon} />}
+          {micMuted && <MicOff className={s.micIcon} />}
           {deafened && <HeadphoneOff className={s.micIcon} />}
           <ProfileCardTrigger identity={participant.identity} name={displayName}>
             <button className={s.nameTrigger} type="button">

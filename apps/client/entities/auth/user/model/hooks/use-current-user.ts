@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { minutesToMilliseconds } from 'date-fns';
 import { isNonNullish } from 'remeda';
 import { authClient, getAuthToken, getUserProfile } from '@/shared/api';
 import { QUERY_KEYS } from '@/shared/constants';
@@ -16,6 +17,7 @@ export const useCurrentUser = () => {
     queryKey: QUERY_KEYS.userProfile(userId ?? ''),
     queryFn: () => getUserProfile(userId as string),
     enabled: isNonNullish(userId) && hasToken,
+    staleTime: minutesToMilliseconds(5),
   });
 
   const role: UserRole = user?.role === 'admin' ? 'admin' : 'user';

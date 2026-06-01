@@ -15,6 +15,6 @@ export const useRoomToken = (roomId: string | null, { isPrivate, password }: Opt
     select: ({ token }) => token,
     enabled: isNonNullish(roomId) && (!isPrivate || isNonNullish(password)),
     retry: false,
-    staleTime: 0,
+    gcTime: 0,
   });
 };
