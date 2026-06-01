@@ -2,12 +2,23 @@
 
 import { useChat } from '@livekit/components-react';
 import { createContextHook } from '@siberiacancode/reactuse';
+import { useChatMessageSound } from '../hooks';
 import type { ReactNode } from 'react';
 
 const { Provider, use } = createContextHook(useChat);
 
+const ChatSoundController = () => {
+  useChatMessageSound();
+
+  return null;
+};
+
 export const RoomChatProvider = ({ children }: { children: ReactNode }) => (
-  <Provider params={[]}>{children}</Provider>
+  <Provider params={[]}>
+    {children}
+
+    <ChatSoundController />
+  </Provider>
 );
 
 export const useRoomChat = () => {
