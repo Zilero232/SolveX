@@ -504,6 +504,62 @@ const tokenMutation = useRoomTokenMutation();
 // ... tokenMutation.isPending, tokenMutation.mutateAsync(...), tokenMutation.reset()
 ```
 
+### 9.4 Деструктуризация везде, где упрощает
+
+Принцип: **деструктурируй по максимуму** — для читаемости. Если значение используется через точку 2+ раза или приходит вложенным, вытащи его в локальную переменную. Меньше шума `obj.a.b`, имена говорят за себя.
+
+**Вложенный доступ — деструктурируй родителя:**
+
+```ts
+// ✗ ПЛОХО — row.sender.X повторяется
+senderName: resolveDisplayName({
+  displayName: row.sender.profile?.displayName,
+  name: row.sender.name,
+  email: row.sender.email,
+  userId: row.senderId,
+});
+
+// ✓ ОК — sender вытащен один раз
+const { sender, senderId } = row;
+senderName: resolveDisplayName({
+  displayName: sender?.profile?.displayName,
+  name: sender?.name,
+  email: sender?.email,
+  userId: senderId,
+});
+```
+
+**Параметры-функции: 3+ аргумента → один объект с деструктуризацией.** Позиционные аргументы (особенно одного типа — `string, string, string`) легко перепутать местами; объект самодокументирует и порядок не важен.
+
+```ts
+// ✗ ПЛОХО — 4 позиционных, легко перепутать
+resolveDisplayName(displayName, name, email, userId);
+
+// ✓ ОК — объект-параметр, деструктуризация в сигнатуре
+resolveDisplayName({ displayName, name, email, userId });
+```
+
+**Повторный `obj.x` (2+) — в локальную переменную / деструктуризацию:**
+
+```ts
+// ✗ ПЛОХО
+if (file.size === 0) ...;
+if (file.size > MAX) ...;
+const ext = extension(file.type);
+
+// ✓ ОК
+const { size, type, name } = file;
+if (size === 0) ...;
+if (size > MAX) ...;
+const ext = extension(type);
+```
+
+**Когда НЕ деструктурировать:**
+
+- Одно обращение — `obj.x` один раз, деструктуризация лишняя церемония.
+- Теряется контекст — если `name` без префикса непонятно чьё, оставь `user.name` / переименуй (`const { name: senderName } = ...`).
+- Стабильный неймспейс-объект (`router`, `console`, `Math`) — не трогаем.
+
 ---
 
 ## 11. Сегменты `model/`, `lib/`, `api/`
@@ -572,7 +628,7 @@ entities/room/lib/
 ```
 entities/user/
   api/
-    auth-bridge.ts   ← subscribeAuth: подписка на supabase.auth.onAuthStateChange
+    auth-bridge.ts   ← subscribeAuth: подписка на authClient.useSession / onAuthStateChange
   model/
     use-current-user.ts
     types.ts
@@ -587,8 +643,7 @@ shared/api/
   http/      ← hc<App>(baseUrl) + auth header
   rooms/     ← listRooms / createRoom / deleteRoom
   livekit/   ← fetchLiveKitToken
-  auth/      ← getFreshAccessToken
-  supabase/  ← supabase browser client
+  auth/      ← better-auth client (authClient, getAuthToken, clearToken)
   index.ts
 ```
 
@@ -693,7 +748,7 @@ import { createRoomInputSchema, type Room } from '@chatovo/schemas/rooms';
 import { Room } from '@/shared/api';
 ```
 
-`@/shared/api` экспортирует только runtime функции (RPC wrappers, supabase client).
+`@/shared/api` экспортирует только runtime функции (RPC wrappers, better-auth client).
 
 **FormValues vs Request типы.** Одна zod-схема даёт два типа — `.default()` / `.transform()` делают `z.input` и `z.output` несовместимыми:
 

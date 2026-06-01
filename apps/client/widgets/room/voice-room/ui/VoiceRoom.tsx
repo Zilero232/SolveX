@@ -62,7 +62,6 @@ export const VoiceRoom = ({
           connect
           audio={audioCaptureRef.current}
           className={s.room}
-          data-lk-theme="default"
           options={{ webAudioMix: true }}
           serverUrl={serverUrl}
           token={token}

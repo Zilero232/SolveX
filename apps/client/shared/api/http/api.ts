@@ -1,12 +1,12 @@
 import { hc } from 'hono/client';
 import { env } from '@/shared/config';
-import { getFreshAccessToken } from '../auth';
+import { getAuthToken } from '../auth';
 import type { App } from '@chatovo/server';
 
 export const api = hc<App>(env.NEXT_PUBLIC_API_URL, {
-  async headers() {
-    const token = await getFreshAccessToken();
+  headers(): Record<string, string> {
+    const token = getAuthToken();
 
-    return { Authorization: `Bearer ${token}` };
+    return token ? { Authorization: `Bearer ${token}` } : {};
   },
 });

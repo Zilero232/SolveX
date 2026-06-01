@@ -4,7 +4,7 @@ import { Loader2 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
 import { Button, GoogleIcon } from '@/shared/ui';
-import { useGoogleAuth } from '../model/use-google-auth';
+import { useGoogleAuth } from '../model/hooks';
 import { googleAuthButtonStyles as s } from './GoogleAuthButton.styles';
 
 export const GoogleAuthButton = () => {
@@ -13,7 +13,6 @@ export const GoogleAuthButton = () => {
 
   const handleClick = () => {
     mutate(undefined, {
-      onSuccess: () => toast.success(t('signedIn')),
       onError: (err: Error) => toast.error(err.message),
     });
   };

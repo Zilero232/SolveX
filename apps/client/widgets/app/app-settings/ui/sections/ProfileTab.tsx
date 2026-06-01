@@ -36,7 +36,12 @@ export const ProfileTab = () => {
     reset,
   } = useForm<ProfileValues>({
     resolver: zodResolver(profileSchema),
-    defaultValues: { name: displayName, profileUrl: profileUrl ?? '', bannerColor, bio: bio ?? '' },
+    defaultValues: {
+      displayName,
+      profileUrl: profileUrl ?? '',
+      bannerColor,
+      bio: bio ?? '',
+    },
   });
 
   const onSubmit = handleSubmit((values) => {
@@ -70,10 +75,10 @@ export const ProfileTab = () => {
             {t('displayNameLabel')}
           </Label>
 
-          <Input autoComplete="name" id="profile-display-name" {...register('name')} />
+          <Input autoComplete="name" id="profile-display-name" {...register('displayName')} />
 
-          {errors.name ? (
-            <p className={s.profileError}>{fieldError(errors.name)}</p>
+          {errors.displayName ? (
+            <p className={s.profileError}>{fieldError(errors.displayName)}</p>
           ) : (
             <p className={s.profileHint}>{t('displayNameHint')}</p>
           )}

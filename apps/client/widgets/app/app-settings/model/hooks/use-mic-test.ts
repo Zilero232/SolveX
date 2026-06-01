@@ -73,14 +73,14 @@ export const useMicTest = ({ deviceId, audio }: MicTestArgs): UseMicTest => {
       }
     };
 
-    void start();
+    start();
 
     return () => {
       cancelled = true;
 
       calcVolumeRef.current = null;
-      void cleanup?.();
-      void track?.stop();
+      cleanup?.();
+      track?.stop();
 
       const sink = sinkRef.current;
       if (sink) sink.srcObject = null;

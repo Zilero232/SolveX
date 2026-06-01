@@ -16,7 +16,7 @@ export const MessageAttachment = ({ attachment, isOwn }: MessageAttachmentProps)
     if (!isTauri()) return;
 
     event.preventDefault();
-    void openUrl(url);
+    openUrl(url);
   };
 
   if (isImageMime(mime)) {

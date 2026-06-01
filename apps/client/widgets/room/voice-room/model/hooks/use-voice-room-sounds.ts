@@ -56,7 +56,7 @@ export const useVoiceRoomSounds = () => {
       const audio = audioRef.current[key];
       audio.setVolume(volume);
 
-      void audio.play();
+      audio.play();
     };
   };
 
@@ -75,7 +75,7 @@ export const useVoiceRoomSounds = () => {
   });
 
   appBus.useSubscribe('pttHold', () => {
-    void playRef.current.ptt();
+    playRef.current.ptt();
   });
 
   const prevDeafened = usePrevious(isDeafened);
@@ -83,12 +83,12 @@ export const useVoiceRoomSounds = () => {
   useEffect(() => {
     if (prevDeafened === undefined || prevDeafened === isDeafened) return;
 
-    if (isDeafened) void playRef.current.deafen();
-    else void playRef.current.undeafen();
+    if (isDeafened) playRef.current.deafen();
+    else playRef.current.undeafen();
   }, [isDeafened, prevDeafened]);
 
   useEffect(() => {
-    if (room.state === 'connected') void playRef.current.join();
+    if (room.state === 'connected') playRef.current.join();
 
     let hasLeft = false;
     const playLeave = () => {
@@ -99,10 +99,12 @@ export const useVoiceRoomSounds = () => {
     };
 
     const onConnected = () => {
-      return void playRef.current.join();
+      playRef.current.join();
+      return;
     };
     const onReconnecting = () => {
-      return void playRef.current.reconnect();
+      playRef.current.reconnect();
+      return;
     };
 
     room.on(RoomEvent.Connected, onConnected);
@@ -124,13 +126,13 @@ export const useVoiceRoomSounds = () => {
     const onMuted = (publication: TrackPublication) => {
       if (publication.source !== Track.Source.Microphone) return;
 
-      void playRef.current.mute();
+      playRef.current.mute();
     };
 
     const onUnmuted = (publication: TrackPublication) => {
       if (publication.source !== Track.Source.Microphone) return;
 
-      void playRef.current.unmute();
+      playRef.current.unmute();
     };
 
     localParticipant.on(ParticipantEvent.TrackMuted, onMuted);
@@ -144,10 +146,12 @@ export const useVoiceRoomSounds = () => {
 
   useEffect(() => {
     const onJoin = () => {
-      return void playRef.current.join();
+      playRef.current.join();
+      return;
     };
     const onLeave = () => {
-      return void playRef.current.leave();
+      playRef.current.leave();
+      return;
     };
 
     room.on(RoomEvent.ParticipantConnected, onJoin);
@@ -164,7 +168,7 @@ export const useVoiceRoomSounds = () => {
       const isOwn = participant?.identity === localParticipant.identity;
       if (isOwn) return;
 
-      void playRef.current.message();
+      playRef.current.message();
     };
 
     room.on(RoomEvent.ChatMessage, onMessage);

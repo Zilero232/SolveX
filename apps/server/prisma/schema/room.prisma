@@ -1,19 +1,18 @@
 model Room {
-  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id String @id @default(dbgenerated("gen_random_uuid()"))
 
   name      String  @unique
   password  String?
   isPrivate Boolean @default(false) @map("is_private")
 
-  ownerId String @map("owner_id") @db.Uuid
+  ownerId String @map("owner_id")
   owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
 
   messages Message[]
 
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
 
   @@index([ownerId])
   @@map("rooms")
-  @@schema("public")
 }

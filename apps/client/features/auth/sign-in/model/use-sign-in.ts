@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { z } from 'zod';
-import { supabase } from '@/shared/api';
+import { authClient } from '@/shared/api';
 
 export const signInSchema = z.object({
   email: z.email('validation.emailInvalid'),
@@ -12,9 +12,9 @@ export type SignInValues = z.infer<typeof signInSchema>;
 export const useSignIn = () => {
   return useMutation({
     mutationFn: async (values: SignInValues) => {
-      const { data, error } = await supabase.auth.signInWithPassword(values);
+      const { data, error } = await authClient.signIn.email(values);
 
-      if (error) throw error;
+      if (error) throw new Error(error.message ?? 'Sign in failed');
 
       return data;
     },

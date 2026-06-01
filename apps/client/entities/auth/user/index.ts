@@ -2,6 +2,7 @@ export {
   type ProfileValues,
   profileSchema,
   type UpdateProfileInput,
+  useAuthGuard,
   useCurrentUser,
   useUpdateProfile,
 } from './model/hooks';

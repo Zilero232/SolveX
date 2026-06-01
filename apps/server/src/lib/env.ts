@@ -7,14 +7,23 @@ const envSchema = z.object({
   DATABASE_URL: z.string().url(),
   DIRECT_URL: z.string().url().optional(),
 
-  SUPABASE_URL: z.string().url(),
-  SUPABASE_SECRET_KEY: z.string().min(1),
+  BETTER_AUTH_SECRET: z.string().min(1),
+  BETTER_AUTH_URL: z.string().url(),
+
+  GOOGLE_CLIENT_ID: z.string().min(1),
+  GOOGLE_CLIENT_SECRET: z.string().min(1),
 
   LIVEKIT_API_KEY: z.string().min(1),
   LIVEKIT_API_SECRET: z.string().min(1),
   LIVEKIT_URL: z.string().url(),
 
-  ADMIN_EMAILS: z.string().default(''),
+  // Public origin where uploaded files are served from (e.g. https://api.chatovo.ru).
+  // Used to build absolute URLs stored in the DB and returned to clients.
+  PUBLIC_FILES_URL: z.string().url().default('http://localhost:4000'),
+
+  // Filesystem directory where uploaded files (avatars, chat attachments) are
+  // written. Served back under /uploads. In Docker this is a mounted volume.
+  UPLOADS_DIR: z.string().default('./uploads'),
 
   // Comma-separated list of allowed CORS origins (web client domains).
   // Tauri origins are always allowed and don't need to be listed here.

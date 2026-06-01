@@ -8,7 +8,7 @@ Chatovo — real-time voice rooms (web + desktop). Bun-workspaces monorepo.
 
 - **Web client**: Next.js 16 / React 19 (`apps/client/`)
 - **Desktop**: Tauri 2 (Rust) wraps the same client (`apps/tauri/`)
-- **API**: Hono on Bun + Prisma + Supabase (`apps/server/`)
+- **API**: Hono on Bun + Prisma + self-hosted Postgres, auth via better-auth (`apps/server/`)
 - **Realtime media**: LiveKit SFU (WebRTC), server-issued JWTs
 - **Shared types**: Zod schemas in `packages/schemas/` (workspace dep `@chatovo/schemas`)
 
@@ -130,16 +130,15 @@ bun tauri:build            # produce native binary
 
 # Server / Prisma (run from apps/server/)
 bun db:push                # push schema without migration (USE THIS — see note)
-bun db:migrate             # create + apply migration (AVOID — see note)
+bun db:migrate             # create + apply migration
 bun db:deploy              # apply pending migrations (prod)
 bun db:studio              # Prisma Studio GUI
-bun db:setup-storage       # create Supabase Storage buckets (avatars, chat-attachments)
 
 # Typecheck (no script — run directly)
 cd apps/client && bun x tsc --noEmit
 ```
 
-> **DB schema changes**: use `bun db:push`, NOT `bun db:migrate`. The Supabase-managed `auth` schema is introspected (not under Prisma migration history), so `migrate dev` sees it as drift and wants to **reset the whole DB** (data loss). `db push` applies only the diff. Schema lives in `apps/server/prisma/schema/*.prisma` (split per domain: `auth`, `room`, `message`). File uploads (avatars, chat attachments) go to Supabase Storage via the server's service-role client (RLS-bypassing) — buckets are public-read and created by `db:setup-storage`; no RLS policies needed (no direct client uploads).
+> **DB schema changes**: prefer `bun db:push` for iterating locally (applies the diff directly, no migration files). Schema lives in `apps/server/prisma/schema/*.prisma` (split per domain: `auth`, `room`, `message`) plus `prisma/base.prisma` (generator + datasource). Auth is **better-auth** on a self-hosted Postgres — the `user`/`session`/`account`/`verification` tables live in `auth.prisma` and are fully owned by Prisma (no introspected Supabase schema anymore). Profile fields (displayName, avatarUrl, bannerColor, bio, verified) live in a separate `Profile` table (1-1 FK to `user`), auto-created by a better-auth `databaseHook` on signup. File uploads (avatars, chat attachments) are written to the `UPLOADS_DIR` folder on disk by the server (`lib/uploads.ts`) and served back under `/uploads`.
 
 ## Working with the user
 

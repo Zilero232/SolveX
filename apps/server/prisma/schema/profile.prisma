@@ -1,0 +1,12 @@
+model Profile {
+  displayName String?
+  avatarUrl   String?
+  profileUrl  String?
+  bannerColor String?
+  bio         String?
+
+  userId String @id
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("profile")
+}

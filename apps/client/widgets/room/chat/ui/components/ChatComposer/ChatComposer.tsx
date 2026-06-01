@@ -39,7 +39,7 @@ export const ChatComposer = ({
     if (event.key !== 'Enter' || event.shiftKey) return;
 
     event.preventDefault();
-    void submit();
+    submit();
   });
 
   const canSend = draft.trim().length > 0 && !busy;
@@ -50,7 +50,7 @@ export const ChatComposer = ({
       onSubmit={(event) => {
         event.preventDefault();
 
-        void submit();
+        submit();
       }}
     >
       <Button

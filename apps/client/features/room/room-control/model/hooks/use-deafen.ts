@@ -35,7 +35,7 @@ export const useDeafen = () => {
     if (isNullish(localParticipant)) return;
 
     setIsDeafened(next);
-    void reportPresenceState({ roomId: room.name, deafened: next });
+    reportPresenceState({ roomId: room.name, deafened: next });
 
     try {
       await (next ? enableDeafen(localParticipant) : disableDeafen(localParticipant));

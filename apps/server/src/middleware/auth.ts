@@ -1,4 +1,4 @@
-import { verifyAccessToken } from '../lib/auth';
+import { auth } from '../lib/auth';
 import type { MiddlewareHandler } from 'hono';
 import type { UserRole } from '../lib/auth';
 
@@ -9,17 +9,13 @@ export type AuthVars = {
 };
 
 export const authMiddleware: MiddlewareHandler<{ Variables: AuthVars }> = async (c, next) => {
-  const header = c.req.header('Authorization');
+  const session = await auth.api.getSession({ headers: c.req.raw.headers });
 
-  if (!header?.startsWith('Bearer ')) return c.json({ error: 'Unauthorized' }, 401);
+  if (!session) return c.json({ error: 'Unauthorized' }, 401);
 
-  const user = await verifyAccessToken(header.slice(7));
-
-  if (!user) return c.json({ error: 'Unauthorized' }, 401);
-
-  c.set('userId', user.userId);
-  c.set('email', user.email);
-  c.set('role', user.role);
+  c.set('userId', session.user.id);
+  c.set('email', session.user.email);
+  c.set('role', session.user.role === 'admin' ? 'admin' : 'user');
 
   await next();
 };

@@ -37,7 +37,7 @@ export const UserName = ({
 
     event.preventDefault();
 
-    void openUrl(profileUrl);
+    openUrl(profileUrl);
   };
 
   return (

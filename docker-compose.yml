@@ -48,12 +48,39 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
+  postgres:
+    # Self-hosted Postgres — replaces Supabase's managed database. Data persists
+    # in the pgdata volume. Credentials and DB name come from ./.env.
+    image: postgres:17-alpine
+    container_name: chatovo-postgres
+    restart: always
+    # env_file delivers POSTGRES_* into the container; the postgres entrypoint
+    # reads them directly. No `environment: ${POSTGRES_*}` block — Compose
+    # resolves ${...} from the shell / root .env at parse time (NOT from a
+    # service env_file), so it is redundant here and a blank-injection trap if
+    # the env_file path ever diverges from the root .env.
+    env_file:
+      - ./.env
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - chatovo
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
   server:
     # Image built and pushed by CI. Replace the owner if the GitHub account
     # differs — it must be lowercase.
     image: ghcr.io/zilero232/chatovo-server:latest
     container_name: chatovo-server
     restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
     env_file:
       # Sits next to this compose file on the VPS. Create it once from the
       # apps/server/.env.example template in the repo, with production values.
@@ -61,6 +88,10 @@ services:
     expose:
       # Reachable only inside the compose network — not published to the host.
       - "4000"
+    volumes:
+      # Uploaded files (avatars, chat attachments) persist here and are served
+      # by the server under /uploads. UPLOADS_DIR in .env must point here.
+      - uploads:/app/apps/server/uploads
     networks:
       - chatovo
     healthcheck:
@@ -93,6 +124,8 @@ services:
 volumes:
   caddy_data:
   caddy_config:
+  pgdata:
+  uploads:
 
 networks:
   chatovo:

@@ -7,7 +7,7 @@ const idParamSchema = z.object({
 });
 
 const updateProfileFormSchema = z.object({
-  name: z.string(),
+  displayName: z.string(),
   profileUrl: z.string(),
   bannerColor: z.string(),
   bio: z.string(),

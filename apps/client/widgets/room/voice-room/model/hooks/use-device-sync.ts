@@ -10,7 +10,7 @@ const applyDevices = (room: Room, devices: DeviceSettings) => {
   for (const kind of keys(KIND_TO_SLOT)) {
     const deviceId = devices[KIND_TO_SLOT[kind]];
 
-    if (deviceId) void room.switchActiveDevice(kind, deviceId);
+    if (deviceId) room.switchActiveDevice(kind, deviceId);
   }
 };
 
@@ -60,7 +60,7 @@ const useApplyAudioFlags = (room: Room) => {
 
   useEffect(() => {
     if (room.localParticipant.isMicrophoneEnabled) {
-      void room.localParticipant.setMicrophoneEnabled(true, audio);
+      room.localParticipant.setMicrophoneEnabled(true, audio);
     }
   }, [room, audio]);
 };
