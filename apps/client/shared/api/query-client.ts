@@ -1,11 +1,12 @@
 import { QueryClient } from '@tanstack/react-query';
+import { secondsToMilliseconds } from 'date-fns';
 
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: Number.POSITIVE_INFINITY,
       retry: 1,
       refetchOnWindowFocus: false,
+      staleTime: secondsToMilliseconds(60),
     },
   },
 });

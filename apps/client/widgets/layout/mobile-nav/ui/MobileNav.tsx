@@ -2,7 +2,14 @@
 
 import { Menu } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { Button, Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/shared/ui';
+import {
+  Button,
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetTitle,
+  SheetTrigger,
+} from '@/shared/ui';
 import { AppSidebar } from '@/widgets/app/app-sidebar';
 import { LanguageSwitcher } from '@/widgets/app/language-switcher';
 import { ChannelsPanel } from '@/widgets/room/channels-panel';
@@ -38,6 +45,7 @@ export const MobileNav = ({ open, onOpenChange }: MobileNavProps) => {
 
       <SheetContent className={s.sheet} side="left" showCloseButton={false}>
         <SheetTitle className={s.sheetTitleSr}>{t('menu')}</SheetTitle>
+        <SheetDescription className="sr-only">{t('menuDescription')}</SheetDescription>
 
         <div className={s.sheetBody}>
           <div className={s.sheetActions}>

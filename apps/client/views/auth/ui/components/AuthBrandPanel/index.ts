@@ -1,0 +1,1 @@
+export { AuthBrandPanel } from './AuthBrandPanel';

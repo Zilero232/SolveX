@@ -236,6 +236,124 @@
   }
 }
 
+@keyframes aurora-drift {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  33% {
+    transform: translate3d(6%, -8%, 0) scale(1.12);
+  }
+  66% {
+    transform: translate3d(-7%, 5%, 0) scale(0.94);
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@layer components {
+  .auth-bg {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    --px: 0;
+    --py: 0;
+  }
+
+  .auth-aurora {
+    position: absolute;
+    inset: -25%;
+    pointer-events: none;
+    filter: blur(70px);
+    translate: calc(var(--px) * 70px) calc(var(--py) * 70px);
+    transition: translate 300ms ease-out;
+    will-change: translate;
+  }
+  .auth-aurora::before,
+  .auth-aurora::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    will-change: transform;
+  }
+  .auth-aurora::before {
+    width: 52%;
+    height: 52%;
+    top: 2%;
+    left: 4%;
+    background: radial-gradient(circle, oklch(0.7 0.2 270 / 0.85), transparent 68%);
+    animation: aurora-drift 18s ease-in-out infinite;
+  }
+  .auth-aurora::after {
+    width: 56%;
+    height: 56%;
+    bottom: 0%;
+    right: 2%;
+    background: radial-gradient(circle, oklch(0.82 0.16 200 / 0.75), transparent 68%);
+    animation: aurora-drift 22s ease-in-out infinite reverse;
+  }
+  .auth-orb {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    filter: blur(60px);
+    background: radial-gradient(circle, oklch(0.74 0.25 330 / 0.7), transparent 68%);
+    animation: aurora-drift 26s ease-in-out infinite;
+    will-change: transform;
+  }
+  .auth-orb-1 {
+    top: 8%;
+    right: 12%;
+    width: 26rem;
+    height: 26rem;
+    translate: calc(var(--px) * 130px) calc(var(--py) * 130px);
+    transition: translate 250ms ease-out;
+    will-change: translate;
+  }
+  .auth-orb-2 {
+    bottom: 6%;
+    left: 10%;
+    width: 22rem;
+    height: 22rem;
+    background: radial-gradient(circle, oklch(0.88 0.2 140 / 0.4), transparent 68%);
+    animation-duration: 30s;
+    animation-direction: reverse;
+    translate: calc(var(--px) * -110px) calc(var(--py) * -110px);
+    transition: translate 250ms ease-out;
+    will-change: translate;
+  }
+
+  .auth-grid {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(to right, oklch(1 0 0 / 0.06) 1px, transparent 1px),
+      linear-gradient(to bottom, oklch(1 0 0 / 0.06) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 45%, black, transparent 78%);
+    -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 45%, black, transparent 78%);
+    translate: calc(var(--px) * -34px) calc(var(--py) * -34px);
+    transition: translate 400ms ease-out;
+    will-change: translate;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .auth-aurora,
+  .auth-orb-1,
+  .auth-orb-2,
+  .auth-grid {
+    translate: none;
+  }
+  .auth-aurora::before,
+  .auth-aurora::after,
+  .auth-orb {
+    animation: none;
+  }
+}
+
 @keyframes reaction-float {
   0% {
     opacity: 0;

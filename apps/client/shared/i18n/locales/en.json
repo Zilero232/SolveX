@@ -21,6 +21,21 @@
     "continueWithGoogle": "Continue with Google",
     "signedIn": "Signed in",
     "accountCreated": "Account created",
+    "tagline": "Your voice, in real time",
+    "features": {
+      "rooms": {
+        "title": "Instant voice rooms",
+        "desc": "Spin up a room and talk in milliseconds, no setup"
+      },
+      "quality": {
+        "title": "Crystal-clear audio",
+        "desc": "Low-latency WebRTC mixing for natural conversation"
+      },
+      "everywhere": {
+        "title": "Web & desktop",
+        "desc": "The same room, on your browser or native app"
+      }
+    },
     "fields": {
       "name": "Name",
       "email": "Email",
@@ -141,7 +156,8 @@
     "join": "Join",
     "editProfile": "Edit profile",
     "openSettingsHint": "Open settings to edit your profile.",
-    "avatarAlt": "{name}'s avatar"
+    "avatarAlt": "{name}'s avatar",
+    "avatarZoomDescription": "Enlarged profile picture"
   },
   "channels": {
     "searchPlaceholder": "Search rooms...",
@@ -172,6 +188,7 @@
     "hideChannels": "Hide channels",
     "toggleChannels": "Toggle channels",
     "menu": "Menu",
+    "menuDescription": "Navigation and room list",
     "openMenu": "Open menu"
   },
   "settings": {

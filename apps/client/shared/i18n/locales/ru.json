@@ -21,6 +21,21 @@
     "continueWithGoogle": "Продолжить через Google",
     "signedIn": "Вход выполнен",
     "accountCreated": "Аккаунт создан",
+    "tagline": "Твой голос, в реальном времени",
+    "features": {
+      "rooms": {
+        "title": "Мгновенные комнаты",
+        "desc": "Создай комнату и говори за миллисекунды, без настройки"
+      },
+      "quality": {
+        "title": "Кристальный звук",
+        "desc": "Микширование WebRTC с низкой задержкой для живого общения"
+      },
+      "everywhere": {
+        "title": "Веб и десктоп",
+        "desc": "Одна и та же комната в браузере или нативном приложении"
+      }
+    },
     "fields": {
       "name": "Имя",
       "email": "Email",
@@ -141,7 +156,8 @@
     "join": "Присоединиться",
     "editProfile": "Редактировать профиль",
     "openSettingsHint": "Откройте настройки, чтобы изменить профиль.",
-    "avatarAlt": "Аватар {name}"
+    "avatarAlt": "Аватар {name}",
+    "avatarZoomDescription": "Увеличенное фото профиля"
   },
   "channels": {
     "searchPlaceholder": "Поиск комнат...",
@@ -172,6 +188,7 @@
     "hideChannels": "Скрыть каналы",
     "toggleChannels": "Переключить каналы",
     "menu": "Меню",
+    "menuDescription": "Навигация и список комнат",
     "openMenu": "Открыть меню"
   },
   "settings": {
