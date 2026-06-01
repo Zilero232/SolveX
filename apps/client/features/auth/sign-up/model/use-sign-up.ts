@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { z } from 'zod';
-import { supabase } from '@/shared/api';
+import { authClient } from '@/shared/api';
 
 export const signUpSchema = z
   .object({
@@ -19,13 +19,9 @@ export type SignUpValues = z.infer<typeof signUpSchema>;
 export const useSignUp = () => {
   return useMutation({
     mutationFn: async ({ email, password, name }: SignUpValues) => {
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: { data: { display_name: name } },
-      });
+      const { data, error } = await authClient.signUp.email({ email, password, name });
 
-      if (error) throw error;
+      if (error) throw new Error(error.message ?? 'Sign up failed');
 
       return data;
     },

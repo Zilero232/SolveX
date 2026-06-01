@@ -33,9 +33,11 @@ export const useConnectionRtt = (): number | null => {
       }
     };
 
-    void sample();
+    sample();
 
-    const timer = setInterval(() => void sample(), POLL_INTERVAL_MS);
+    const timer = setInterval(() => {
+      sample();
+    }, POLL_INTERVAL_MS);
 
     return () => {
       cancelled = true;

@@ -117,11 +117,7 @@
   },
   "overrides": [
     {
-      "includes": [
-        "apps/client/shared/ui/**",
-        "apps/client/scripts/**",
-        "apps/server/scripts/setup-storage.ts"
-      ],
+      "includes": ["apps/client/shared/ui/**", "apps/client/scripts/**"],
       "linter": {
         "rules": {
           "suspicious": {

@@ -1,70 +1,68 @@
 import { extension } from 'mime-types';
-import { supabaseAdmin } from '../../lib/supabase';
+import { AVATAR_MAX_BYTES } from '../../config/uploads';
+import { prisma } from '../../lib/prisma';
+import { saveUpload } from '../../lib/uploads';
 import { toUserProfile } from '../../lib/user-profile';
 import type { RouteHandler } from '@hono/zod-openapi';
 import type { Env } from '../shared/types';
 import type { getUserProfileRoute, updateProfileRoute } from './routes';
 
-const AVATAR_MAX_BYTES = 2 * 1024 * 1024;
-const AVATAR_BUCKET = 'avatars';
-
 export const getUserProfileHandler: RouteHandler<typeof getUserProfileRoute, Env> = async (c) => {
   const { id } = c.req.valid('param');
 
-  const { data, error } = await supabaseAdmin.auth.admin.getUserById(id);
+  const user = await prisma.user.findUnique({ where: { id }, include: { profile: true } });
 
-  if (error || !data.user) return c.json({ error: 'User not found' }, 404);
+  if (!user) return c.json({ error: 'User not found' }, 404);
 
-  return c.json(toUserProfile(data.user), 200);
+  return c.json(toUserProfile(user), 200);
 };
 
 const uploadAvatar = async (userId: string, file: File): Promise<string> => {
-  const path = `${userId}/avatar.${extension(file.type) || 'png'}`;
+  const ext = extension(file.type) || 'png';
+  const key = `avatars/${userId}/avatar.${ext}`;
   const buffer = await file.arrayBuffer();
 
-  const { error } = await supabaseAdmin.storage
-    .from(AVATAR_BUCKET)
-    .upload(path, buffer, { upsert: true, contentType: file.type });
+  const url = await saveUpload(key, buffer);
 
-  if (error) throw error;
-
-  const { data } = supabaseAdmin.storage.from(AVATAR_BUCKET).getPublicUrl(path);
-
-  return `${data.publicUrl}?v=${Date.now()}`;
+  return `${url}?v=${Date.now()}`;
 };
 
 export const updateProfileHandler: RouteHandler<typeof updateProfileRoute, Env> = async (c) => {
   const userId = c.get('userId');
-  const { name, profileUrl, bannerColor, bio, avatar, removeAvatar } = c.req.valid('form');
+  const { displayName, profileUrl, bannerColor, bio, avatar, removeAvatar } = c.req.valid('form');
 
-  if (name.trim().length < 2) return c.json({ error: 'Invalid name' }, 400);
+  if (displayName.trim().length < 2) return c.json({ error: 'Invalid name' }, 400);
 
-  const { data: current, error: lookupError } = await supabaseAdmin.auth.admin.getUserById(userId);
-
-  if (lookupError || !current.user) return c.json({ error: 'User not found' }, 404);
-
-  const metadata: Record<string, unknown> = {
-    ...current.user.user_metadata,
-    display_name: name.trim(),
-    profile_url: profileUrl.trim(),
-    banner_color: bannerColor.length > 0 ? bannerColor : null,
-    bio: bio.trim().length > 0 ? bio.trim() : null,
-  };
+  let avatarUrl: string | null | undefined;
 
   if (avatar instanceof File && avatar.size > 0) {
-    if (!avatar.type.startsWith('image/')) return c.json({ error: 'Not an image' }, 400);
-    if (avatar.size > AVATAR_MAX_BYTES) return c.json({ error: 'Image too large' }, 400);
+    const { type, size } = avatar;
 
-    metadata.avatar_url = await uploadAvatar(userId, avatar);
+    if (!type.startsWith('image/')) return c.json({ error: 'Not an image' }, 400);
+    if (size > AVATAR_MAX_BYTES) return c.json({ error: 'Image too large' }, 400);
+
+    avatarUrl = await uploadAvatar(userId, avatar);
   } else if (removeAvatar === 'true') {
-    metadata.avatar_url = null;
+    avatarUrl = null;
   }
 
-  const { data, error } = await supabaseAdmin.auth.admin.updateUserById(userId, {
-    user_metadata: metadata,
+  const profileData = {
+    displayName: displayName.trim(),
+    profileUrl: profileUrl.trim().length > 0 ? profileUrl.trim() : null,
+    bannerColor: bannerColor.length > 0 ? bannerColor : null,
+    bio: bio.trim().length > 0 ? bio.trim() : null,
+    ...(avatarUrl !== undefined ? { avatarUrl } : {}),
+  };
+
+  await prisma.profile.upsert({
+    where: { userId },
+    create: { userId, ...profileData },
+    update: profileData,
   });
 
-  if (error || !data.user) return c.json({ error: 'Update failed' }, 500);
+  const user = await prisma.user.findUnique({ where: { id: userId }, include: { profile: true } });
 
-  return c.json(toUserProfile(data.user), 200);
+  if (!user) return c.json({ error: 'User not found' }, 404);
+
+  return c.json(toUserProfile(user), 200);
 };

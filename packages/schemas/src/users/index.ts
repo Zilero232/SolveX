@@ -1,2 +1,3 @@
+export { updateProfileInputSchema } from './inputs';
 export { userProfileSchema } from './outputs';
-export type { UserProfile } from './types';
+export type { UpdateProfilePayload, UserProfile } from './types';

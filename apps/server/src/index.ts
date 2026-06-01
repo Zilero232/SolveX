@@ -1,16 +1,26 @@
 import { swaggerUI } from '@hono/swagger-ui';
 import { OpenAPIHono } from '@hono/zod-openapi';
+import { serveStatic } from 'hono/bun';
 import { cors } from 'hono/cors';
 import { HTTPException } from 'hono/http-exception';
 import { logger } from 'hono/logger';
-import { filter, map, pipe } from 'remeda';
+import { allowedOrigins } from './config/cors';
+import { auth } from './lib/auth';
 import { env } from './lib/env';
+import { UPLOADS_DIR } from './lib/uploads';
 import { authMiddleware } from './middleware/auth';
+import { livekitAuthMiddleware } from './middleware/livekit-gate';
+import { socialDoneHandler } from './routes/auth/social-done';
 import { chatRouter } from './routes/chat';
 import { githubRouter } from './routes/github';
 import { livekitRouter } from './routes/livekit';
 import { roomsRouter } from './routes/rooms';
 import { usersRouter } from './routes/users';
+
+const serveUploads = serveStatic({
+  root: UPLOADS_DIR,
+  rewriteRequestPath: (path) => path.replace(/^\/uploads/, ''),
+});
 
 const app = new OpenAPIHono({
   defaultHook: (result, c) => {
@@ -26,21 +36,6 @@ app.openAPIRegistry.registerComponent('securitySchemes', 'bearerAuth', {
   bearerFormat: 'JWT',
 });
 
-// Web client origins come from env (comma-separated); Tauri origins are always
-// allowed so the desktop app can reach the same API as the website.
-// macOS/Linux Tauri webview uses `tauri://localhost`; Windows uses
-// `http(s)://tauri.localhost` depending on the WebView2 build.
-const TAURI_ORIGINS = ['tauri://localhost', 'http://tauri.localhost', 'https://tauri.localhost'];
-
-const allowedOrigins = [
-  ...pipe(
-    env.CORS_ORIGINS.split(','),
-    map((origin) => origin.trim()),
-    filter((origin) => origin.length > 0),
-  ),
-  ...TAURI_ORIGINS,
-];
-
 export const routes = app
   .use('*', logger())
   .use(
@@ -48,21 +43,17 @@ export const routes = app
     cors({
       origin: allowedOrigins,
       credentials: true,
+      exposeHeaders: ['set-auth-token'],
     }),
   )
   .get('/health', (c) => c.json({ ok: true }))
+  .get('/auth/social-done', socialDoneHandler)
+  .on(['POST', 'GET'], '/auth/*', (c) => auth.handler(c.req.raw))
+  .use('/uploads/*', serveUploads)
   .use('/rooms/*', authMiddleware)
   .use('/users/*', authMiddleware)
   .use('/chat/*', authMiddleware)
-  // The webhook is signed by LiveKit and the SSE stream authorizes via a query
-  // token (EventSource cannot send headers) — both bypass the bearer middleware.
-  .use('/livekit/*', async (c, next) => {
-    const path = c.req.path;
-
-    if (path === '/livekit/webhook' || path === '/livekit/presence') return next();
-
-    return authMiddleware(c, next);
-  })
+  .use('/livekit/*', livekitAuthMiddleware)
   .route('/rooms', roomsRouter)
   .route('/users', usersRouter)
   .route('/chat', chatRouter)

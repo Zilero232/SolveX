@@ -1,28 +1,24 @@
 'use client';
 
 import { useBoolean } from '@siberiacancode/reactuse';
-import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { useEffect } from 'react';
-import { useCurrentUser } from '@/entities/auth/user';
-import { GoogleAuthButton } from '@/features/auth/google';
+import { useAuthGuard } from '@/entities/auth/user';
+import { GoogleAuthButton, useOttReturn } from '@/features/auth/google';
 import { SignInForm } from '@/features/auth/sign-in';
 import { SignUpForm } from '@/features/auth/sign-up';
-import { ROUTES } from '@/shared/constants';
 import { authPageStyles as s } from './AuthPage.styles';
 
 export const AuthPage = () => {
-  const router = useRouter();
   const t = useTranslations('auth');
   const tCommon = useTranslations('common');
 
-  const { session } = useCurrentUser();
+  const { isReady } = useAuthGuard({ require: 'guest' });
+
   const [isSignup, toggleSignup] = useBoolean(false);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: redirect must fire only on session change; router is a stable ref
-  useEffect(() => {
-    if (session) router.replace(ROUTES.lobby);
-  }, [session]);
+  useOttReturn();
+
+  if (!isReady) return null;
 
   return (
     <div className={s.root}>

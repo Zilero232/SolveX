@@ -60,7 +60,7 @@ export const LobbyRoomCard = ({ room }: LobbyRoomCardProps) => {
                 {shown.map((participant) => (
                   <AvatarWithBadges
                     key={participant.identity}
-                    topLeft={participant.identity === room.ownerId ? <OwnerCrown /> : null}
+                    topLeft={participant.identity === room.ownerId && <OwnerCrown />}
                   >
                     <UserAvatar
                       name={participant.name}

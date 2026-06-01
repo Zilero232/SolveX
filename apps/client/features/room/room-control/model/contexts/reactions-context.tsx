@@ -38,7 +38,7 @@ const useReactionsState = () => {
   const send = (emoji: string) => {
     spawn(emoji);
 
-    void sendData(encoder.encode(emoji), { reliable: true });
+    sendData(encoder.encode(emoji), { reliable: true });
   };
 
   return { reactions, send };

@@ -1,5 +1,5 @@
 export const STORAGE_KEYS = {
-  authSession: 'chatovo.auth',
+  authToken: 'chatovo.auth-token',
   participantVolumes: 'chatovo.participant-volumes',
   appSettings: 'chatovo.app-settings',
   locale: 'chatovo.locale',

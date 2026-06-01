@@ -1,5 +1,5 @@
 import { api, readErrorMessage } from '../http';
-import type { UserProfile } from '@chatovo/schemas';
+import type { UpdateProfilePayload, UserProfile } from '@chatovo/schemas';
 
 export const getUserProfile = async (id: string): Promise<UserProfile> => {
   try {
@@ -19,18 +19,10 @@ export const getUserProfile = async (id: string): Promise<UserProfile> => {
   }
 };
 
-export type UpdateProfilePayload = {
-  name: string;
-  profileUrl: string;
-  bannerColor: string | null;
-  bio: string;
-  avatar?: File | null;
-};
-
 export const updateUserProfile = async (payload: UpdateProfilePayload): Promise<UserProfile> => {
   const res = await api.users.profile.$post({
     form: {
-      name: payload.name,
+      displayName: payload.displayName,
       profileUrl: payload.profileUrl,
       bannerColor: payload.bannerColor ?? '',
       bio: payload.bio,

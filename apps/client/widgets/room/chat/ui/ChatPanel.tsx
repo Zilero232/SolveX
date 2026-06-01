@@ -46,7 +46,7 @@ export const ChatPanel = ({ roomId, isOpen, onClose }: ChatPanelProps) => {
   );
 
   return (
-    <aside ref={dropRef} aria-hidden={!isOpen} className={s.root} data-open={isOpen}>
+    <aside ref={dropRef} className={s.root} data-open={isOpen} inert={!isOpen}>
       <ChatHeader onClose={onClose} />
 
       {overed && (

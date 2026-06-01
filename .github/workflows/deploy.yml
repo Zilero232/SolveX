@@ -17,8 +17,6 @@ name: Deploy to Timeweb
 #   SSH_PORT                 SSH port (optional, defaults to 22)
 #   DEPLOY_PATH              absolute path to the repo on the VPS (e.g. /opt/chatovo)
 #   NEXT_PUBLIC_API_URL                  /api   (same origin — site and API share chatovo.ru)
-#   NEXT_PUBLIC_SUPABASE_URL             https://<project>.supabase.co
-#   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY sb_publishable_...
 #   NEXT_PUBLIC_LIVEKIT_URL              wss://<project>.livekit.cloud
 
 on:
@@ -81,8 +79,6 @@ jobs:
           push: true
           build-args: |
             NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}
-            NEXT_PUBLIC_SUPABASE_URL=${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
-            NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=${{ secrets.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY }}
             NEXT_PUBLIC_LIVEKIT_URL=${{ secrets.NEXT_PUBLIC_LIVEKIT_URL }}
           tags: |
             ${{ env.WEB_IMAGE }}:latest

@@ -48,7 +48,7 @@ export const useRoomControls = () => {
     const next = !p.isMicrophoneEnabled;
     await p.setMicrophoneEnabled(next);
 
-    if (next && isDeafened) void undeafen();
+    if (next && isDeafened) undeafen();
     if (isPtt && next) toggleMicStream(p, false);
   });
 
@@ -64,7 +64,7 @@ export const useRoomControls = () => {
       toggle: run((p) => p.setScreenShareEnabled(!p.isScreenShareEnabled)),
     },
     leave: () => {
-      void room.disconnect();
+      room.disconnect();
     },
   };
 };

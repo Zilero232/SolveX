@@ -1,88 +1,41 @@
 import { useQuery } from '@tanstack/react-query';
-import { filter, first, isNonNullish, isString, map, pipe } from 'remeda';
-import { supabase } from '@/shared/api';
+import { isNonNullish } from 'remeda';
+import { authClient, getUserProfile } from '@/shared/api';
 import { QUERY_KEYS } from '@/shared/constants';
-import type { User } from '@supabase/supabase-js';
+import { firstNonEmpty } from '@/shared/lib';
 import type { UserRole } from '../types';
 
-const firstNonEmptyString = (values: unknown[]): string | null => {
-  return (
-    pipe(
-      values,
-      filter(isString),
-      map((value) => value.trim()),
-      filter((value) => value.length > 0),
-      first(),
-    ) ?? null
-  );
-};
-
-const readRole = (user: User | null): UserRole => {
-  return user?.app_metadata?.role === 'admin' ? 'admin' : 'user';
-};
-
-const readVerified = (user: User | null): boolean => {
-  return user?.app_metadata?.verified === true;
-};
-
-const readProfileUrl = (user: User | null): string | null => {
-  return firstNonEmptyString([user?.user_metadata?.profile_url]);
-};
-
-const readBannerColor = (user: User | null): string | null => {
-  return firstNonEmptyString([user?.user_metadata?.banner_color]);
-};
-
-const readBio = (user: User | null): string | null => {
-  return firstNonEmptyString([user?.user_metadata?.bio]);
-};
-
-const resolveDisplayName = (user: User | null): string => {
-  const meta = user?.user_metadata ?? {};
-
-  return (
-    firstNonEmptyString([meta.display_name, meta.full_name, meta.name]) ??
-    user?.email?.split('@')[0] ??
-    'you'
-  );
-};
-
-const readAvatarUrl = (user: User | null): string | null => {
-  const meta = user?.user_metadata ?? {};
-
-  return firstNonEmptyString([meta.avatar_url, meta.picture]);
-};
-
 export const useCurrentUser = () => {
-  const { data: session, isLoading } = useQuery({
-    queryKey: QUERY_KEYS.session(),
-    queryFn: async () => {
-      const { data } = await supabase.auth.getSession();
-
-      return data.session;
-    },
-    gcTime: Number.POSITIVE_INFINITY,
-  });
+  const { data: session, isPending } = authClient.useSession();
 
   const user = session?.user ?? null;
-  const role = readRole(user);
+  const userId = user?.id ?? null;
+  const sessionToken = session?.session?.token ?? null;
 
-  const displayName = resolveDisplayName(user);
+  const { data: profile } = useQuery({
+    queryKey: QUERY_KEYS.userProfile(userId ?? ''),
+    queryFn: () => getUserProfile(userId as string),
+    enabled: isNonNullish(userId) && isNonNullish(sessionToken),
+  });
+
+  const role: UserRole = user?.role === 'admin' ? 'admin' : 'user';
+
+  const displayName = firstNonEmpty(profile?.name, user?.name, user?.email?.split('@')[0]) ?? 'you';
   const initial = displayName.charAt(0).toUpperCase();
 
   return {
     user,
     role,
     session: session ?? null,
-    isLoading,
+    isLoading: isPending,
     displayName,
     initial,
     isAdmin: role === 'admin',
-    avatarUrl: readAvatarUrl(user),
-    verified: readVerified(user),
-    profileUrl: readProfileUrl(user),
-    bannerColor: readBannerColor(user),
-    bio: readBio(user),
+    avatarUrl: firstNonEmpty(profile?.avatarUrl, user?.image),
+    verified: profile?.verified ?? user?.verified ?? false,
+    profileUrl: firstNonEmpty(profile?.profileUrl),
+    bannerColor: firstNonEmpty(profile?.bannerColor),
+    bio: firstNonEmpty(profile?.bio),
     isAuthenticated: isNonNullish(user),
   };
 };

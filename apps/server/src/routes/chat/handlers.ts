@@ -1,21 +1,14 @@
 import { HTTPException } from 'hono/http-exception';
 import { extension } from 'mime-types';
 import { isNullish } from 'remeda';
+import { ATTACHMENT_MAX_BYTES } from '../../config/uploads';
 import { prisma } from '../../lib/prisma';
-import { supabaseAdmin } from '../../lib/supabase';
-import { resolveDisplayName } from '../../lib/user-profile';
-import type { ChatAttachment, ChatMessage } from '@chatovo/schemas';
+import { saveUpload } from '../../lib/uploads';
+import { senderSelect, toChatMessage } from './mappers';
+import type { ChatAttachment } from '@chatovo/schemas';
 import type { RouteHandler } from '@hono/zod-openapi';
-import type { Prisma } from '../../../generated';
 import type { Env } from '../shared/types';
 import type { listMessagesRoute, sendMessageRoute, uploadAttachmentRoute } from './routes';
-
-const senderSelect = { select: { email: true, raw_user_meta_data: true } } as const;
-
-type MessageWithSender = Prisma.MessageGetPayload<{ include: { sender: typeof senderSelect } }>;
-
-const ATTACHMENT_BUCKET = 'chat-attachments';
-const ATTACHMENT_MAX_BYTES = 25 * 1024 * 1024;
 
 const assertRoomExists = async (roomId: string): Promise<void> => {
   const room = await prisma.room.findUnique({ where: { id: roomId }, select: { id: true } });
@@ -27,49 +20,28 @@ export const uploadAttachmentHandler: RouteHandler<typeof uploadAttachmentRoute,
   c,
 ) => {
   const { roomId, file } = c.req.valid('form');
+  const { size, type, name } = file;
 
-  if (file.size === 0) throw new HTTPException(400, { message: 'Empty file' });
-  if (file.size > ATTACHMENT_MAX_BYTES) throw new HTTPException(400, { message: 'File too large' });
+  if (size === 0) throw new HTTPException(400, { message: 'Empty file' });
+  if (size > ATTACHMENT_MAX_BYTES) throw new HTTPException(400, { message: 'File too large' });
 
   await assertRoomExists(roomId);
 
-  const ext = extension(file.type) || 'bin';
-  const path = `${roomId}/${crypto.randomUUID()}.${ext}`;
+  const ext = extension(type) || 'bin';
+  const key = `chat-attachments/${roomId}/${crypto.randomUUID()}.${ext}`;
   const buffer = await file.arrayBuffer();
 
-  const { error } = await supabaseAdmin.storage
-    .from(ATTACHMENT_BUCKET)
-    .upload(path, buffer, { contentType: file.type });
-
-  if (error) return c.json({ error: 'Upload failed' }, 500);
-
-  const { data } = supabaseAdmin.storage.from(ATTACHMENT_BUCKET).getPublicUrl(path);
+  const url = await saveUpload(key, buffer);
 
   const attachment: ChatAttachment = {
     kind: 'attachment',
-    url: data.publicUrl,
-    name: file.name,
-    size: file.size,
-    mime: file.type,
+    url,
+    name,
+    size,
+    mime: type,
   };
 
   return c.json(attachment, 200);
-};
-
-const toChatMessage = (row: MessageWithSender): ChatMessage => {
-  const metadata = (row.sender?.raw_user_meta_data ?? {}) as Record<string, unknown>;
-
-  return {
-    id: row.id,
-    roomId: row.roomId,
-    senderId: row.senderId,
-    senderName:
-      row.sender && row.senderId
-        ? resolveDisplayName(metadata, row.sender.email ?? undefined, row.senderId)
-        : 'Deleted user',
-    body: row.body,
-    createdAt: row.createdAt.toISOString(),
-  };
 };
 
 export const sendMessageHandler: RouteHandler<typeof sendMessageRoute, Env> = async (c) => {

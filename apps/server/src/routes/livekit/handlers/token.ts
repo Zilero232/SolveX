@@ -1,8 +1,7 @@
 import { AccessToken } from 'livekit-server-sdk';
-import { readRole } from '../../../lib/auth';
+import { TOKEN_TTL_SECONDS } from '../../../config/livekit';
 import { env } from '../../../lib/env';
 import { prisma } from '../../../lib/prisma';
-import { supabaseAdmin } from '../../../lib/supabase';
 import { toUserProfile } from '../../../lib/user-profile';
 import type { ParticipantMetadata, TokenResponse } from '@chatovo/schemas';
 import type { RouteHandler } from '@hono/zod-openapi';
@@ -12,6 +11,7 @@ import type { tokenRoute } from '../routes';
 export const tokenHandler: RouteHandler<typeof tokenRoute, Env> = async (c) => {
   const userId = c.get('userId');
   const email = c.get('email');
+  const role = c.get('role');
   const { roomId, password } = c.req.valid('json');
 
   const room = await prisma.room.findUnique({ where: { id: roomId } });
@@ -24,26 +24,26 @@ export const tokenHandler: RouteHandler<typeof tokenRoute, Env> = async (c) => {
     if (password !== room.password) return c.json({ error: 'Invalid password' }, 403);
   }
 
-  const { data, error } = await supabaseAdmin.auth.admin.getUserById(userId);
+  const user = await prisma.user.findUnique({ where: { id: userId }, include: { profile: true } });
 
-  if (error || !data.user) return c.json({ error: 'User lookup failed' }, 500);
+  if (!user) return c.json({ error: 'User lookup failed' }, 500);
 
-  const isAdmin = readRole(data.user.app_metadata) === 'admin';
-  const profile = toUserProfile(data.user);
+  const isAdmin = role === 'admin';
+  const { name, verified, profileUrl, avatarUrl, bannerColor } = toUserProfile(user);
 
   const participantMetadata: ParticipantMetadata = {
     email: email ?? null,
-    verified: profile.verified,
-    profileUrl: profile.profileUrl,
-    avatarUrl: profile.avatarUrl,
-    bannerColor: profile.bannerColor,
+    verified,
+    profileUrl,
+    avatarUrl,
+    bannerColor,
   };
 
   const at = new AccessToken(env.LIVEKIT_API_KEY, env.LIVEKIT_API_SECRET, {
     identity: userId,
-    name: profile.name,
+    name,
     metadata: JSON.stringify(participantMetadata),
-    ttl: 60 * 60,
+    ttl: TOKEN_TTL_SECONDS,
   });
 
   at.addGrant({

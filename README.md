@@ -31,7 +31,7 @@ Three ideas hold it together:
 
 - **Instant voice & video rooms** — low-latency WebRTC over a LiveKit SFU backbone.
 - **Private password-protected rooms** — only those who know the password can join.
-- **One-click sign-in** via Google or classic email + password — Supabase Auth under the hood.
+- **One-click sign-in** via Google or classic email + password — better-auth under the hood.
 - **Lightweight desktop app on Tauri** — a native binary, not a bundled browser. Ships with auto-updates.
 - **A single, consistent UI** across web and desktop — designed to feel calm rather than crowded.
 - **Self-hostable** — one `docker-compose.yml`, automatic TLS from Let's Encrypt.
@@ -45,7 +45,7 @@ Three ideas hold it together:
 | **Desktop client** | Tauri 2 (Rust), plugins: updater / deep-link / opener / os / process |
 | **API server** | Hono on Bun, OpenAPI + Swagger UI, Prisma 7, PostgreSQL |
 | **Realtime / media** | LiveKit SFU (WebRTC), `@livekit/components-react`, server-issued JWTs |
-| **Auth / DB** | Supabase Auth, Supabase Postgres |
+| **Auth / DB** | better-auth (Bearer tokens), self-hosted PostgreSQL |
 | **Infra** | Docker Compose, Caddy (HTTPS + reverse proxy), GitHub Actions, GHCR |
 | **Tooling** | Biome (lint + format), React Compiler, TypeScript 5.8, Bun workspaces |
 
@@ -81,7 +81,7 @@ chatovo/
 - **Node.js** ≥ 20 (needed by a few dev tools)
 - **Docker** + Docker Compose — for the local LiveKit SFU and Caddy
 - **Rust** + Tauri system dependencies — only if you're building the desktop app ([see Tauri prerequisites](https://tauri.app/start/prerequisites/))
-- A **Supabase** project (database + auth) and either **LiveKit Cloud** or a local SFU
+- A **PostgreSQL** database (the dev `docker-compose.dev.yml` ships one) and either **LiveKit Cloud** or a local SFU
 
 ### Install
 
@@ -102,9 +102,10 @@ cp apps/client/.env.example apps/client/.env
 
 What you need to provide:
 
-- **Supabase** — `SUPABASE_URL`, `SUPABASE_SECRET_KEY` (server) and `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (client)
+- **Auth** — `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL` and `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` (server)
 - **LiveKit** — `LIVEKIT_URL`, `LIVEKIT_API_KEY`, `LIVEKIT_API_SECRET` (server) and `NEXT_PUBLIC_LIVEKIT_URL` (client)
-- **Postgres** — `DATABASE_URL` (runtime, via pgbouncer) and `DIRECT_URL` (migrations)
+- **Postgres** — `DATABASE_URL` and `DIRECT_URL` (same value for a self-hosted single instance)
+- **Uploads** — `UPLOADS_DIR` for avatars and chat attachments served under `/uploads`
 - **CORS** — `CORS_ORIGINS` for the allowed web origins
 
 > ⚠️ **Heads up:** `prisma generate` will throw without `DIRECT_URL` — `prisma.config.ts` requires it. Without it, `bun install` (postinstall) and any CI/Docker build will break.

@@ -13,7 +13,7 @@ export const MicStateController = ({ roomId }: MicStateControllerProps) => {
     if (!localParticipant) return;
 
     const push = () => {
-      void reportPresenceState({ roomId, micMuted: !localParticipant.isMicrophoneEnabled });
+      reportPresenceState({ roomId, micMuted: !localParticipant.isMicrophoneEnabled });
     };
 
     push();

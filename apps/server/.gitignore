@@ -3,3 +3,6 @@ generated/
 
 # Build output
 dist/
+
+# User uploads (avatars, chat attachments)
+uploads/

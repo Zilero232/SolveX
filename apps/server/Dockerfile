@@ -56,5 +56,6 @@ RUN DIRECT_URL="postgresql://placeholder" bunx prisma generate
 EXPOSE 4000
 
 # Hono reads PORT from the environment (defaults to 4000). The container is run
-# with an env file supplying DATABASE_URL, SUPABASE_*, LIVEKIT_*, CORS_ORIGINS.
+# with an env file supplying DATABASE_URL, BETTER_AUTH_*, GOOGLE_*, LIVEKIT_*,
+# CORS_ORIGINS, UPLOADS_DIR.
 CMD ["bun", "src/index.ts"]

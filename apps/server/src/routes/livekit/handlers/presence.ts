@@ -1,21 +1,25 @@
 import { streamSSE } from 'hono/streaming';
-import { verifyAccessToken } from '../../../lib/auth';
+import { PRESENCE_PING_INTERVAL_MS } from '../../../config/livekit';
+import { auth } from '../../../lib/auth';
 import { addLobbyConnection, getSnapshot, removeLobbyConnection, subscribe } from '../presence';
 import type { Handler } from 'hono';
 import type { Env } from '../../shared/types';
 
-// Keepalive cadence. A diagnostic run with no ping confirmed the stream is
-// dropped after ~15-20s of silence (idle timeout). Ping at 8s — well inside
-// that window, with room to spare if a single ping is lost.
-const PING_INTERVAL_MS = 8_000;
-
 // EventSource cannot send custom headers, so auth is via `token` query param.
 export const presenceHandler: Handler<Env> = async (c) => {
-  const user = await verifyAccessToken(c.req.query('token'));
+  const token = c.req.query('token');
 
-  if (!user) return c.json({ error: 'Unauthorized' }, 401);
+  if (!token) return c.json({ error: 'Unauthorized' }, 401);
 
-  addLobbyConnection(user.userId);
+  const session = await auth.api.getSession({
+    headers: new Headers({ Authorization: `Bearer ${token}` }),
+  });
+
+  if (!session) return c.json({ error: 'Unauthorized' }, 401);
+
+  const userId = session.user.id;
+
+  addLobbyConnection(userId);
 
   return streamSSE(c, async (stream) => {
     let closed = false;
@@ -29,7 +33,7 @@ export const presenceHandler: Handler<Env> = async (c) => {
       closed = true;
       clearInterval(ping);
       unsubscribe();
-      removeLobbyConnection(user.userId);
+      removeLobbyConnection(userId);
     };
 
     // Hono's SSE stream wraps a single locked WritableStream writer. Two
@@ -65,17 +69,17 @@ export const presenceHandler: Handler<Env> = async (c) => {
     await sendSnapshot(getSnapshot());
 
     unsubscribe = subscribe((snapshot) => {
-      void sendSnapshot(snapshot);
+      sendSnapshot(snapshot);
     });
 
     // Keep the connection alive: a silent stream is dropped by the idle
     // timeout within ~15-20s. A bare SSE comment (`: ...`) counts as traffic
     // but is ignored by EventSource, so the client never sees a stray event.
     ping = setInterval(() => {
-      void enqueue(async () => {
+      enqueue(async () => {
         await stream.write(': keepalive\n\n');
       });
-    }, PING_INTERVAL_MS);
+    }, PRESENCE_PING_INTERVAL_MS);
 
     // streamSSE resolves the callback = closes the stream; block until the
     // client disconnects, then release the subscription and keepalive timer.

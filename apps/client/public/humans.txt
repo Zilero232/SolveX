@@ -8,5 +8,5 @@ Contact: alexandr.artemev.me [at] gmail.com
 Last update: 2026-05-20
 Language: English
 Doctype: HTML5
-Components: Next.js, React, Tauri, LiveKit, Hono, Supabase
+Components: Next.js, React, Tauri, LiveKit, Hono, Postgres, better-auth
 Standards: HTML5, CSS3, Open Graph, JSON-LD, PWA

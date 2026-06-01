@@ -1,10 +1,7 @@
 import { Inter, JetBrains_Mono } from 'next/font/google';
 import { JsonLdScript } from '@/shared/seo';
-import { Toaster, TooltipProvider } from '@/shared/ui';
 import { Providers } from './providers';
 import type { ReactNode } from 'react';
-
-import '@livekit/components-styles';
 
 import './globals.css';
 
@@ -28,10 +25,7 @@ const RootLayout = ({ children }: { children: ReactNode }) => (
       <JsonLdScript />
     </head>
     <body className="font-sans">
-      <Providers>
-        <Toaster />
-        <TooltipProvider>{children}</TooltipProvider>
-      </Providers>
+      <Providers>{children}</Providers>
     </body>
   </html>
 );

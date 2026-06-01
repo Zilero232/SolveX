@@ -1,1 +1,1 @@
-export { getFreshAccessToken } from './auth';
+export { authClient, clearToken, getAuthToken } from './auth-client';

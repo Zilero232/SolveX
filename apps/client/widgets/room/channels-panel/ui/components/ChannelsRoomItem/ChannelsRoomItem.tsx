@@ -57,9 +57,9 @@ export const ChannelsRoomItem = ({ room, onNavigate }: ChannelsRoomItemProps) =>
             <ProfileCardTrigger key={p.identity} identity={p.identity} name={p.name}>
               <button className={s.participant} type="button">
                 <AvatarWithBadges
-                  topLeft={p.identity === room.ownerId ? <OwnerCrown /> : null}
-                  bottomRight={p.micMuted ? <MicMutedBadge /> : null}
-                  bottomLeft={p.deafened ? <DeafenedBadge /> : null}
+                  topLeft={p.identity === room.ownerId && <OwnerCrown />}
+                  bottomRight={p.micMuted && <MicMutedBadge />}
+                  bottomLeft={p.deafened && <DeafenedBadge />}
                 >
                   <UserAvatar
                     name={p.name}

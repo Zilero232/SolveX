@@ -1,7 +1,6 @@
 export const ROUTES = {
-  root: '/',
+  lobby: '/',
   auth: '/auth',
-  lobby: '/lobby',
   room: '/room',
 } as const;
 

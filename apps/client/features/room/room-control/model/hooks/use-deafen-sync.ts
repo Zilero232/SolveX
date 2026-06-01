@@ -7,10 +7,10 @@ export const useDeafenSync = () => {
   const { isDeafened, toggle, undeafen } = useDeafen();
 
   appBus.useSubscribe('deafenToggle', () => {
-    void toggle();
+    toggle();
   });
 
   appBus.useSubscribe('micActivated', () => {
-    if (isDeafened) void undeafen();
+    if (isDeafened) undeafen();
   });
 };

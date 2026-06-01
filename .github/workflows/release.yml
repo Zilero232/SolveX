@@ -23,8 +23,6 @@ name: Release Desktop App
 #                                        web deploy — both web and desktop hit the same
 #                                        cross-origin API host, allowed by server CORS.
 #   NEXT_PUBLIC_LIVEKIT_URL              LiveKit signalling URL (wss://...).
-#   NEXT_PUBLIC_SUPABASE_URL             Supabase project URL.
-#   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY Supabase publishable (anon) key.
 #
 # Optional (not configured yet, leave unset → unsigned macOS build with warning):
 #   APPLE_CERTIFICATE                   Base64 of the .p12 codesigning certificate
@@ -183,8 +181,6 @@ jobs:
           # resolve a relative URL, so the value must be absolute.
           NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
           NEXT_PUBLIC_LIVEKIT_URL: ${{ secrets.NEXT_PUBLIC_LIVEKIT_URL }}
-          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
-          NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY }}
           # macOS code signing & notarization is not configured yet — leaving the
           # APPLE_* env vars unset produces an unsigned .app (Gatekeeper warning
           # on first launch, but it installs). Re-add them when Apple Developer

@@ -18,6 +18,34 @@
 # Caddy. See infra/caddy/Caddyfile.dev for the matching env values.
 
 services:
+  postgres:
+    # Local Postgres for `bun dev`. The API runs on the host and connects via
+    # the published port, so DATABASE_URL/DIRECT_URL in apps/server/.env point
+    # at localhost:5432 (NOT the compose service name). Credentials come from
+    # apps/server/.env (the same file `bun dev` reads). Data lives in its own
+    # pgdata_dev volume, isolated from the production pgdata.
+    image: postgres:17-alpine
+    container_name: chatovo-postgres-dev
+    # env_file delivers POSTGRES_* into the container at runtime; the postgres
+    # entrypoint reads them directly. Do NOT add an `environment: ${POSTGRES_*}`
+    # block — Compose resolves ${...} from the shell / root .env at parse time
+    # (NOT from env_file), so it would inject blank values and the container
+    # would refuse to start ("POSTGRES_PASSWORD must be non-empty").
+    env_file:
+      - ./apps/server/.env
+    # Published on 5433 (not 5432) to avoid colliding with a host-installed
+    # Postgres that already binds 5432 — DATABASE_URL/DIRECT_URL use localhost:5433.
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata_dev:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
   livekit:
     image: livekit/livekit-server:v1.12.0
     container_name: chatovo-livekit-dev
@@ -52,3 +80,4 @@ services:
 
 volumes:
   caddy_dev_data:
+  pgdata_dev:

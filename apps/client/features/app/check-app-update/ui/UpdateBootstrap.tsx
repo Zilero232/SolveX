@@ -7,15 +7,7 @@ import { useCheckAppUpdate } from '../model/use-check-app-update';
 import { UpdateDialog } from './UpdateDialog';
 import type { ReactNode } from 'react';
 
-const isDev = process.env.NODE_ENV === 'development';
-
 export const UpdateBootstrap = ({ children }: { children: ReactNode }) => {
-  if (isDev) return <>{children}</>;
-
-  return <UpdateBootstrapInner>{children}</UpdateBootstrapInner>;
-};
-
-const UpdateBootstrapInner = ({ children }: { children: ReactNode }) => {
   const t = useTranslations('update');
   const { install, dismiss, ...info } = useCheckAppUpdate();
 

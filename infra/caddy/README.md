@@ -36,7 +36,7 @@
    │                                                       │
    └───────────────────────────────────────────────────────┘
                               │
-          Supabase (PostgreSQL + Auth)  — внешняя
+          postgres — самостоятельный PostgreSQL в этом же compose
 ```
 
 - **Клиент** — Next.js со `output: 'export'`. Образ `chatovo-web` собирает
@@ -51,8 +51,9 @@
 - **Реестр** — образы `chatovo-web` и `chatovo-server` хранятся в приватном
   ghcr.io. CI публикует их встроенным `GITHUB_TOKEN`; VPS скачивает по личному
   токену (PAT). Образ LiveKit берётся напрямую с Docker Hub.
-- **БД** — внешняя (Supabase). Схема управляется вручную командой `bun db:push`
-  с машины разработчика.
+- **БД** — самостоятельный PostgreSQL, контейнер `postgres` в этом же compose
+  (данные в volume `pgdata`). Авторизация — better-auth поверх этой же БД.
+  Схема управляется вручную командой `bun db:push` с машины разработчика.
 - **Tauri** — десктоп-приложение собирается локально, на хостинг не идёт.
 
 ```text
@@ -188,7 +189,9 @@ mkdir -p /opt/chatovo
 nano /opt/chatovo/.env
 ```
 
-Впишите реальные значения из Supabase и LiveKit, поставьте `NODE_ENV=production`,
+Впишите реальные значения для better-auth (`BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`,
+`GOOGLE_CLIENT_ID/SECRET`), Postgres (`DATABASE_URL`/`DIRECT_URL`) и LiveKit,
+поставьте `NODE_ENV=production`,
 а **`CORS_ORIGINS=https://chatovo.ru`** — без этого браузер будет блокировать
 запросы со страницы сайта к `api.chatovo.ru`. Файл `.env` лежит только на VPS,
 в git его нет. `docker-compose.yml` ожидает его рядом с собой — поэтому он
@@ -531,8 +534,6 @@ Repo → **Settings → Secrets and variables → Actions → New repository sec
 | `SSH_PRIVATE_KEY` | содержимое файла `chatovo_deploy` (приватный ключ целиком) |
 | `DEPLOY_PATH` | `/opt/chatovo` |
 | `NEXT_PUBLIC_API_URL` | `https://api.chatovo.ru` (один секрет на веб и Tauri) |
-| `NEXT_PUBLIC_SUPABASE_URL` | `https://<project>.supabase.co` |
-| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | `sb_publishable_...` |
 | `NEXT_PUBLIC_LIVEKIT_URL` | `wss://livekit.chatovo.ru` (self-hosted) или `wss://<project>.livekit.cloud` |
 
 ### 2.4. Запустить деплой

@@ -20,14 +20,10 @@ WORKDIR /app
 # NEXT_PUBLIC_* values, supplied by CI via --build-arg.
 ARG NEXT_PUBLIC_API_URL=/api
 ARG NEXT_PUBLIC_LIVEKIT_URL
-ARG NEXT_PUBLIC_SUPABASE_URL
-ARG NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
 # Expose them to `next build` as environment variables.
 ENV NODE_ENV=production \
     NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL} \
-    NEXT_PUBLIC_LIVEKIT_URL=${NEXT_PUBLIC_LIVEKIT_URL} \
-    NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL} \
-    NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=${NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY}
+    NEXT_PUBLIC_LIVEKIT_URL=${NEXT_PUBLIC_LIVEKIT_URL}
 
 # Install dependencies. Copy manifests first so the install layer is cached
 # and only re-runs when a package.json / lockfile changes.
