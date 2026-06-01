@@ -63,7 +63,7 @@ jobs:
         run: echo "WEB_IMAGE=${WEB_IMAGE,,}" >> "$GITHUB_ENV"
 
       - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -72,7 +72,7 @@ jobs:
       # Build the client image. NEXT_PUBLIC_* values are baked into the static
       # bundle at build time, so they are passed as build args.
       - name: Build and push web image
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: apps/client/Dockerfile
@@ -97,7 +97,7 @@ jobs:
         run: echo "API_IMAGE=${API_IMAGE,,}" >> "$GITHUB_ENV"
 
       - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -106,7 +106,7 @@ jobs:
       # Build the server image, tagged with both `latest` and the commit SHA
       # (the SHA tag enables rollbacks).
       - name: Build and push server image
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: apps/server/Dockerfile
